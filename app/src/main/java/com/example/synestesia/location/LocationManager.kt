@@ -4,8 +4,6 @@ import android.content.Context
 import android.util.Log
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.suspendCancellableCoroutine
-import kotlin.coroutines.resume
 
 class LocationManager(private val context: Context) {
     fun getCurrentLocation(onLocationResult: (LatLng) -> Unit) {

@@ -11,7 +11,6 @@ import com.example.synestesia.permission.checkLocationPermissions
 import com.example.synestesia.permission.rememberLocationPermissionLauncher
 import com.example.synestesia.ui.MapContent
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.launch
 
 @Composable
 fun SouvenirMap(
