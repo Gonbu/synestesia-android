@@ -1,4 +1,4 @@
-package com.example.synestesia.ui.theme
+package com.billie.synestesia.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

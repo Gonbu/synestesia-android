@@ -1,4 +1,4 @@
-package com.example.synestesia.ui
+package com.billie.synestesia.ui
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -8,10 +8,16 @@ import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.model.LatLng
+import com.google.maps.android.compose.CameraPositionState
 import com.google.maps.android.compose.GoogleMap
 import com.google.maps.android.compose.MapUiSettings
 import com.google.maps.android.compose.Marker
@@ -30,18 +36,47 @@ fun MapContent(
     val cameraPositionState = rememberCameraPositionState()
     val uiSettings = MapUiSettings(myLocationButtonEnabled = false)
 
+    // État pour le marker ajouté par clic
+    var clickedLatLng by remember { mutableStateOf<LatLng?>(null) }
+    // État pour contrôler l'affichage du ModalBottomSheet
+    var showBottomSheet by remember { mutableStateOf(false) }
+
     Box(modifier = modifier) {
         GoogleMap(
             modifier = Modifier.fillMaxSize(),
             onMapLoaded = onMapLoaded,
             cameraPositionState = cameraPositionState,
-            uiSettings = uiSettings
+            uiSettings = uiSettings,
+            onMapClick = { latLng ->
+                clickedLatLng = latLng
+                showBottomSheet = false
+            }
         ) {
+            // Marker pour la position actuelle
             currentLatLng?.let { latLng ->
                 Marker(
                     state = MarkerState(position = latLng),
-                    title = "Your Location",
-                    snippet = "You are here!"
+                    title = "Votre position",
+                    snippet = "Vous êtes ici!"
+                )
+            }
+
+            // Marker pour la position cliquée
+            clickedLatLng?.let { latLng ->
+                Marker(
+                    state = MarkerState(position = latLng),
+                    title = "Position sélectionnée",
+                    snippet = "Cliquez pour plus d'infos",
+                    onClick = {
+                        coroutineScope.launch {
+                            cameraPositionState.animate(
+                                CameraUpdateFactory.newLatLng(latLng),
+                                1000
+                            )
+                        }
+                        showBottomSheet = true
+                        true // Indique que le clic a été géré
+                    }
                 )
             }
         }
@@ -53,6 +88,20 @@ fun MapContent(
                 cameraPositionState = cameraPositionState
             )
         }
+
+        // Utilisation du ModalBottomSheet modifié
+        ModalBottomSheetComponent(
+            showSheet = showBottomSheet,
+            onDismissRequest = { showBottomSheet = false }
+        ) {
+            SouvenirFormSheet(
+                latLng = clickedLatLng,
+                onSaveClick = { formData ->
+                    println("Souvenir enregistré: ${formData.titre}")
+                    showBottomSheet = false
+                }
+            )
+        }
     }
 }
 
@@ -60,7 +109,7 @@ fun MapContent(
 private fun LocationButton(
     currentLatLng: LatLng,
     coroutineScope: CoroutineScope,
-    cameraPositionState: com.google.maps.android.compose.CameraPositionState
+    cameraPositionState: CameraPositionState
 ) {
     Box(
         modifier = Modifier
@@ -72,7 +121,7 @@ private fun LocationButton(
             onClick = {
                 coroutineScope.launch {
                     cameraPositionState.animate(
-                        com.google.android.gms.maps.CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f),
+                        CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f),
                         1000
                     )
                 }
@@ -84,4 +133,4 @@ private fun LocationButton(
             )
         }
     }
-} 
+}

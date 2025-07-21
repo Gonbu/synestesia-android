@@ -1,4 +1,4 @@
-package com.example.synestesia
+package com.billie.synestesia
 
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
@@ -6,11 +6,12 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import com.example.synestesia.location.LocationManager
-import com.example.synestesia.permission.checkLocationPermissions
-import com.example.synestesia.permission.rememberLocationPermissionLauncher
-import com.example.synestesia.ui.MapContent
 import com.google.android.gms.maps.model.LatLng
+
+import com.billie.synestesia.location.LocationManager
+import com.billie.synestesia.permission.checkLocationPermissions
+import com.billie.synestesia.permission.rememberLocationPermissionLauncher
+import com.billie.synestesia.ui.MapContent
 
 @Composable
 fun SouvenirMap(
@@ -29,7 +30,7 @@ fun SouvenirMap(
             }
         },
         onPermissionDenied = {
-            // Handle permission denial
+            println("Location permissions denied")
         }
     )
 

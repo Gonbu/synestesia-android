@@ -11,7 +11,7 @@ secrets {
 }
 
 android {
-    namespace = "com.example.synestesia"
+    namespace = "com.billie.synestesia"
     compileSdk = 35
 
     defaultConfig {
@@ -71,6 +71,10 @@ dependencies {
     implementation("com.google.maps.android:maps-compose-utils:$mapsComposeVersion")
     // Google Maps Compose widgets library
     implementation("com.google.maps.android:maps-compose-widgets:$mapsComposeVersion")
-
     implementation("com.google.android.gms:play-services-location:21.3.0")
+
+    implementation("com.github.skydoves:colorpicker-compose:1.1.2")
+
+    implementation("io.coil-kt:coil-compose:2.4.0")
+
 }

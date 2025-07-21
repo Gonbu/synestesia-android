@@ -1,4 +1,4 @@
-package com.example.synestesia
+package com.billie.synestesia
 
 import org.junit.Test
 

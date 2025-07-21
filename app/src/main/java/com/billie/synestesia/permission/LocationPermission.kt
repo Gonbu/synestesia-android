@@ -1,4 +1,4 @@
-package com.example.synestesia.permission
+package com.billie.synestesia.permission
 
 import android.Manifest
 import android.content.Context

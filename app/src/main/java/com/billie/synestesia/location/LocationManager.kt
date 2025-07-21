@@ -1,4 +1,4 @@
-package com.example.synestesia.location
+package com.billie.synestesia.location
 
 import android.content.Context
 import android.util.Log
