@@ -33,6 +33,13 @@ import com.billie.synestesia.permission.rememberCameraPermissionLauncher
 import com.github.skydoves.colorpicker.compose.ColorEnvelope
 import com.github.skydoves.colorpicker.compose.HsvColorPicker
 import com.github.skydoves.colorpicker.compose.rememberColorPickerController
+import com.billie.synestesia.FirebaseStorageService
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import androidx.compose.runtime.rememberCoroutineScope
+import com.billie.synestesia.FirestoreService
+import android.util.Log
 
 
 @Composable
@@ -77,6 +84,9 @@ fun SouvenirFormSheet(
             Toast.makeText(context, "Permission caméra refusée", Toast.LENGTH_SHORT).show()
         }
     )
+
+    var isUploading by remember { mutableStateOf(false) }
+    val scope = rememberCoroutineScope()
 
     Column(
         modifier = Modifier
@@ -150,22 +160,65 @@ fun SouvenirFormSheet(
 
         Button(
             onClick = {
-                onSaveClick(
-                    SouvenirItem(
-                        titre = titre,
-                        description = description,
-                        latitude = latLng?.latitude,
-                        longitude = latLng?.longitude,
-                        date = System.currentTimeMillis(),
-                        couleur = selectedColor,
-                        photo = photoPath
-                    )
-                )
+                if (titre.isNotBlank() && latLng != null) {
+                    scope.launch {
+                        isUploading = true
+                        var photoUrl = ""
+                        val souvenirSansPhoto = SouvenirItem(
+                            titre = titre,
+                            description = description,
+                            latitude = latLng.latitude,
+                            longitude = latLng.longitude,
+                            date = System.currentTimeMillis(),
+                            couleur = selectedColor,
+                            photo = ""
+                        )
+                        // 1. Création du document Firestore
+                        val souvenirId = try {
+                            FirestoreService.addSouvenirAndReturnId(souvenirSansPhoto)
+                        } catch (e: Exception) {
+                            Log.e("SouvenirForm", "Erreur création Firestore: ", e)
+                            Toast.makeText(context, "Erreur lors de la création du souvenir", Toast.LENGTH_SHORT).show()
+                            isUploading = false
+                            return@launch
+                        }
+                        // 2. Upload de la photo si besoin
+                        if (photoUri != null && souvenirId != null) {
+                            try {
+                                photoUrl = FirebaseStorageService.uploadSouvenirImage(photoUri!!, souvenirId) ?: ""
+                                if (photoUrl.isEmpty()) {
+                                    Toast.makeText(context, "Erreur lors de l'upload de la photo (utilisateur non connecté ou upload échoué)", Toast.LENGTH_LONG).show()
+                                    Log.e("SouvenirForm", "Upload Storage échoué ou user non connecté")
+                                    isUploading = false
+                                    return@launch
+                                }
+                            } catch (e: Exception) {
+                                Log.e("SouvenirForm", "Erreur upload Storage: ", e)
+                                Toast.makeText(context, "Erreur lors de l'upload de la photo", Toast.LENGTH_LONG).show()
+                                isUploading = false
+                                return@launch
+                            }
+                            // 3. Mise à jour du document Firestore
+                            try {
+                                FirestoreService.updateSouvenirPhoto(souvenirId, photoUrl)
+                            } catch (e: Exception) {
+                                Log.e("SouvenirForm", "Erreur update Firestore: ", e)
+                                Toast.makeText(context, "Erreur lors de la mise à jour du souvenir avec la photo", Toast.LENGTH_LONG).show()
+                                isUploading = false
+                                return@launch
+                            }
+                        }
+                        isUploading = false
+                        onSaveClick(
+                            souvenirSansPhoto.copy(photo = photoUrl)
+                        )
+                    }
+                }
             },
             modifier = Modifier.fillMaxWidth(),
-            enabled = titre.isNotBlank() && latLng != null
+            enabled = titre.isNotBlank() && latLng != null && !isUploading
         ) {
-            Text("Enregistrer ce souvenir")
+            Text(if (isUploading) "Enregistrement..." else "Enregistrer ce souvenir")
         }
     }
 }

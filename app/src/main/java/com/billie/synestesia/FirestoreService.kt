@@ -35,4 +35,24 @@ object FirestoreService {
         }
         return souvenirs
     }
+
+    /**
+     * Ajoute un souvenir et retourne l'ID du document créé
+     */
+    suspend fun addSouvenirAndReturnId(souvenir: SouvenirItem): String? {
+        val docRef = db.collection(COLLECTION_SOUVENIRS)
+            .add(souvenir.copy(photo = "")) // Ajoute sans photo
+            .await()
+        return docRef.id
+    }
+
+    /**
+     * Met à jour l'URL de la photo d'un souvenir
+     */
+    suspend fun updateSouvenirPhoto(souvenirId: String, photoUrl: String) {
+        db.collection(COLLECTION_SOUVENIRS)
+            .document(souvenirId)
+            .update("photo", photoUrl)
+            .await()
+    }
 } 

@@ -79,6 +79,7 @@ dependencies {
 
     implementation("io.coil-kt:coil-compose:2.4.0")
 
+    // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
     implementation("com.google.firebase:firebase-analytics-ktx")
     implementation("com.google.firebase:firebase-firestore-ktx")
@@ -86,4 +87,5 @@ dependencies {
     implementation("com.google.firebase:firebase-auth-ktx")
     implementation("com.google.firebase:firebase-database-ktx")
     implementation("com.google.firebase:firebase-messaging-ktx")
+
 }

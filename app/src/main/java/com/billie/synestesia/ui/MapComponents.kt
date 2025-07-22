@@ -31,6 +31,11 @@ import com.billie.synestesia.models.SouvenirItem
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import androidx.compose.runtime.LaunchedEffect
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Color
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 
 
 @Composable
@@ -82,21 +87,25 @@ fun MapContent(
                 showBottomSheet = false
             }
         ) {
-            // Marker pour la position actuelle
+            // Marker pour la position actuelle (bleu)
             currentLatLng?.let { latLng ->
+                val userIcon = BitmapDescriptorFactory.fromBitmap(createColoredMarkerBitmap("4285F4"))
                 Marker(
                     state = MarkerState(position = latLng),
                     title = "Votre position",
-                    snippet = "Vous êtes ici!"
+                    snippet = "Vous êtes ici!",
+                    icon = userIcon
                 )
             }
 
-            // Marker pour la position cliquée
+            // Marker pour la position cliquée (orange)
             clickedLatLng?.let { latLng ->
+                val clickIcon = BitmapDescriptorFactory.fromBitmap(createColoredMarkerBitmap("FFA500"))
                 Marker(
                     state = MarkerState(position = latLng),
                     title = "Position sélectionnée",
                     snippet = "Cliquez pour plus d'infos",
+                    icon = clickIcon,
                     onClick = {
                         coroutineScope.launch {
                             cameraPositionState.animate(
@@ -110,13 +119,15 @@ fun MapContent(
                 )
             }
 
-            // Ajout : Marqueurs pour chaque souvenir
+            // Marqueurs pour chaque souvenir avec couleur personnalisée
             souvenirs.forEach { souvenir ->
                 souvenir.toLatLng()?.let { pos ->
+                    val markerIcon = BitmapDescriptorFactory.fromBitmap(createColoredMarkerBitmap(souvenir.couleur))
                     Marker(
                         state = MarkerState(position = pos),
                         title = souvenir.titre,
-                        snippet = souvenir.description
+                        snippet = souvenir.description,
+                        icon = markerIcon
                     )
                 }
             }
@@ -182,4 +193,18 @@ private fun LocationButton(
             )
         }
     }
+}
+
+// Fonction utilitaire pour générer un Bitmap coloré pour le marker
+fun createColoredMarkerBitmap(colorHex: String): Bitmap {
+    val size = 80 // taille du marker
+    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    val paint = Paint()
+    // Ajoute le # si absent
+    val hex = if (colorHex.startsWith("#")) colorHex else "#${colorHex}"
+    paint.color = Color.parseColor(hex)
+    paint.isAntiAlias = true
+    canvas.drawCircle(size / 2f, size / 2f, size / 2.5f, paint)
+    return bitmap
 }
