@@ -8,10 +8,10 @@
             <InsightsFilterSettings>
               <option name="connection">
                 <ConnectionSetting>
-                  <option name="appId" value="PLACEHOLDER" />
-                  <option name="mobileSdkAppId" value="" />
-                  <option name="projectId" value="" />
-                  <option name="projectNumber" value="" />
+                  <option name="appId" value="com.billie.synestesia" />
+                  <option name="mobileSdkAppId" value="1:389269434145:android:0e49ae880ed25c8c6ed860" />
+                  <option name="projectId" value="synestesia-a0ea7" />
+                  <option name="projectNumber" value="389269434145" />
                 </ConnectionSetting>
               </option>
               <option name="signal" value="SIGNAL_UNSPECIFIED" />

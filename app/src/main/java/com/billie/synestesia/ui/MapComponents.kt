@@ -25,6 +25,13 @@ import com.google.maps.android.compose.MarkerState
 import com.google.maps.android.compose.rememberCameraPositionState
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import androidx.compose.runtime.rememberCoroutineScope
+import com.billie.synestesia.FirestoreService
+import com.billie.synestesia.models.SouvenirItem
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import androidx.compose.runtime.LaunchedEffect
+
 
 @Composable
 fun MapContent(
@@ -36,10 +43,33 @@ fun MapContent(
     val cameraPositionState = rememberCameraPositionState()
     val uiSettings = MapUiSettings(myLocationButtonEnabled = false)
 
-    // État pour le marker ajouté par clic
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val scope = rememberCoroutineScope()
+
     var clickedLatLng by remember { mutableStateOf<LatLng?>(null) }
-    // État pour contrôler l'affichage du ModalBottomSheet
     var showBottomSheet by remember { mutableStateOf(false) }
+
+    // Ajout : State pour stocker les souvenirs
+    var souvenirs by remember { mutableStateOf<List<SouvenirItem>>(emptyList()) }
+    var isLoading by remember { mutableStateOf(false) }
+
+    // Ajout : Fonction locale pour recharger les souvenirs
+    suspend fun reloadSouvenirs() {
+        isLoading = true
+        try {
+            val loaded = withContext(Dispatchers.IO) { FirestoreService.getAllSouvenirs() }
+            souvenirs = loaded
+        } catch (e: Exception) {
+            android.widget.Toast.makeText(context, "Erreur lors du chargement des souvenirs", android.widget.Toast.LENGTH_SHORT).show()
+        } finally {
+            isLoading = false
+        }
+    }
+
+    // Ajout : Chargement des souvenirs au chargement de la carte
+    LaunchedEffect(Unit) {
+        reloadSouvenirs()
+    }
 
     Box(modifier = modifier) {
         GoogleMap(
@@ -79,6 +109,17 @@ fun MapContent(
                     }
                 )
             }
+
+            // Ajout : Marqueurs pour chaque souvenir
+            souvenirs.forEach { souvenir ->
+                souvenir.toLatLng()?.let { pos ->
+                    Marker(
+                        state = MarkerState(position = pos),
+                        title = souvenir.titre,
+                        snippet = souvenir.description
+                    )
+                }
+            }
         }
 
         if (currentLatLng != null) {
@@ -97,8 +138,16 @@ fun MapContent(
             SouvenirFormSheet(
                 latLng = clickedLatLng,
                 onSaveClick = { formData ->
-                    println("Souvenir enregistré: ${formData.titre}")
-                    showBottomSheet = false
+                    scope.launch {
+                        try {
+                            FirestoreService.addSouvenir(formData)
+                            reloadSouvenirs() // Recharge la liste après ajout
+                            android.widget.Toast.makeText(context, "Souvenir enregistré !", android.widget.Toast.LENGTH_SHORT).show()
+                            showBottomSheet = false
+                        } catch (e: Exception) {
+                            android.widget.Toast.makeText(context, "Erreur lors de l'enregistrement", android.widget.Toast.LENGTH_SHORT).show()
+                        }
+                    }
                 }
             )
         }

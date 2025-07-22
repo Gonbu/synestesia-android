@@ -154,8 +154,9 @@ fun SouvenirFormSheet(
                     SouvenirItem(
                         titre = titre,
                         description = description,
-                        position = latLng,
-                        date = Date(System.currentTimeMillis()),
+                        latitude = latLng?.latitude,
+                        longitude = latLng?.longitude,
+                        date = System.currentTimeMillis(),
                         couleur = selectedColor,
                         photo = photoPath
                     )
