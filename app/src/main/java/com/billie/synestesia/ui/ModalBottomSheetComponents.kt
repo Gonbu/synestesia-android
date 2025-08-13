@@ -22,6 +22,7 @@ import kotlinx.coroutines.launch
 fun ModalBottomSheetComponent(
     showSheet: Boolean,
     onDismissRequest: () -> Unit,
+    backgroundColor: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.Transparent,
     content: @Composable () -> Unit
 ) {
     val sheetState = rememberModalBottomSheetState()
@@ -30,28 +31,17 @@ fun ModalBottomSheetComponent(
     if (showSheet) {
         ModalBottomSheet(
             onDismissRequest = onDismissRequest,
-            sheetState = sheetState
+            sheetState = sheetState,
+            containerColor = backgroundColor,
+            dragHandle = null
         ) {
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp),
+                    .padding(horizontal = 16.dp, vertical = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 content()
-
-                Spacer(modifier = Modifier.height(16.dp))
-                Button(
-                    onClick = {
-                        scope.launch { sheetState.hide() }.invokeOnCompletion {
-                            if (!sheetState.isVisible) {
-                                onDismissRequest()
-                            }
-                        }
-                    }
-                ) {
-                    Text("Fermer")
-                }
             }
         }
     }

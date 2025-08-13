@@ -7,7 +7,9 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import com.billie.synestesia.ui.theme.SynestesiaTheme
+import com.billie.synestesia.ui.MainNavigation
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {
@@ -18,19 +20,16 @@ class MainActivity : ComponentActivity() {
             FirebaseAuth.getInstance().signInAnonymously()
                 .addOnCompleteListener { task ->
                     if (!task.isSuccessful) {
-                        // Gérer l’erreur de connexion si besoin
+                        // Gérer l'erreur de connexion si besoin
                     }
                 }
         }
         enableEdgeToEdge()
         setContent {
-
             SynestesiaTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    SouvenirMap(
-                        paddingValues = innerPadding
-                    )
-                }
+                MainNavigation(
+                    paddingValues = androidx.compose.foundation.layout.PaddingValues(0.dp)
+                )
             }
         }
     }

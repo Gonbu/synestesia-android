@@ -9,12 +9,6 @@ object FirestoreService {
     private val db = FirebaseFirestore.getInstance()
     private const val COLLECTION_SOUVENIRS = "souvenirs"
 
-    suspend fun addSouvenir(souvenir: SouvenirItem) {
-        db.collection(COLLECTION_SOUVENIRS)
-            .add(souvenir)
-            .await()
-    }
-
     suspend fun getAllSouvenirs(): List<SouvenirItem> {
         val snapshot = db.collection(COLLECTION_SOUVENIRS)
             .get()
@@ -22,12 +16,12 @@ object FirestoreService {
         val souvenirs = mutableListOf<SouvenirItem>()
         for (doc in snapshot.documents) {
             try {
-                android.util.Log.d("FirestoreService", "Souvenir Firestore: ${doc.data}")
                 val item = doc.toObject<SouvenirItem>()
                 if (item != null) {
-                    souvenirs.add(item)
-                } else {
-                    android.util.Log.e("FirestoreService", "Mapping null pour doc: ${doc.id}")
+                    val souvenirWithId = item.copy(id = doc.id)
+                    if (souvenirWithId.id != null) {
+                        souvenirs.add(souvenirWithId)
+                    }
                 }
             } catch (e: Exception) {
                 android.util.Log.e("FirestoreService", "Erreur mapping doc ${doc.id}: ${e}")
@@ -41,7 +35,7 @@ object FirestoreService {
      */
     suspend fun addSouvenirAndReturnId(souvenir: SouvenirItem): String? {
         val docRef = db.collection(COLLECTION_SOUVENIRS)
-            .add(souvenir.copy(photo = "")) // Ajoute sans photo
+            .add(souvenir.copy(id = null, photo = "")) // Ajoute sans id ni photo
             .await()
         return docRef.id
     }
@@ -54,5 +48,18 @@ object FirestoreService {
             .document(souvenirId)
             .update("photo", photoUrl)
             .await()
+    }
+
+    /**
+     * Supprime un souvenir à partir de ses coordonnées et de son titre
+     */
+    suspend fun deleteSouvenir(souvenir: SouvenirItem) {
+        val id = souvenir.id
+        if (id != null) {
+            db.collection(COLLECTION_SOUVENIRS)
+                .document(id)
+                .delete()
+                .await()
+        }
     }
 } 

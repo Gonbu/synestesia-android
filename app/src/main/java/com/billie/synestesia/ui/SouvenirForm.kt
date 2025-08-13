@@ -160,7 +160,7 @@ fun SouvenirFormSheet(
 
         Button(
             onClick = {
-                if (titre.isNotBlank() && latLng != null) {
+                if (titre.isNotBlank() && latLng != null && !isUploading) {
                     scope.launch {
                         isUploading = true
                         var photoUrl = ""
@@ -209,9 +209,12 @@ fun SouvenirFormSheet(
                             }
                         }
                         isUploading = false
-                        onSaveClick(
-                            souvenirSansPhoto.copy(photo = photoUrl)
+                        // Créer le souvenir final avec l'ID et la photo
+                        val souvenirFinal = souvenirSansPhoto.copy(
+                            id = souvenirId,
+                            photo = photoUrl
                         )
+                        onSaveClick(souvenirFinal)
                     }
                 }
             },
