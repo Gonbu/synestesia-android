@@ -11,6 +11,7 @@ import com.billie.synestesia.location.LocationManager
 import com.billie.synestesia.permission.checkLocationPermissions
 import com.billie.synestesia.permission.rememberLocationPermissionLauncher
 import com.billie.synestesia.ui.MapContent
+import com.billie.synestesia.utils.PermissionConstants
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 
@@ -40,10 +41,7 @@ fun MainNavigation(
     // Initial check and request if needed
     LaunchedEffect(Unit) {
         if (!checkLocationPermissions(context)) {
-            requestPermissionLauncher.launch(arrayOf(
-                android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ))
+            requestPermissionLauncher.launch(PermissionConstants.LOCATION_PERMISSIONS)
         } else {
             locationManager.getCurrentLocation { latLng ->
                 currentLatLng = latLng

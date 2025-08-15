@@ -1,7 +1,7 @@
 package com.billie.synestesia.ui
 
 import android.net.Uri
-import android.widget.Toast
+// import android.widget.Toast - Remplacé par LogUtils
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -41,41 +41,16 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.runtime.rememberCoroutineScope
 import com.billie.synestesia.FirestoreService
-import android.util.Log
+// import android.util.Log - Remplacé par LogUtils
+
+import com.billie.synestesia.ui.theme.AppColors
+import com.billie.synestesia.ui.theme.ColorUtils
+import com.billie.synestesia.utils.LogUtils
+import com.billie.synestesia.utils.PermissionConstants
+import com.billie.synestesia.utils.MessageConstants
 
 // Palette de 30 couleurs prédéfinies
-private val colorPalette = listOf(
-    "#FF0000", // Rouge
-    "#FF4500", // Orange-rouge
-    "#FF8C00", // Orange foncé
-    "#FFA500", // Orange
-    "#FFD700", // Or
-    "#FFFF00", // Jaune
-    "#9ACD32", // Jaune-vert
-    "#32CD32", // Vert lime
-    "#00FF00", // Vert
-    "#00FA9A", // Vert printemps
-    "#00CED1", // Bleu-vert foncé
-    "#00BFFF", // Bleu ciel
-    "#0000FF", // Bleu
-    "#4169E1", // Bleu royal
-    "#8A2BE2", // Bleu-violet
-    "#9370DB", // Violet moyen
-    "#9932CC", // Violet foncé
-    "#FF00FF", // Magenta
-    "#FF1493", // Rose profond
-    "#FF69B4", // Rose chaud
-    "#FFB6C1", // Rose clair
-    "#FFC0CB", // Rose pâle
-    "#F0E68C", // Khaki
-    "#D2B48C", // Brun clair
-    "#A0522D", // Brun sienna
-    "#8B4513", // Brun selle
-    "#696969", // Gris foncé
-    "#C0C0C0", // Argent
-    "#FFFFFF", // Blanc
-    "#000000"  // Noir
-)
+private val colorPalette = AppColors.colorPalette
 
 @Composable
 fun ColorPicker(
@@ -94,7 +69,7 @@ fun ColorPicker(
             horizontalArrangement = Arrangement.spacedBy(8.dp),
             contentPadding = PaddingValues(horizontal = 4.dp)
         ) {
-            items(colorPalette) { color ->
+            items(AppColors.colorPalette) { color ->
                 ColorCircle(
                     color = color,
                     isSelected = selectedColor == color,
@@ -111,11 +86,7 @@ private fun ColorCircle(
     isSelected: Boolean,
     onClick: () -> Unit
 ) {
-    val circleColor = try {
-        Color(android.graphics.Color.parseColor(color))
-    } catch (e: Exception) {
-        Color.Gray
-    }
+            val circleColor = ColorUtils.hexToComposeColor(color)
     
     Box(
         modifier = Modifier
@@ -149,7 +120,7 @@ fun SouvenirFormSheet(
 ) {
     var titre by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
-    var selectedColor by remember { mutableStateOf(colorPalette[0]) } // Couleur par défaut
+    var selectedColor by remember { mutableStateOf(AppColors.colorPalette[0]) } // Couleur par défaut
 
     var photoPath by remember { mutableStateOf("") }
     var photoUri by remember { mutableStateOf<Uri?>(null) }
@@ -180,7 +151,7 @@ fun SouvenirFormSheet(
             takePictureLauncher.launch(uri)
         },
         onPermissionDenied = {
-            Toast.makeText(context, "Permission caméra refusée", Toast.LENGTH_SHORT).show()
+            LogUtils.showToast(context, MessageConstants.CAMERA_PERMISSION_DENIED)
         }
     )
 
@@ -239,7 +210,7 @@ fun SouvenirFormSheet(
         Button(
             onClick = {
                 if (!checkCameraPermission(context)) {
-                    cameraPermissionLauncher.launch(android.Manifest.permission.CAMERA)
+                    cameraPermissionLauncher.launch(PermissionConstants.CAMERA)
                 } else {
                     val (file, uri) = createImageFile(context)
                     tempPhotoUri.value = uri
@@ -273,8 +244,8 @@ fun SouvenirFormSheet(
                         val souvenirId = try {
                             FirestoreService.addSouvenirAndReturnId(souvenirSansPhoto)
                         } catch (e: Exception) {
-                            Log.e("SouvenirForm", "Erreur création Firestore: ", e)
-                            Toast.makeText(context, "Erreur lors de la création du souvenir", Toast.LENGTH_SHORT).show()
+                            LogUtils.e("Erreur création Firestore: ", e)
+                            LogUtils.showErrorToast(context, MessageConstants.ERROR_CREATING_SOUVENIR)
                             isUploading = false
                             return@launch
                         }
@@ -283,14 +254,14 @@ fun SouvenirFormSheet(
                             try {
                                 photoUrl = FirebaseStorageService.uploadSouvenirImage(photoUri!!, souvenirId) ?: ""
                                 if (photoUrl.isEmpty()) {
-                                    Toast.makeText(context, "Erreur lors de l'upload de la photo (utilisateur non connecté ou upload échoué)", Toast.LENGTH_LONG).show()
-                                    Log.e("SouvenirForm", "Upload Storage échoué ou user non connecté")
+                                    LogUtils.showErrorToast(context, MessageConstants.ERROR_PHOTO_UPLOAD_USER)
+                                    LogUtils.e("Upload Storage échoué ou user non connecté")
                                     isUploading = false
                                     return@launch
                                 }
                             } catch (e: Exception) {
-                                Log.e("SouvenirForm", "Erreur upload Storage: ", e)
-                                Toast.makeText(context, "Erreur lors de l'upload de la photo", Toast.LENGTH_LONG).show()
+                                LogUtils.e("Erreur upload Storage: ", e)
+                                LogUtils.showErrorToast(context, MessageConstants.ERROR_PHOTO_UPLOAD)
                                 isUploading = false
                                 return@launch
                             }
@@ -298,8 +269,8 @@ fun SouvenirFormSheet(
                             try {
                                 FirestoreService.updateSouvenirPhoto(souvenirId, photoUrl)
                             } catch (e: Exception) {
-                                Log.e("SouvenirForm", "Erreur update Firestore: ", e)
-                                Toast.makeText(context, "Erreur lors de la mise à jour du souvenir avec la photo", Toast.LENGTH_LONG).show()
+                                LogUtils.e("Erreur update Firestore: ", e)
+                                LogUtils.showErrorToast(context, MessageConstants.ERROR_UPDATE_SOUVENIR)
                                 isUploading = false
                                 return@launch
                             }

@@ -4,6 +4,8 @@ import com.billie.synestesia.models.SouvenirItem
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import kotlinx.coroutines.tasks.await
+import com.billie.synestesia.utils.LogUtils
+import com.billie.synestesia.utils.MessageConstants
 
 object FirestoreService {
     private val db = FirebaseFirestore.getInstance()
@@ -24,7 +26,7 @@ object FirestoreService {
                     }
                 }
             } catch (e: Exception) {
-                android.util.Log.e("FirestoreService", "Erreur mapping doc ${doc.id}: ${e}")
+                LogUtils.e("${MessageConstants.FIRESTORE_MAPPING_ERROR}${doc.id}: ", e)
             }
         }
         return souvenirs

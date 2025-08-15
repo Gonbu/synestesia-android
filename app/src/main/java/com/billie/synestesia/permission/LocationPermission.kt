@@ -3,11 +3,12 @@ package com.billie.synestesia.permission
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.core.content.ContextCompat
+import com.billie.synestesia.utils.LogUtils
+import com.billie.synestesia.utils.MessageConstants
 
 @Composable
 fun rememberLocationPermissionLauncher(
@@ -20,7 +21,7 @@ fun rememberLocationPermissionLauncher(
             permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
             onPermissionGranted()
         } else {
-            Log.e("Location", "Location permissions denied")
+            LogUtils.e(MessageConstants.LOCATION_PERMISSION_DENIED)
             onPermissionDenied()
         }
     }

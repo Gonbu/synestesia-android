@@ -36,6 +36,14 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.Color
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
+import com.billie.synestesia.ui.ClusteringManager
+import com.billie.synestesia.ui.Cluster
+import com.billie.synestesia.ui.ClusterMarkerUtils
+import com.billie.synestesia.ui.theme.AppColors
+import com.billie.synestesia.ui.theme.ColorUtils
+import com.billie.synestesia.utils.LogUtils
+import com.billie.synestesia.utils.MessageConstants
+
 
 
 @Composable
@@ -64,14 +72,27 @@ fun MapContent(
 
     var addOnLatLng by remember { mutableStateOf<LatLng?>(null) }
     var showAddOnExistingPoint by remember { mutableStateOf(false) }
+    
+    // Variables pour le clustering
+    var clusters by remember { mutableStateOf<List<Cluster>>(emptyList()) }
+    var currentZoomLevel by remember { mutableStateOf(10f) }
+    var explodedClusters by remember { mutableStateOf<Set<String>>(emptySet()) }
+    var subClusters by remember { mutableStateOf<Map<String, List<Cluster>>>(emptyMap()) }
+    var lastReclusterTime by remember { mutableStateOf(System.currentTimeMillis()) }
+    val clusteringManager = remember { ClusteringManager() }
 
     suspend fun reloadSouvenirs() {
         isLoading = true
         try {
             val loaded = withContext(Dispatchers.IO) { FirestoreService.getAllSouvenirs() }
             souvenirs = loaded
+            // Créer les clusters avec les nouveaux souvenirs
+            clusters = clusteringManager.createClusters(loaded)
+            // Réinitialiser les clusters éclatés et sous-clusters
+            explodedClusters = emptySet()
+            subClusters = emptyMap()
         } catch (e: Exception) {
-            android.widget.Toast.makeText(context, "Erreur lors du chargement des souvenirs", android.widget.Toast.LENGTH_SHORT).show()
+            LogUtils.showToast(context, MessageConstants.ERROR_LOADING_SOUVENIRS)
         } finally {
             isLoading = false
         }
@@ -79,6 +100,59 @@ fun MapContent(
 
     LaunchedEffect(Unit) {
         reloadSouvenirs()
+    }
+    
+    // Écouter les changements de zoom pour ajuster le clustering
+    LaunchedEffect(cameraPositionState.position.zoom) {
+        val newZoomLevel = cameraPositionState.position.zoom
+        val oldZoomLevel = currentZoomLevel
+        currentZoomLevel = newZoomLevel
+        
+        // Logique de re-clustering plus intelligente
+        if (explodedClusters.isNotEmpty()) {
+            val currentTime = System.currentTimeMillis()
+            val timeSinceLastRecluster = currentTime - lastReclusterTime
+            
+            val shouldRecluster = when {
+                // Re-clustering forcé au dézoom significatif (2 niveaux)
+                newZoomLevel < oldZoomLevel - 2f -> true
+                // Re-clustering au zoom très faible (vue d'ensemble)
+                newZoomLevel < 8f -> true
+                // Re-clustering automatique après 10 secondes d'inactivité
+                timeSinceLastRecluster > 10000 -> true
+                else -> false
+            }
+            
+            if (shouldRecluster) {
+                explodedClusters = emptySet()
+                lastReclusterTime = currentTime
+                // Forcer le recalcul des clusters pour le re-clustering
+                if (souvenirs.isNotEmpty()) {
+                    clusters = clusteringManager.createClusters(souvenirs)
+                }
+            }
+        }
+    }
+    
+    // Écouter les changements de position de la caméra pour le re-clustering
+    LaunchedEffect(cameraPositionState.position.target) {
+        val newCameraPosition = cameraPositionState.position.target
+        
+        // Si on a des clusters éclatés et qu'on navigue loin, re-clusterer
+        if (explodedClusters.isNotEmpty()) {
+            val currentTime = System.currentTimeMillis()
+            val timeSinceLastRecluster = currentTime - lastReclusterTime
+            
+            // Re-clustering si on navigue et qu'il y a eu une pause
+            if (timeSinceLastRecluster > 8000) { // 8 secondes
+                explodedClusters = emptySet()
+                lastReclusterTime = currentTime
+                // Forcer le recalcul des clusters
+                if (souvenirs.isNotEmpty()) {
+                    clusters = clusteringManager.createClusters(souvenirs)
+                }
+            }
+        }
     }
 
     Box(modifier = modifier) {
@@ -92,8 +166,11 @@ fun MapContent(
                 showBottomSheet = false
             }
         ) {
+            // Marqueur de position utilisateur avec taille adaptée au zoom
             currentLatLng?.let { latLng ->
-                val userIcon = BitmapDescriptorFactory.fromBitmap(createColoredMarkerBitmap("4285F4"))
+                val userIcon = BitmapDescriptorFactory.fromBitmap(
+                    ClusterMarkerUtils.createUserLocationMarker(currentZoomLevel)
+                )
                 Marker(
                     state = MarkerState(position = latLng),
                     title = "Votre position",
@@ -103,7 +180,12 @@ fun MapContent(
             }
 
             clickedLatLng?.let { latLng ->
-                val clickIcon = BitmapDescriptorFactory.fromBitmap(createColoredMarkerBitmap("BA68C8"))
+                val clickIcon = BitmapDescriptorFactory.fromBitmap(
+                    ClusterMarkerUtils.createIndividualMarker(
+                        SouvenirItem(couleur = AppColors.CLICKED_POINT),
+                        currentZoomLevel
+                    )
+                )
                 Marker(
                     state = MarkerState(position = latLng),
                     title = "Position sélectionnée",
@@ -122,43 +204,124 @@ fun MapContent(
                 )
             }
 
-            // Grouper les souvenirs par position
-            val souvenirsByPosition = souvenirs.groupBy { it.toLatLng() }
-            
-            souvenirsByPosition.forEach { (pos, souvenirsAtPosition) ->
-                val markerIcon = BitmapDescriptorFactory.fromBitmap(createColoredMarkerBitmap(souvenirsAtPosition.first().couleur))
-                val title = if (souvenirsAtPosition.size == 1) {
-                    souvenirsAtPosition.first().titre
+            // Affichage des clusters et points individuels selon le niveau de zoom
+            clusters.forEach { cluster ->
+                if (cluster.items.size == 1) {
+                    // Point individuel - toujours affiché
+                    val souvenir = cluster.items.first()
+                    val markerIcon = BitmapDescriptorFactory.fromBitmap(
+                        ClusterMarkerUtils.createIndividualMarker(souvenir, currentZoomLevel)
+                    )
+                    
+                    Marker(
+                        state = MarkerState(position = cluster.center),
+                        title = souvenir.titre,
+                        snippet = souvenir.description,
+                        icon = markerIcon,
+                        onClick = {
+                            coroutineScope.launch {
+                                cameraPositionState.animate(
+                                    CameraUpdateFactory.newLatLng(cluster.center),
+                                    1000
+                                )
+                            }
+                            selectedSouvenirs = cluster.items
+                            currentSouvenirIndex = 0
+                            showBottomSheet = true
+                            true
+                        }
+                    )
                 } else {
-                    "${souvenirsAtPosition.size} souvenirs"
-                }
-                val snippet = if (souvenirsAtPosition.size == 1) {
-                    souvenirsAtPosition.first().description
-                } else {
-                    "Cliquez pour voir tous les souvenirs"
-                }
-                
-                Marker(
-                    state = MarkerState(position = pos!!),
-                    title = title,
-                    snippet = snippet,
-                    icon = markerIcon,
-                    onClick = {
-                        coroutineScope.launch {
-                            cameraPositionState.animate(
-                                CameraUpdateFactory.newLatLng(pos),
-                                1000
+                    // Cluster avec plusieurs éléments
+                    val clusterId = cluster.items.first().id
+                    if (clusterId == null) return@forEach // Ignorer les clusters sans ID
+                    
+                    if (cluster.isMultiSouvenirPoint) {
+                        // Point multi-souvenirs - comportement spécial (pas d'éclatement)
+                        val clusterIcon = BitmapDescriptorFactory.fromBitmap(
+                            ClusterMarkerUtils.createClusterMarker(cluster, currentZoomLevel)
+                        )
+                        
+                        Marker(
+                            state = MarkerState(position = cluster.center),
+                            title = "${cluster.items.size} souvenirs",
+                            snippet = "Cliquez pour voir tous les souvenirs à cet endroit",
+                            icon = clusterIcon,
+                            onClick = {
+                                // Pour les points multi-souvenirs, pas d'éclatement, juste afficher les détails
+                                selectedSouvenirs = cluster.items
+                                currentSouvenirIndex = 0
+                                showBottomSheet = true
+                                true
+                            }
+                        )
+                    } else {
+                        // Cluster géographique - comportement d'éclatement normal
+                        val isExploded = explodedClusters.contains(clusterId)
+                        
+                        if (isExploded) {
+                            // Afficher directement tous les points individuels du cluster
+                            cluster.items.forEach { souvenir ->
+                                val markerIcon = BitmapDescriptorFactory.fromBitmap(
+                                    ClusterMarkerUtils.createIndividualMarker(souvenir, currentZoomLevel)
+                                )
+                                
+                                Marker(
+                                    state = MarkerState(position = souvenir.toLatLng()!!),
+                                    title = souvenir.titre,
+                                    snippet = souvenir.description,
+                                    icon = markerIcon,
+                                    onClick = {
+                                        coroutineScope.launch {
+                                            cameraPositionState.animate(
+                                                CameraUpdateFactory.newLatLng(souvenir.toLatLng()!!),
+                                                1000
+                                            )
+                                        }
+                                        selectedSouvenirs = listOf(souvenir)
+                                        currentSouvenirIndex = 0
+                                        showBottomSheet = true
+                                        true
+                                    }
+                                )
+                            }
+                        } else {
+                            // Cluster principal non éclaté
+                            val clusterIcon = BitmapDescriptorFactory.fromBitmap(
+                                ClusterMarkerUtils.createClusterMarker(cluster, currentZoomLevel)
+                            )
+                            
+                            Marker(
+                                state = MarkerState(position = cluster.center),
+                                title = "${cluster.items.size} souvenirs",
+                                snippet = "Cliquez pour zoomer et voir les détails",
+                                icon = clusterIcon,
+                                onClick = {
+                                    // Marquer ce cluster comme éclaté
+                                    explodedClusters = explodedClusters + cluster.items.mapNotNull { it.id }.toSet()
+                                    
+                                    // Zoomer pour révéler les points individuels
+                                    coroutineScope.launch {
+                                        val bounds = cluster.bounds
+                                        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(
+                                            com.google.android.gms.maps.model.LatLngBounds(
+                                                bounds.first, bounds.second
+                                            ),
+                                            150 // Padding en pixels pour bien voir tous les points
+                                        )
+                                        cameraPositionState.animate(cameraUpdate, 1000)
+                                    }
+                                    true
+                                }
                             )
                         }
-                        selectedSouvenirs = souvenirsAtPosition
-                        currentSouvenirIndex = 0
-                        showBottomSheet = true
-                        true
                     }
-                )
+                }
             }
         }
 
+
+        
         if (currentLatLng != null) {
             LocationButton(
                 currentLatLng = currentLatLng,
@@ -180,11 +343,7 @@ fun MapContent(
             backgroundColor = when {
                 selectedSouvenirs.isNotEmpty() -> {
                     val currentSouvenir = selectedSouvenirs[currentSouvenirIndex]
-                    try { 
-                        androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor("#${currentSouvenir.couleur.removePrefix("#")}")) 
-                    } catch (e: Exception) { 
-                        androidx.compose.ui.graphics.Color.LightGray 
-                    }
+                    ColorUtils.hexToComposeColor(currentSouvenir.couleur)
                 }
                 showAddOnExistingPoint -> {
                     // Utiliser la couleur du souvenir existant sur ce point
@@ -193,18 +352,14 @@ fun MapContent(
                         souvenir.toLatLng()?.longitude == addOnLatLng?.longitude
                     }
                     if (existingSouvenirs.isNotEmpty()) {
-                        try { 
-                            androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor("#${existingSouvenirs.first().couleur.removePrefix("#")}")) 
-                        } catch (e: Exception) { 
-                            androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor("#E1BEE7"))
-                        }
+                        ColorUtils.hexToComposeColor(existingSouvenirs.first().couleur)
                     } else {
-                        androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor("#E1BEE7"))
+                        ColorUtils.hexToComposeColor(AppColors.LIGHT_PURPLE)
                     }
                 }
                 else -> {
                     // Couleur rose/violet pâle pour le formulaire d'ajout sur nouveau point
-                    androidx.compose.ui.graphics.Color(android.graphics.Color.parseColor("#F3E5F5"))
+                    ColorUtils.hexToComposeColor(AppColors.LIGHT_PINK)
                 }
             }
         ) {
@@ -224,7 +379,7 @@ fun MapContent(
                             try {
                                 FirestoreService.deleteSouvenir(currentSouvenir)
                                 reloadSouvenirs()
-                                android.widget.Toast.makeText(context, "Souvenir supprimé !", android.widget.Toast.LENGTH_SHORT).show()
+                                LogUtils.showToast(context, MessageConstants.SOUVENIR_DELETED)
                                 
                                 // Mettre à jour la liste des souvenirs sélectionnés
                                 val updatedSouvenirs = selectedSouvenirs.filter { it.id != currentSouvenir.id }
@@ -239,7 +394,7 @@ fun MapContent(
                                     }
                                 }
                             } catch (e: Exception) {
-                                android.widget.Toast.makeText(context, "Erreur lors de la suppression", android.widget.Toast.LENGTH_SHORT).show()
+                                LogUtils.showErrorToast(context, MessageConstants.ERROR_DELETING_SOUVENIR)
                             }
                         }
                     },
@@ -276,9 +431,9 @@ fun MapContent(
                                     }
                                 }
                                 
-                                android.widget.Toast.makeText(context, "Souvenir enregistré !", android.widget.Toast.LENGTH_SHORT).show()
+                                LogUtils.showToast(context, MessageConstants.SOUVENIR_SAVED)
                             } catch (e: Exception) {
-                                android.widget.Toast.makeText(context, "Erreur lors de l'enregistrement", android.widget.Toast.LENGTH_SHORT).show()
+                                LogUtils.showErrorToast(context, MessageConstants.ERROR_SAVING_SOUVENIR)
                             }
                             showAddOnExistingPoint = false
                             addOnLatLng = null
@@ -297,10 +452,10 @@ fun MapContent(
                             try {
                                 // Le souvenir a déjà été créé dans le formulaire, on recharge juste la liste
                                 reloadSouvenirs() // Recharge la liste après ajout
-                                android.widget.Toast.makeText(context, "Souvenir enregistré !", android.widget.Toast.LENGTH_SHORT).show()
+                                LogUtils.showToast(context, MessageConstants.SOUVENIR_SAVED)
                                 showBottomSheet = false
                             } catch (e: Exception) {
-                                android.widget.Toast.makeText(context, "Erreur lors de l'enregistrement", android.widget.Toast.LENGTH_SHORT).show()
+                                LogUtils.showErrorToast(context, MessageConstants.ERROR_SAVING_SOUVENIR)
                             }
                         }
                     }
@@ -325,6 +480,7 @@ private fun LocationButton(
         IconButton(
             onClick = {
                 coroutineScope.launch {
+                    // Zoomer sur la position utilisateur avec un niveau de zoom approprié
                     cameraPositionState.animate(
                         CameraUpdateFactory.newLatLngZoom(currentLatLng, 15f),
                         1000
@@ -334,23 +490,12 @@ private fun LocationButton(
         ) {
             Icon(
                 imageVector = Icons.Default.Home,
-                contentDescription = "Go to Current Location"
+                contentDescription = "Aller à ma position"
             )
         }
     }
 }
 
-fun createColoredMarkerBitmap(colorHex: String): Bitmap {
-    val size = 80 // taille du marker
-    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
-    val canvas = Canvas(bitmap)
-    val paint = Paint()
-    // Ajoute le # si absent
-    val hex = if (colorHex.startsWith("#")) colorHex else "#${colorHex}"
-    paint.color = Color.parseColor(hex)
-    paint.isAntiAlias = true
-    canvas.drawCircle(size / 2f, size / 2f, size / 2.5f, paint)
-    return bitmap
-}
+
 
 

@@ -1,7 +1,6 @@
 package com.billie.synestesia.ui
 
 import android.net.Uri
-import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
@@ -32,6 +31,8 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.billie.synestesia.models.SouvenirItem
+import com.billie.synestesia.utils.LogUtils
+import com.billie.synestesia.utils.MessageConstants
 import java.text.SimpleDateFormat
 import java.util.*
 
