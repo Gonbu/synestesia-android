@@ -1,7 +1,7 @@
 package com.billie.synestesia.ui.theme
 
-import androidx.compose.ui.graphics.Color
 import android.graphics.Color as AndroidColor
+import androidx.compose.ui.graphics.Color
 
 object ColorUtils {
     /**
@@ -14,7 +14,7 @@ object ColorUtils {
             Color.Gray
         }
     }
-    
+
     /**
      * Convertit une couleur hexadécimale en Color Android
      */
@@ -25,7 +25,7 @@ object ColorUtils {
             AndroidColor.GRAY
         }
     }
-    
+
     /**
      * Nettoie une couleur hexadécimale en ajoutant # si nécessaire
      */

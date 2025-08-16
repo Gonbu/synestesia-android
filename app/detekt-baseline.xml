@@ -1,0 +1,120 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues></ManuallySuppressedIssues>
+  <CurrentIssues>
+    <ID>CyclomaticComplexMethod:AudioRecorderComponent.kt$@Composable fun AudioRecorderComponent( onAudioRecorded: (String) -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>CyclomaticComplexMethod:MapComponents.kt$@Composable fun MapContent( currentLatLng: LatLng?, onMapLoaded: () -&gt; Unit, coroutineScope: CoroutineScope, modifier: Modifier = Modifier )</ID>
+    <ID>CyclomaticComplexMethod:SouvenirDetailCard.kt$@Composable fun SouvenirDetailCard( souvenirs: List&lt;SouvenirItem&gt;, currentIndex: Int, onAddSouvenir: () -&gt; Unit, onDeleteSouvenir: () -&gt; Unit, onClose: () -&gt; Unit, onNavigateToSouvenir: (Int) -&gt; Unit, modifier: Modifier = Modifier, showAddButton: Boolean = true, showDeleteButton: Boolean = true )</ID>
+    <ID>CyclomaticComplexMethod:SouvenirForm.kt$@Composable fun SouvenirFormSheet( latLng: LatLng?, onSaveClick: (SouvenirItem) -&gt; Unit )</ID>
+    <ID>ForbiddenComment:ProfileScreen.kt$/* TODO: Navigation vers aide */</ID>
+    <ID>ForbiddenComment:ProfileScreen.kt$/* TODO: Navigation vers gestion des données */</ID>
+    <ID>ForbiddenComment:ProfileScreen.kt$/* TODO: Navigation vers sécurité */</ID>
+    <ID>ForbiddenComment:ProfileScreen.kt$/* TODO: Supprimer le compte */</ID>
+    <ID>FunctionNaming:AudioPlayerComponent.kt$@Composable fun AudioPlayerComponent( audioUrl: String, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:AudioRecorderComponent.kt$@Composable fun AudioRecorderComponent( onAudioRecorded: (String) -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:BottomNavigation.kt$@Composable fun BottomNavigation( currentRoute: BottomNavItem, onNavigate: (BottomNavItem) -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:MainNavigation.kt$@Composable fun MainNavigation( paddingValues: PaddingValues )</ID>
+    <ID>FunctionNaming:MapComponents.kt$@Composable fun MapContent( currentLatLng: LatLng?, onMapLoaded: () -&gt; Unit, coroutineScope: CoroutineScope, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:MapComponents.kt$@Composable private fun LocationButton( currentLatLng: LatLng, coroutineScope: CoroutineScope, cameraPositionState: CameraPositionState )</ID>
+    <ID>FunctionNaming:ModalBottomSheetComponents.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun ModalBottomSheetComponent( showSheet: Boolean, onDismissRequest: () -&gt; Unit, backgroundColor: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.Transparent, content: @Composable () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ProfileScreen.kt$@Composable fun ProfileScreen( onNavigateBack: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ProfileScreen.kt$@Composable private fun AccountActionItem( icon: androidx.compose.ui.graphics.vector.ImageVector, title: String, subtitle: String, onClick: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:ProfileScreen.kt$@Composable private fun StatisticItem( icon: androidx.compose.ui.graphics.vector.ImageVector, value: String, label: String )</ID>
+    <ID>FunctionNaming:SettingsScreen.kt$@Composable fun SettingsScreen( onNavigateBack: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:SouvenirDetailCard.kt$@Composable fun PhotoFullScreenDialog( photoUrl: String, onDismiss: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:SouvenirDetailCard.kt$@Composable fun SouvenirDetailCard( souvenirs: List&lt;SouvenirItem&gt;, currentIndex: Int, onAddSouvenir: () -&gt; Unit, onDeleteSouvenir: () -&gt; Unit, onClose: () -&gt; Unit, onNavigateToSouvenir: (Int) -&gt; Unit, modifier: Modifier = Modifier, showAddButton: Boolean = true, showDeleteButton: Boolean = true )</ID>
+    <ID>FunctionNaming:SouvenirForm.kt$@Composable fun ColorPicker( selectedColor: String, onColorSelected: (String) -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>FunctionNaming:SouvenirForm.kt$@Composable fun SouvenirFormSheet( latLng: LatLng?, onSaveClick: (SouvenirItem) -&gt; Unit )</ID>
+    <ID>FunctionNaming:SouvenirForm.kt$@Composable private fun ColorCircle( color: String, isSelected: Boolean, onClick: () -&gt; Unit )</ID>
+    <ID>FunctionNaming:SouvenirMap.kt$@Composable fun SouvenirMap( paddingValues: PaddingValues )</ID>
+    <ID>FunctionNaming:Theme.kt$@Composable fun SynestesiaTheme( darkTheme: Boolean = isSystemInDarkTheme(), // Dynamic color is available on Android 12+ dynamicColor: Boolean = true, content: @Composable () -&gt; Unit )</ID>
+    <ID>ImplicitDefaultLocale:AudioPlayerComponent.kt$String.format("%02d:%02d", minutes, remainingSeconds)</ID>
+    <ID>ImplicitDefaultLocale:AudioRecorderComponent.kt$String.format("%02d:%02d", minutes, seconds)</ID>
+    <ID>LongMethod:AudioPlayerComponent.kt$@Composable fun AudioPlayerComponent( audioUrl: String, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:AudioRecorderComponent.kt$@Composable fun AudioRecorderComponent( onAudioRecorded: (String) -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:MainNavigation.kt$@Composable fun MainNavigation( paddingValues: PaddingValues )</ID>
+    <ID>LongMethod:MapComponents.kt$@Composable fun MapContent( currentLatLng: LatLng?, onMapLoaded: () -&gt; Unit, coroutineScope: CoroutineScope, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:ProfileScreen.kt$@Composable fun ProfileScreen( onNavigateBack: () -&gt; Unit )</ID>
+    <ID>LongMethod:SettingsScreen.kt$@Composable fun SettingsScreen( onNavigateBack: () -&gt; Unit )</ID>
+    <ID>LongMethod:SouvenirDetailCard.kt$@Composable fun SouvenirDetailCard( souvenirs: List&lt;SouvenirItem&gt;, currentIndex: Int, onAddSouvenir: () -&gt; Unit, onDeleteSouvenir: () -&gt; Unit, onClose: () -&gt; Unit, onNavigateToSouvenir: (Int) -&gt; Unit, modifier: Modifier = Modifier, showAddButton: Boolean = true, showDeleteButton: Boolean = true )</ID>
+    <ID>LongMethod:SouvenirForm.kt$@Composable fun SouvenirFormSheet( latLng: LatLng?, onSaveClick: (SouvenirItem) -&gt; Unit )</ID>
+    <ID>LongParameterList:SouvenirDetailCard.kt$( souvenirs: List&lt;SouvenirItem&gt;, currentIndex: Int, onAddSouvenir: () -&gt; Unit, onDeleteSouvenir: () -&gt; Unit, onClose: () -&gt; Unit, onNavigateToSouvenir: (Int) -&gt; Unit, modifier: Modifier = Modifier, showAddButton: Boolean = true, showDeleteButton: Boolean = true )</ID>
+    <ID>MagicNumber:AudioPlaybackService.kt$AudioPlaybackService$100</ID>
+    <ID>MagicNumber:AudioPlayerComponent.kt$1000</ID>
+    <ID>MagicNumber:AudioPlayerComponent.kt$10000L</ID>
+    <ID>MagicNumber:AudioPlayerComponent.kt$60</ID>
+    <ID>MagicNumber:AudioRecorderComponent.kt$1000</ID>
+    <ID>MagicNumber:AudioRecorderComponent.kt$60</ID>
+    <ID>MagicNumber:AudioRecordingService.kt$AudioRecordingService$128000</ID>
+    <ID>MagicNumber:AudioRecordingService.kt$AudioRecordingService$44100</ID>
+    <ID>MagicNumber:Color.kt$0xFF625b71</ID>
+    <ID>MagicNumber:Color.kt$0xFF6650a4</ID>
+    <ID>MagicNumber:Color.kt$0xFF7D5260</ID>
+    <ID>MagicNumber:Color.kt$0xFFCCC2DC</ID>
+    <ID>MagicNumber:Color.kt$0xFFD0BCFF</ID>
+    <ID>MagicNumber:Color.kt$0xFFEFB8C8</ID>
+    <ID>MagicNumber:LocationManager.kt$LocationManager$151.0</ID>
+    <ID>MagicNumber:LocationManager.kt$LocationManager$34.0</ID>
+    <ID>MagicNumber:MapComponents.kt$1000</ID>
+    <ID>MagicNumber:MapComponents.kt$12f</ID>
+    <ID>MagicNumber:MapComponents.kt$15f</ID>
+    <ID>MagicNumber:MapComponents.kt$20f</ID>
+    <ID>MagicNumber:MapComponents.kt$3f</ID>
+    <ID>MagicNumber:MapComponents.kt$60</ID>
+    <ID>MagicNumber:MapComponents.kt$70</ID>
+    <ID>MagicNumber:MapComponents.kt$80</ID>
+    <ID>MagicNumber:MapComponents.kt$8f</ID>
+    <ID>MagicNumber:MapComponents.kt$90</ID>
+    <ID>MatchingDeclarationName:BottomNavigation.kt$BottomNavItem</ID>
+    <ID>MaxLineLength:LocationPermission.kt$ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED</ID>
+    <ID>MaxLineLength:LocationPermission.kt$return</ID>
+    <ID>MaxLineLength:MessageConstants.kt$MessageConstants$const val ERROR_PHOTO_UPLOAD_USER = "Erreur lors de l'upload de la photo (utilisateur non connecté ou upload échoué)"</ID>
+    <ID>NestedBlockDepth:FirestoreService.kt$FirestoreService$suspend fun getAllSouvenirs(): List&lt;SouvenirItem&gt;</ID>
+    <ID>ReturnCount:AudioRecordingService.kt$AudioRecordingService$fun startRecording(context: Context): String?</ID>
+    <ID>ReturnCount:FirebaseStorageService.kt$FirebaseStorageService$suspend fun uploadSouvenirAudio(audioFilePath: String, souvenirId: String): String?</ID>
+    <ID>SwallowedException:ColorUtils.kt$ColorUtils$e: Exception</ID>
+    <ID>SwallowedException:MapComponents.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:AudioMetadataService.kt$AudioMetadataService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:AudioPlaybackService.kt$AudioPlaybackService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:AudioPlayerComponent.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:AudioRecordingService.kt$AudioRecordingService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:ColorUtils.kt$ColorUtils$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:FirebaseStorageService.kt$FirebaseStorageService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:FirestoreService.kt$FirestoreService$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MapComponents.kt$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:SouvenirForm.kt$e: Exception</ID>
+    <ID>TooGenericExceptionThrown:AudioPlaybackService.kt$AudioPlaybackService$throw Exception("Fichier audio introuvable: $audioUrl")</ID>
+    <ID>TooManyFunctions:AudioPlaybackService.kt$AudioPlaybackService</ID>
+    <ID>UnusedParameter:AudioPlaybackService.kt$AudioPlaybackService$context: Context</ID>
+    <ID>UnusedParameter:MainNavigation.kt$paddingValues: PaddingValues</ID>
+    <ID>UnusedParameter:MapComponents.kt$isCluster: Boolean</ID>
+    <ID>UnusedPrivateProperty:AudioPlayerComponent.kt$val scope = rememberCoroutineScope()</ID>
+    <ID>UnusedPrivateProperty:AudioRecorderComponent.kt$val scope = rememberCoroutineScope()</ID>
+    <ID>UnusedPrivateProperty:CameraManager.kt$// Variable temporaire pour stocker le chemin actuel private var currentPhotoPath: String = ""</ID>
+    <ID>UnusedPrivateProperty:ModalBottomSheetComponents.kt$val scope = rememberCoroutineScope()</ID>
+    <ID>WildcardImport:AudioPlayerComponent.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:AudioPlayerComponent.kt$import androidx.compose.material.icons.filled.*</ID>
+    <ID>WildcardImport:AudioPlayerComponent.kt$import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:AudioPlayerComponent.kt$import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:AudioRecorderComponent.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:AudioRecorderComponent.kt$import androidx.compose.material.icons.filled.*</ID>
+    <ID>WildcardImport:AudioRecorderComponent.kt$import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:AudioRecorderComponent.kt$import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:BottomNavigation.kt$import androidx.compose.material.icons.filled.*</ID>
+    <ID>WildcardImport:BottomNavigation.kt$import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:MainNavigation.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:MainNavigation.kt$import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:MainNavigation.kt$import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:ProfileScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:ProfileScreen.kt$import androidx.compose.material.icons.filled.*</ID>
+    <ID>WildcardImport:ProfileScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:ProfileScreen.kt$import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:SettingsScreen.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:SettingsScreen.kt$import androidx.compose.material.icons.filled.*</ID>
+    <ID>WildcardImport:SettingsScreen.kt$import androidx.compose.material3.*</ID>
+    <ID>WildcardImport:SettingsScreen.kt$import androidx.compose.runtime.*</ID>
+    <ID>WildcardImport:SouvenirDetailCard.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:SouvenirForm.kt$import androidx.compose.foundation.layout.*</ID>
+    <ID>WildcardImport:SouvenirMap.kt$import androidx.compose.runtime.*</ID>
+  </CurrentIssues>
+</SmellBaseline>

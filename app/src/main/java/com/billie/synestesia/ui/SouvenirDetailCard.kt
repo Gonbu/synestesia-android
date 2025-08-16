@@ -1,21 +1,28 @@
 package com.billie.synestesia.ui
 
-import android.net.Uri
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -31,8 +38,6 @@ import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
 import coil.compose.AsyncImage
 import com.billie.synestesia.models.SouvenirItem
-import com.billie.synestesia.utils.LogUtils
-import com.billie.synestesia.utils.MessageConstants
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -61,7 +66,7 @@ fun PhotoFullScreenDialog(
                 modifier = Modifier.fillMaxSize(),
                 contentScale = androidx.compose.ui.layout.ContentScale.Fit
             )
-            
+
             // Bouton fermer en haut à droite
             IconButton(
                 onClick = onDismiss,
@@ -93,11 +98,11 @@ fun SouvenirDetailCard(
     showDeleteButton: Boolean = true
 ) {
     val currentSouvenir = souvenirs.getOrNull(currentIndex)
-    
+
     if (currentSouvenir == null) return
-    
+
     var showFullScreenPhoto by remember { mutableStateOf(false) }
-    
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -125,7 +130,7 @@ fun SouvenirDetailCard(
                 }
             }
         }
-        
+
         // Navigation et titre
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -134,7 +139,7 @@ fun SouvenirDetailCard(
         ) {
             if (souvenirs.size > 1) {
                 IconButton(
-                    onClick = { 
+                    onClick = {
                         val newIndex = if (currentIndex > 0) currentIndex - 1 else souvenirs.size - 1
                         onNavigateToSouvenir(newIndex)
                     },
@@ -149,7 +154,7 @@ fun SouvenirDetailCard(
             } else {
                 Spacer(modifier = Modifier.width(48.dp))
             }
-            
+
             Text(
                 text = currentSouvenir.titre,
                 fontSize = 22.sp,
@@ -157,10 +162,10 @@ fun SouvenirDetailCard(
                 modifier = Modifier.weight(1f),
                 color = Color.White
             )
-            
+
             if (souvenirs.size > 1) {
                 IconButton(
-                    onClick = { 
+                    onClick = {
                         val newIndex = if (currentIndex < souvenirs.size - 1) currentIndex + 1 else 0
                         onNavigateToSouvenir(newIndex)
                     },
@@ -176,9 +181,9 @@ fun SouvenirDetailCard(
                 Spacer(modifier = Modifier.width(48.dp))
             }
         }
-        
+
         Spacer(modifier = Modifier.height(12.dp))
-        
+
         // Photo du souvenir (cliquable)
         if (currentSouvenir.photo.isNotEmpty()) {
             Box(
@@ -195,7 +200,7 @@ fun SouvenirDetailCard(
                         .background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(8.dp)),
                     contentScale = androidx.compose.ui.layout.ContentScale.Crop
                 )
-                
+
                 // Overlay avec icône de zoom
                 Box(
                     modifier = Modifier
@@ -216,7 +221,7 @@ fun SouvenirDetailCard(
                 }
             }
         }
-        
+
         // Description
         Text(
             text = currentSouvenir.description,
@@ -224,7 +229,16 @@ fun SouvenirDetailCard(
             modifier = Modifier.padding(bottom = 8.dp),
             color = Color.White
         )
-        
+
+        // Audio du souvenir (si disponible)
+        if (currentSouvenir.audio.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(12.dp))
+            AudioPlayerComponent(
+                audioUrl = currentSouvenir.audio,
+                modifier = Modifier.fillMaxWidth()
+            )
+        }
+
         // Date
         currentSouvenir.date.let { date ->
             val formatted = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(date)
@@ -235,7 +249,7 @@ fun SouvenirDetailCard(
                 color = Color.White.copy(alpha = 0.8f)
             )
         }
-        
+
         // Indicateur de position (texte)
         if (souvenirs.size > 1) {
             Text(
@@ -245,7 +259,7 @@ fun SouvenirDetailCard(
                 color = Color.White.copy(alpha = 0.8f)
             )
         }
-        
+
         // Boutons d'action
         Column(
             modifier = Modifier.fillMaxWidth(),
@@ -275,7 +289,7 @@ fun SouvenirDetailCard(
             }
         }
     }
-    
+
     // Dialog pour la photo en plein écran
     if (showFullScreenPhoto) {
         PhotoFullScreenDialog(
@@ -283,4 +297,4 @@ fun SouvenirDetailCard(
             onDismiss = { showFullScreenPhoto = false }
         )
     }
-} 
+}

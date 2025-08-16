@@ -1,10 +1,10 @@
 package com.billie.synestesia.location
 
 import android.content.Context
-import com.google.android.gms.location.LocationServices
-import com.google.android.gms.maps.model.LatLng
 import com.billie.synestesia.utils.LogUtils
 import com.billie.synestesia.utils.MessageConstants
+import com.google.android.gms.location.LocationServices
+import com.google.android.gms.maps.model.LatLng
 
 class LocationManager(private val context: Context) {
     fun getCurrentLocation(onLocationResult: (LatLng) -> Unit) {
@@ -23,4 +23,4 @@ class LocationManager(private val context: Context) {
             LogUtils.e("${MessageConstants.LOCATION_SECURITY_ERROR}${e.message}")
         }
     }
-} 
+}

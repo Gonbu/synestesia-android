@@ -1,18 +1,16 @@
 package com.billie.synestesia.ui.theme
 
-import androidx.compose.ui.graphics.Color
-
 object AppColors {
     // Couleurs des marqueurs
     const val USER_LOCATION = "#4285F4"
     const val CLICKED_POINT = "#BA68C8"
     const val LIGHT_PURPLE = "#E1BEE7"
     const val LIGHT_PINK = "#F3E5F5"
-    
+
     // Couleurs par défaut
     const val DEFAULT_MARKER = "#FF6B6B"
     const val GRAY = "#696969"
-    
+
     // Couleurs de la palette
     val colorPalette = listOf(
         "#FF0000", // Rouge
@@ -44,6 +42,6 @@ object AppColors {
         "#696969", // Gris foncé
         "#C0C0C0", // Argent
         "#FFFFFF", // Blanc
-        "#000000"  // Noir
+        "#000000" // Noir
     )
 }

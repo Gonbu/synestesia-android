@@ -1,18 +1,22 @@
 package com.billie.synestesia.ui
 
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import com.google.android.gms.maps.model.LatLng
 import com.billie.synestesia.location.LocationManager
 import com.billie.synestesia.permission.checkLocationPermissions
 import com.billie.synestesia.permission.rememberLocationPermissionLauncher
-import com.billie.synestesia.ui.MapContent
 import com.billie.synestesia.utils.PermissionConstants
-import kotlinx.coroutines.CoroutineScope
+import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 
 @Composable
@@ -22,7 +26,7 @@ fun MainNavigation(
     var currentRoute by remember { mutableStateOf(BottomNavItem.MAP) }
     var isMapLoaded by remember { mutableStateOf(false) }
     var currentLatLng by remember { mutableStateOf<LatLng?>(null) }
-    
+
     val context = LocalContext.current
     val coroutineScope = rememberCoroutineScope()
     val locationManager = remember { LocationManager(context) }

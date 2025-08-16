@@ -4,12 +4,9 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.Scaffold
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import com.billie.synestesia.ui.theme.SynestesiaTheme
 import com.billie.synestesia.ui.MainNavigation
+import com.billie.synestesia.ui.theme.SynestesiaTheme
 import com.google.firebase.auth.FirebaseAuth
 
 class MainActivity : ComponentActivity() {

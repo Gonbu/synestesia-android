@@ -14,20 +14,26 @@ import com.billie.synestesia.utils.MessageConstants
 fun rememberLocationPermissionLauncher(
     onPermissionGranted: () -> Unit,
     onPermissionDenied: () -> Unit
-) = rememberLauncherForActivityResult(
-    contract = ActivityResultContracts.RequestMultiplePermissions(),
-    onResult = { permissions ->
-        if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
-            permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true) {
-            onPermissionGranted()
-        } else {
-            LogUtils.e(MessageConstants.LOCATION_PERMISSION_DENIED)
-            onPermissionDenied()
+) =
+    rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestMultiplePermissions(),
+        onResult = { permissions ->
+            if (permissions[Manifest.permission.ACCESS_FINE_LOCATION] == true ||
+                permissions[Manifest.permission.ACCESS_COARSE_LOCATION] == true
+            ) {
+                onPermissionGranted()
+            } else {
+                LogUtils.e(MessageConstants.LOCATION_PERMISSION_DENIED)
+                onPermissionDenied()
+            }
         }
-    }
-)
+    )
 
 fun checkLocationPermissions(context: Context): Boolean {
-    return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED
-} 
+    return ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) ==
+        PackageManager.PERMISSION_GRANTED ||
+        ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.ACCESS_COARSE_LOCATION
+    ) == PackageManager.PERMISSION_GRANTED
+}
