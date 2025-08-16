@@ -14,18 +14,32 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ExitToApp
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Info
+import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Share
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,9 +51,7 @@ import androidx.compose.ui.unit.sp
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
-fun ProfileScreen(
-    onNavigateBack: () -> Unit
-) {
+fun profileScreen(onNavigateBack: () -> Unit) {
     var displayName by remember { mutableStateOf("Utilisateur Synestesia") }
     var email by remember { mutableStateOf("") }
     var isEditingProfile by remember { mutableStateOf(false) }
@@ -53,19 +65,11 @@ fun ProfileScreen(
         }
     }
 
-    Column(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp)
-            .verticalScroll(rememberScrollState())
-    ) {
+    Column(modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState())) {
         // Header
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        Row(modifier = Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onNavigateBack) {
-                Icon(Icons.Default.ArrowBack, contentDescription = "Retour")
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Retour")
             }
             Text(
                 text = "Profil",
@@ -80,20 +84,17 @@ fun ProfileScreen(
         // Profile Picture Section
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
+            colors =
+            CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.surfaceVariant
             )
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(24.dp),
+                modifier = Modifier.fillMaxWidth().padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .padding(8.dp),
+                    modifier = Modifier.size(100.dp).padding(8.dp),
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
@@ -115,11 +116,7 @@ fun ProfileScreen(
                         singleLine = true
                     )
                 } else {
-                    Text(
-                        text = displayName,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Medium
-                    )
+                    Text(text = displayName, fontSize = 20.sp, fontWeight = FontWeight.Medium)
                 }
 
                 Text(
@@ -158,9 +155,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Statistics Section
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "Statistiques",
@@ -178,16 +173,8 @@ fun ProfileScreen(
                         value = "12",
                         label = "Souvenirs"
                     )
-                    StatisticItem(
-                        icon = Icons.Default.Star,
-                        value = "8",
-                        label = "Favoris"
-                    )
-                    StatisticItem(
-                        icon = Icons.Default.Share,
-                        value = "5",
-                        label = "Partagés"
-                    )
+                    StatisticItem(icon = Icons.Default.Star, value = "8", label = "Favoris")
+                    StatisticItem(icon = Icons.Default.Share, value = "5", label = "Partagés")
                 }
             }
         }
@@ -195,9 +182,7 @@ fun ProfileScreen(
         Spacer(modifier = Modifier.height(16.dp))
 
         // Account Actions Section
-        Card(
-            modifier = Modifier.fillMaxWidth()
-        ) {
+        Card(modifier = Modifier.fillMaxWidth()) {
             Column(modifier = Modifier.padding(16.dp)) {
                 Text(
                     text = "Actions du compte",
@@ -213,7 +198,7 @@ fun ProfileScreen(
                     onClick = { /* TODO: Navigation vers sécurité */ }
                 )
 
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
                 AccountActionItem(
                     icon = Icons.Default.Info,
@@ -222,7 +207,7 @@ fun ProfileScreen(
                     onClick = { /* TODO: Navigation vers gestion des données */ }
                 )
 
-                Divider(modifier = Modifier.padding(vertical = 8.dp))
+                HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
 
                 AccountActionItem(
                     icon = Icons.Default.Info,
@@ -238,7 +223,8 @@ fun ProfileScreen(
         // Danger Zone Section
         Card(
             modifier = Modifier.fillMaxWidth(),
-            colors = CardDefaults.cardColors(
+            colors =
+            CardDefaults.cardColors(
                 containerColor = MaterialTheme.colorScheme.errorContainer
             )
         ) {
@@ -258,11 +244,12 @@ fun ProfileScreen(
                         // Ici on pourrait naviguer vers l'écran de connexion
                     },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.outlinedButtonColors(
+                    colors =
+                    ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.error
                     )
                 ) {
-                    Icon(Icons.Default.ExitToApp, contentDescription = "Déconnexion")
+                    Icon(Icons.AutoMirrored.Filled.ExitToApp, contentDescription = "Déconnexion")
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("Se déconnecter")
                 }
@@ -272,7 +259,8 @@ fun ProfileScreen(
                 OutlinedButton(
                     onClick = { /* TODO: Supprimer le compte */ },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.outlinedButtonColors(
+                    colors =
+                    ButtonDefaults.outlinedButtonColors(
                         contentColor = MaterialTheme.colorScheme.error
                     )
                 ) {
@@ -291,9 +279,7 @@ private fun StatisticItem(
     value: String,
     label: String
 ) {
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
+    Column(horizontalAlignment = Alignment.CenterHorizontally) {
         Icon(
             icon,
             contentDescription = label,
@@ -306,11 +292,7 @@ private fun StatisticItem(
             fontWeight = FontWeight.Bold,
             modifier = Modifier.padding(top = 4.dp)
         )
-        Text(
-            text = label,
-            fontSize = 12.sp,
-            color = MaterialTheme.colorScheme.onSurfaceVariant
-        )
+        Text(text = label, fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurfaceVariant)
     }
 }
 
@@ -322,9 +304,7 @@ private fun AccountActionItem(
     onClick: () -> Unit
 ) {
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp),
+        modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
@@ -333,16 +313,8 @@ private fun AccountActionItem(
             modifier = Modifier.size(24.dp),
             tint = MaterialTheme.colorScheme.primary
         )
-        Column(
-            modifier = Modifier
-                .weight(1f)
-                .padding(start = 12.dp)
-        ) {
-            Text(
-                text = title,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium
-            )
+        Column(modifier = Modifier.weight(1f).padding(start = 12.dp)) {
+            Text(text = title, fontSize = 16.sp, fontWeight = FontWeight.Medium)
             Text(
                 text = subtitle,
                 fontSize = 14.sp,
@@ -350,7 +322,7 @@ private fun AccountActionItem(
             )
         }
         IconButton(onClick = onClick) {
-            Icon(Icons.Default.ArrowForward, contentDescription = "Aller à $title")
+            Icon(Icons.AutoMirrored.Filled.ArrowForward, contentDescription = "Aller à $title")
         }
     }
 }

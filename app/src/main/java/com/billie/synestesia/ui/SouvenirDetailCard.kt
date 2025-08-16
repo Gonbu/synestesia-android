@@ -15,8 +15,8 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowForward
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
@@ -42,23 +42,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 @Composable
-fun PhotoFullScreenDialog(
-    photoUrl: String,
-    onDismiss: () -> Unit
-) {
+fun photoFullScreenDialog(photoUrl: String, onDismiss: () -> Unit) {
     Dialog(
         onDismissRequest = onDismiss,
-        properties = DialogProperties(
+        properties =
+        DialogProperties(
             dismissOnBackPress = true,
             dismissOnClickOutside = true,
             usePlatformDefaultWidth = false
         )
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.9f))
-        ) {
+        Box(modifier = Modifier.fillMaxSize().background(Color.Black.copy(alpha = 0.9f))) {
             // Photo en plein écran
             AsyncImage(
                 model = photoUrl,
@@ -70,8 +64,8 @@ fun PhotoFullScreenDialog(
             // Bouton fermer en haut à droite
             IconButton(
                 onClick = onDismiss,
-                modifier = Modifier
-                    .align(Alignment.TopEnd)
+                modifier =
+                Modifier.align(Alignment.TopEnd)
                     .padding(16.dp)
                     .background(Color.Black.copy(alpha = 0.5f), CircleShape)
             ) {
@@ -86,7 +80,7 @@ fun PhotoFullScreenDialog(
 }
 
 @Composable
-fun SouvenirDetailCard(
+fun souvenirDetailCard(
     souvenirs: List<SouvenirItem>,
     currentIndex: Int,
     onAddSouvenir: () -> Unit,
@@ -104,26 +98,27 @@ fun SouvenirDetailCard(
     var showFullScreenPhoto by remember { mutableStateOf(false) }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(20.dp),
+        modifier = modifier.fillMaxWidth().padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         // Indicateurs de position (points)
         if (souvenirs.size > 1) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(bottom = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
                 horizontalArrangement = Arrangement.Center
             ) {
                 souvenirs.forEachIndexed { index, _ ->
                     Box(
-                        modifier = Modifier
-                            .padding(horizontal = 4.dp)
+                        modifier =
+                        Modifier.padding(horizontal = 4.dp)
                             .size(8.dp)
                             .background(
-                                color = if (index == currentIndex) Color.White else Color.White.copy(alpha = 0.5f),
+                                color =
+                                if (index == currentIndex) {
+                                    Color.White
+                                } else {
+                                    Color.White.copy(alpha = 0.5f)
+                                },
                                 shape = CircleShape
                             )
                     )
@@ -140,13 +135,14 @@ fun SouvenirDetailCard(
             if (souvenirs.size > 1) {
                 IconButton(
                     onClick = {
-                        val newIndex = if (currentIndex > 0) currentIndex - 1 else souvenirs.size - 1
+                        val newIndex =
+                            if (currentIndex > 0) currentIndex - 1 else souvenirs.size - 1
                         onNavigateToSouvenir(newIndex)
                     },
                     enabled = true
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowBack,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Précédent",
                         tint = Color.White
                     )
@@ -166,13 +162,14 @@ fun SouvenirDetailCard(
             if (souvenirs.size > 1) {
                 IconButton(
                     onClick = {
-                        val newIndex = if (currentIndex < souvenirs.size - 1) currentIndex + 1 else 0
+                        val newIndex =
+                            if (currentIndex < souvenirs.size - 1) currentIndex + 1 else 0
                         onNavigateToSouvenir(newIndex)
                     },
                     enabled = true
                 ) {
                     Icon(
-                        imageVector = Icons.Default.ArrowForward,
+                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
                         contentDescription = "Suivant",
                         tint = Color.White
                     )
@@ -186,26 +183,27 @@ fun SouvenirDetailCard(
 
         // Photo du souvenir (cliquable)
         if (currentSouvenir.photo.isNotEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp)
-                    .padding(bottom = 12.dp)
-            ) {
+            Box(modifier = Modifier.fillMaxWidth().height(200.dp).padding(bottom = 12.dp)) {
                 AsyncImage(
                     model = currentSouvenir.photo,
                     contentDescription = "Photo du souvenir",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.White.copy(alpha = 0.1f), RoundedCornerShape(8.dp)),
+                    modifier =
+                    Modifier.fillMaxSize()
+                        .background(
+                            Color.White.copy(alpha = 0.1f),
+                            RoundedCornerShape(8.dp)
+                        ),
                     contentScale = androidx.compose.ui.layout.ContentScale.Crop
                 )
 
                 // Overlay avec icône de zoom
                 Box(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .background(Color.Black.copy(alpha = 0.3f), RoundedCornerShape(8.dp))
+                    modifier =
+                    Modifier.fillMaxSize()
+                        .background(
+                            Color.Black.copy(alpha = 0.3f),
+                            RoundedCornerShape(8.dp)
+                        )
                 ) {
                     IconButton(
                         onClick = { showFullScreenPhoto = true },
@@ -233,7 +231,7 @@ fun SouvenirDetailCard(
         // Audio du souvenir (si disponible)
         if (currentSouvenir.audio.isNotEmpty()) {
             Spacer(modifier = Modifier.height(12.dp))
-            AudioPlayerComponent(
+            audioPlayerComponent(
                 audioUrl = currentSouvenir.audio,
                 modifier = Modifier.fillMaxWidth()
             )
@@ -266,27 +264,16 @@ fun SouvenirDetailCard(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             if (showAddButton) {
-                Button(
-                    onClick = onAddSouvenir,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+                Button(onClick = onAddSouvenir, modifier = Modifier.fillMaxWidth()) {
                     Text("Ajouter un souvenir")
                 }
             }
             if (showDeleteButton) {
-                Button(
-                    onClick = onDeleteSouvenir,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
+                Button(onClick = onDeleteSouvenir, modifier = Modifier.fillMaxWidth()) {
                     Text("Supprimer")
                 }
             }
-            Button(
-                onClick = onClose,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text("Fermer")
-            }
+            Button(onClick = onClose, modifier = Modifier.fillMaxWidth()) { Text("Fermer") }
         }
     }
 

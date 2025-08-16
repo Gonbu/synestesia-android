@@ -1,5 +1,6 @@
 package com.billie.synestesia.ui
 
+import android.Manifest
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,13 +12,16 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -40,7 +44,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
-fun AudioRecorderComponent(onAudioRecorded: (String) -> Unit, modifier: Modifier = Modifier) {
+fun audioRecorderComponent(onAudioRecorded: (String) -> Unit, modifier: Modifier = Modifier) {
     var isRecording by remember { mutableStateOf(false) }
     var recordingTime by remember { mutableStateOf(0L) }
     var audioFilePath by remember { mutableStateOf<String?>(null) }

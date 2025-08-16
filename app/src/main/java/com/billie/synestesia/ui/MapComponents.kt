@@ -80,9 +80,7 @@ fun MapContent(
         }
     }
 
-    LaunchedEffect(Unit) {
-        reloadSouvenirs()
-    }
+    LaunchedEffect(Unit) { reloadSouvenirs() }
 
     Box(modifier = modifier) {
         GoogleMap(
@@ -97,9 +95,10 @@ fun MapContent(
         ) {
             // Marqueur de position utilisateur avec taille adaptée au zoom
             currentLatLng?.let { latLng ->
-                val userIcon = BitmapDescriptorFactory.fromBitmap(
-                    createUserLocationMarker(cameraPositionState.position.zoom)
-                )
+                val userIcon =
+                    BitmapDescriptorFactory.fromBitmap(
+                        createUserLocationMarker(cameraPositionState.position.zoom)
+                    )
                 Marker(
                     state = MarkerState(position = latLng),
                     title = "Votre position",
@@ -109,12 +108,13 @@ fun MapContent(
             }
 
             clickedLatLng?.let { latLng ->
-                val clickIcon = BitmapDescriptorFactory.fromBitmap(
-                    createIndividualMarker(
-                        SouvenirItem(couleur = AppColors.CLICKED_POINT),
-                        cameraPositionState.position.zoom
+                val clickIcon =
+                    BitmapDescriptorFactory.fromBitmap(
+                        createIndividualMarker(
+                            SouvenirItem(couleur = AppColors.CLICKED_POINT),
+                            cameraPositionState.position.zoom
+                        )
                     )
-                )
                 Marker(
                     state = MarkerState(position = latLng),
                     title = "Position sélectionnée",
@@ -135,9 +135,10 @@ fun MapContent(
 
             // Affichage simple de tous les souvenirs
             souvenirs.forEach { souvenir ->
-                val markerIcon = BitmapDescriptorFactory.fromBitmap(
-                    createIndividualMarker(souvenir, cameraPositionState.position.zoom)
-                )
+                val markerIcon =
+                    BitmapDescriptorFactory.fromBitmap(
+                        createIndividualMarker(souvenir, cameraPositionState.position.zoom)
+                    )
 
                 Marker(
                     state = MarkerState(position = souvenir.toLatLng()!!),
@@ -178,17 +179,21 @@ fun MapContent(
                 showAddOnExistingPoint = false
                 addOnLatLng = null
             },
-            backgroundColor = when {
+            backgroundColor =
+            when {
                 selectedSouvenirs.isNotEmpty() -> {
                     val currentSouvenir = selectedSouvenirs[currentSouvenirIndex]
                     ColorUtils.hexToComposeColor(currentSouvenir.couleur)
                 }
                 showAddOnExistingPoint -> {
                     // Utiliser la couleur du souvenir existant sur ce point
-                    val existingSouvenirs = souvenirs.filter { souvenir ->
-                        souvenir.toLatLng()?.latitude == addOnLatLng?.latitude &&
-                            souvenir.toLatLng()?.longitude == addOnLatLng?.longitude
-                    }
+                    val existingSouvenirs =
+                        souvenirs.filter { souvenir ->
+                            souvenir.toLatLng()?.latitude ==
+                                addOnLatLng?.latitude &&
+                                souvenir.toLatLng()?.longitude ==
+                                addOnLatLng?.longitude
+                        }
                     if (existingSouvenirs.isNotEmpty()) {
                         ColorUtils.hexToComposeColor(existingSouvenirs.first().couleur)
                     } else {
@@ -196,29 +201,36 @@ fun MapContent(
                     }
                 }
                 else -> {
-                    // Couleur rose/violet pâle pour le formulaire d'ajout sur nouveau point
+                    // Couleur rose/violet pâle pour le formulaire d'ajout sur nouveau
+                    // point
                     ColorUtils.hexToComposeColor(AppColors.LIGHT_PINK)
                 }
             }
         ) {
             if (selectedSouvenirs.isNotEmpty()) {
                 val currentSouvenir = selectedSouvenirs[currentSouvenirIndex]
-                SouvenirDetailCard(
+                souvenirDetailCard(
                     souvenirs = selectedSouvenirs,
                     currentIndex = currentSouvenirIndex,
                     onAddSouvenir = {
                         addOnLatLng = currentSouvenir.toLatLng()
                         showAddOnExistingPoint = true
-                        selectedSouvenirs = emptyList() // Vider la liste pour afficher le formulaire
+                        selectedSouvenirs =
+                            emptyList() // Vider la liste pour afficher le formulaire
                         currentSouvenirIndex = 0
                     },
                     onDeleteSouvenir = {
                         scope.launch {
                             try {
                                 // Vérifier que l'utilisateur est bien le propriétaire
-                                val currentUser = com.google.firebase.auth.FirebaseAuth.getInstance().currentUser
+                                val currentUser =
+                                    com.google.firebase.auth.FirebaseAuth.getInstance()
+                                        .currentUser
                                 if (currentUser?.uid != currentSouvenir.userId) {
-                                    LogUtils.showErrorToast(context, "Vous ne pouvez pas supprimer ce souvenir")
+                                    LogUtils.showErrorToast(
+                                        context,
+                                        "Vous ne pouvez pas supprimer ce souvenir"
+                                    )
                                     return@launch
                                 }
 
@@ -227,7 +239,8 @@ fun MapContent(
                                 LogUtils.showToast(context, MessageConstants.SOUVENIR_DELETED)
 
                                 // Mettre à jour la liste des souvenirs sélectionnés
-                                val updatedSouvenirs = selectedSouvenirs.filter { it.id != currentSouvenir.id }
+                                val updatedSouvenirs =
+                                    selectedSouvenirs.filter { it.id != currentSouvenir.id }
                                 if (updatedSouvenirs.isEmpty()) {
                                     showBottomSheet = false
                                     selectedSouvenirs = emptyList()
@@ -240,7 +253,10 @@ fun MapContent(
                                 }
                             } catch (e: Exception) {
                                 LogUtils.e("Erreur lors de la suppression: ", e)
-                                LogUtils.showErrorToast(context, MessageConstants.ERROR_DELETING_SOUVENIR)
+                                LogUtils.showErrorToast(
+                                    context,
+                                    MessageConstants.ERROR_DELETING_SOUVENIR
+                                )
                             }
                         }
                     },
@@ -251,35 +267,43 @@ fun MapContent(
                         showAddOnExistingPoint = false
                         addOnLatLng = null
                     },
-                    onNavigateToSouvenir = { newIndex ->
-                        currentSouvenirIndex = newIndex
-                    }
+                    onNavigateToSouvenir = { newIndex -> currentSouvenirIndex = newIndex }
                 )
             } else if (showAddOnExistingPoint && addOnLatLng != null) {
                 // Formulaire d'ajout sur un point existant
-                SouvenirFormSheet(
+                souvenirFormSheet(
                     latLng = addOnLatLng,
                     onSaveClick = { _ ->
                         scope.launch {
                             try {
-                                // Le souvenir a déjà été créé dans le formulaire, on recharge juste la liste
+                                // Le souvenir a déjà été créé dans le formulaire, on recharge
+                                // juste la liste
                                 reloadSouvenirs()
 
-                                // Mettre à jour la liste des souvenirs sélectionnés si on était sur un point existant
+                                // Mettre à jour la liste des souvenirs sélectionnés si on était
+                                // sur un point existant
                                 if (addOnLatLng != null) {
-                                    val updatedSouvenirs = souvenirs.filter { souvenir ->
-                                        souvenir.toLatLng()?.latitude == addOnLatLng?.latitude &&
-                                            souvenir.toLatLng()?.longitude == addOnLatLng?.longitude
-                                    }
+                                    val updatedSouvenirs =
+                                        souvenirs.filter { souvenir ->
+                                            souvenir.toLatLng()?.latitude ==
+                                                addOnLatLng?.latitude &&
+                                                souvenir.toLatLng()?.longitude ==
+                                                addOnLatLng?.longitude
+                                        }
                                     if (updatedSouvenirs.isNotEmpty()) {
                                         selectedSouvenirs = updatedSouvenirs
-                                        currentSouvenirIndex = updatedSouvenirs.size - 1 // Aller au nouveau souvenir
+                                        currentSouvenirIndex =
+                                            updatedSouvenirs.size -
+                                            1 // Aller au nouveau souvenir
                                     }
                                 }
 
                                 LogUtils.showToast(context, MessageConstants.SOUVENIR_SAVED)
                             } catch (e: Exception) {
-                                LogUtils.showErrorToast(context, MessageConstants.ERROR_SAVING_SOUVENIR)
+                                LogUtils.showErrorToast(
+                                    context,
+                                    MessageConstants.ERROR_SAVING_SOUVENIR
+                                )
                             }
                             showAddOnExistingPoint = false
                             addOnLatLng = null
@@ -291,17 +315,21 @@ fun MapContent(
                 )
             } else {
                 // Affiche le formulaire d'ajout si aucun souvenir sélectionné
-                SouvenirFormSheet(
+                souvenirFormSheet(
                     latLng = clickedLatLng,
                     onSaveClick = { _ ->
                         scope.launch {
                             try {
-                                // Le souvenir a déjà été créé dans le formulaire, on recharge juste la liste
+                                // Le souvenir a déjà été créé dans le formulaire, on recharge
+                                // juste la liste
                                 reloadSouvenirs() // Recharge la liste après ajout
                                 LogUtils.showToast(context, MessageConstants.SOUVENIR_SAVED)
                                 showBottomSheet = false
                             } catch (e: Exception) {
-                                LogUtils.showErrorToast(context, MessageConstants.ERROR_SAVING_SOUVENIR)
+                                LogUtils.showErrorToast(
+                                    context,
+                                    MessageConstants.ERROR_SAVING_SOUVENIR
+                                )
                             }
                         }
                     }
@@ -318,9 +346,7 @@ private fun LocationButton(
     cameraPositionState: CameraPositionState
 ) {
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(16.dp),
+        modifier = Modifier.fillMaxSize().padding(16.dp),
         contentAlignment = Alignment.BottomCenter
     ) {
         IconButton(
@@ -347,11 +373,12 @@ private fun createUserLocationMarker(zoomLevel: Float): Bitmap {
     val size = calculateMarkerSize(zoomLevel, false)
     val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
-    val paint = Paint().apply {
-        color = Color.BLUE
-        isAntiAlias = true
-        style = Paint.Style.FILL
-    }
+    val paint =
+        Paint().apply {
+            color = Color.BLUE
+            isAntiAlias = true
+            style = Paint.Style.FILL
+        }
 
     // Cercle bleu pour la position utilisateur
     canvas.drawCircle(size / 2f, size / 2f, size / 3f, paint)
@@ -369,11 +396,12 @@ private fun createIndividualMarker(souvenir: SouvenirItem, zoomLevel: Float): Bi
     val size = calculateMarkerSize(zoomLevel, false)
     val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
-    val paint = Paint().apply {
-        color = ColorUtils.hexToAndroidColor(souvenir.couleur)
-        isAntiAlias = true
-        style = Paint.Style.FILL
-    }
+    val paint =
+        Paint().apply {
+            color = ColorUtils.hexToAndroidColor(souvenir.couleur)
+            isAntiAlias = true
+            style = Paint.Style.FILL
+        }
 
     // Cercle coloré pour le souvenir
     canvas.drawCircle(size / 2f, size / 2f, size / 3f, paint)

@@ -12,11 +12,14 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,7 +36,7 @@ import com.billie.synestesia.utils.AudioConstants
 import com.billie.synestesia.utils.LogUtils
 
 @Composable
-fun AudioPlayerComponent(audioUrl: String, modifier: Modifier = Modifier) {
+fun audioPlayerComponent(audioUrl: String, modifier: Modifier = Modifier) {
     var isPlaying by remember { mutableStateOf(false) }
     var isPaused by remember { mutableStateOf(false) }
     var currentPosition by remember { mutableStateOf(0L) }
@@ -124,11 +127,12 @@ fun AudioPlayerComponent(audioUrl: String, modifier: Modifier = Modifier) {
 
             // Barre de progression
             LinearProgressIndicator(
-                progress =
-                if (duration > 0) {
-                    (currentPosition.toFloat() / duration.toFloat())
-                } else {
-                    0f
+                progress = {
+                    if (duration > 0) {
+                        (currentPosition.toFloat() / duration.toFloat())
+                    } else {
+                        0f
+                    }
                 },
                 modifier = Modifier.fillMaxWidth()
             )

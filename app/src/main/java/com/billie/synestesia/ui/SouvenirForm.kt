@@ -74,7 +74,7 @@ fun ColorPicker(
             contentPadding = PaddingValues(horizontal = 4.dp)
         ) {
             items(AppColors.colorPalette) { color ->
-                ColorCircle(
+                colorCircle(
                     color = color,
                     isSelected = selectedColor == color,
                     onClick = { onColorSelected(color) }
@@ -85,7 +85,7 @@ fun ColorPicker(
 }
 
 @Composable
-private fun ColorCircle(color: String, isSelected: Boolean, onClick: () -> Unit) {
+private fun colorCircle(color: String, isSelected: Boolean, onClick: () -> Unit) {
     val circleColor = ColorUtils.hexToComposeColor(color)
 
     Box(
@@ -109,7 +109,7 @@ private fun ColorCircle(color: String, isSelected: Boolean, onClick: () -> Unit)
 }
 
 @Composable
-fun SouvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
+fun souvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
     var titre by remember { mutableStateOf("") }
     var description by remember { mutableStateOf("") }
     var selectedColor by remember {
@@ -230,7 +230,7 @@ fun SouvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
             modifier = Modifier.padding(bottom = 8.dp)
         )
 
-        AudioRecorderComponent(
+        audioRecorderComponent(
             onAudioRecorded = { filePath -> audioFilePath = filePath },
             modifier = Modifier.fillMaxWidth()
         )
@@ -281,7 +281,7 @@ fun SouvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
                         }
 
                         // 2. Upload de la photo si disponible
-                        if (photoUri != null && souvenirId != null) {
+                        if (photoUri != null) {
                             try {
                                 photoUrl =
                                     FirebaseStorageService.uploadSouvenirImage(
@@ -302,7 +302,7 @@ fun SouvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
                         }
 
                         // 3. Upload de l'audio si disponible
-                        if (audioFilePath != null && souvenirId != null) {
+                        if (audioFilePath != null) {
                             try {
                                 audioUrl =
                                     FirebaseStorageService.uploadSouvenirAudio(

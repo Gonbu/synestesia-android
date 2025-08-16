@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -19,7 +20,7 @@ import com.billie.synestesia.utils.PermissionConstants
 import com.google.android.gms.maps.model.LatLng
 
 @Composable
-fun SouvenirMap(paddingValues: PaddingValues) {
+fun souvenirMap(paddingValues: PaddingValues) {
     var isMapLoaded by remember { mutableStateOf(false) }
     var currentLatLng by remember { mutableStateOf<LatLng?>(null) }
     val context = LocalContext.current
