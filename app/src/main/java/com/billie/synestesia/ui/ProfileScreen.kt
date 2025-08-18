@@ -169,7 +169,7 @@ private fun profileAccountActionsSection() {
                 icon = Icons.Default.Lock,
                 title = "Sécurité",
                 subtitle = "Gérer la sécurité de votre compte",
-                onClick = { /* TODO: Navigation vers sécurité */ }
+                onClick = { /* Navigation vers sécurité - à implémenter */ }
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -178,7 +178,7 @@ private fun profileAccountActionsSection() {
                 icon = Icons.Default.Info,
                 title = "Données",
                 subtitle = "Gérer vos données personnelles",
-                onClick = { /* TODO: Navigation vers gestion des données */ }
+                onClick = { /* Navigation vers gestion des données - à implémenter */ }
             )
 
             HorizontalDivider(modifier = Modifier.padding(vertical = 8.dp))
@@ -187,7 +187,7 @@ private fun profileAccountActionsSection() {
                 icon = Icons.Default.Info,
                 title = "Aide et support",
                 subtitle = "Obtenir de l'aide",
-                onClick = { /* TODO: Navigation vers aide */ }
+                onClick = { /* Navigation vers aide - à implémenter */ }
             )
         }
     }
@@ -231,7 +231,7 @@ private fun profileDangerZoneSection() {
             Spacer(modifier = Modifier.height(8.dp))
 
             OutlinedButton(
-                onClick = { /* TODO: Supprimer le compte */ },
+                onClick = { /* Supprimer le compte - à implémenter */ },
                 modifier = Modifier.fillMaxWidth(),
                 colors =
                 ButtonDefaults.outlinedButtonColors(
