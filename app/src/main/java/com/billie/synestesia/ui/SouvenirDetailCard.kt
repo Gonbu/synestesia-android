@@ -80,6 +80,199 @@ fun photoFullScreenDialog(photoUrl: String, onDismiss: () -> Unit) {
 }
 
 @Composable
+private fun souvenirPositionIndicators(souvenirs: List<SouvenirItem>, currentIndex: Int) {
+    if (souvenirs.size > 1) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
+            horizontalArrangement = Arrangement.Center
+        ) {
+            souvenirs.forEachIndexed { index, _ ->
+                Box(
+                    modifier =
+                    Modifier.padding(horizontal = 4.dp)
+                        .size(8.dp)
+                        .background(
+                            color =
+                            if (index == currentIndex) {
+                                Color.White
+                            } else {
+                                Color.White.copy(alpha = 0.5f)
+                            },
+                            shape = CircleShape
+                        )
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun souvenirNavigationHeader(
+    souvenirs: List<SouvenirItem>,
+    currentIndex: Int,
+    currentSouvenir: SouvenirItem,
+    onNavigateToSouvenir: (Int) -> Unit
+) {
+    Row(
+        modifier = Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        if (souvenirs.size > 1) {
+            IconButton(
+                onClick = {
+                    val newIndex =
+                        if (currentIndex > 0) currentIndex - 1 else souvenirs.size - 1
+                    onNavigateToSouvenir(newIndex)
+                },
+                enabled = true
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Précédent",
+                    tint = Color.White
+                )
+            }
+        } else {
+            Spacer(modifier = Modifier.width(48.dp))
+        }
+
+        Text(
+            text = currentSouvenir.titre,
+            fontSize = 22.sp,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.weight(1f),
+            color = Color.White
+        )
+
+        if (souvenirs.size > 1) {
+            IconButton(
+                onClick = {
+                    val newIndex =
+                        if (currentIndex < souvenirs.size - 1) currentIndex + 1 else 0
+                    onNavigateToSouvenir(newIndex)
+                },
+                enabled = true
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowForward,
+                    contentDescription = "Suivant",
+                    tint = Color.White
+                )
+            }
+        } else {
+            Spacer(modifier = Modifier.width(48.dp))
+        }
+    }
+}
+
+@Composable
+private fun souvenirPhotoSection(photoUrl: String, onShowFullScreen: () -> Unit) {
+    if (photoUrl.isNotEmpty()) {
+        Box(modifier = Modifier.fillMaxWidth().height(200.dp).padding(bottom = 12.dp)) {
+            AsyncImage(
+                model = photoUrl,
+                contentDescription = "Photo du souvenir",
+                modifier =
+                Modifier.fillMaxSize()
+                    .background(
+                        Color.White.copy(alpha = 0.1f),
+                        RoundedCornerShape(8.dp)
+                    ),
+                contentScale = androidx.compose.ui.layout.ContentScale.Crop
+            )
+
+            // Overlay avec icône de zoom
+            Box(
+                modifier =
+                Modifier.fillMaxSize()
+                    .background(
+                        Color.Black.copy(alpha = 0.3f),
+                        RoundedCornerShape(8.dp)
+                    )
+            ) {
+                IconButton(
+                    onClick = onShowFullScreen,
+                    modifier = Modifier.align(Alignment.Center)
+                ) {
+                    Icon(
+                        imageVector = Icons.Default.Search,
+                        contentDescription = "Voir en grand",
+                        tint = Color.White,
+                        modifier = Modifier.size(32.dp)
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun souvenirContentSection(
+    currentSouvenir: SouvenirItem,
+    currentIndex: Int,
+    souvenirs: List<SouvenirItem>
+) {
+    // Description
+    Text(
+        text = currentSouvenir.description,
+        fontSize = 16.sp,
+        modifier = Modifier.padding(bottom = 8.dp),
+        color = Color.White
+    )
+
+    // Audio du souvenir (si disponible)
+    if (currentSouvenir.audio.isNotEmpty()) {
+        Spacer(modifier = Modifier.height(12.dp))
+        audioPlayerComponent(audioUrl = currentSouvenir.audio, modifier = Modifier.fillMaxWidth())
+    }
+
+    // Date
+    currentSouvenir.date.let { date ->
+        val formatted = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(date)
+        Text(
+            text = "Ajouté le $formatted",
+            fontSize = 12.sp,
+            modifier = Modifier.padding(bottom = 16.dp),
+            color = Color.White.copy(alpha = 0.8f)
+        )
+    }
+
+    // Indicateur de position (texte)
+    if (souvenirs.size > 1) {
+        Text(
+            text = "${currentIndex + 1} / ${souvenirs.size}",
+            fontSize = 14.sp,
+            modifier = Modifier.padding(bottom = 16.dp),
+            color = Color.White.copy(alpha = 0.8f)
+        )
+    }
+}
+
+@Composable
+private fun souvenirActionButtons(
+    showAddButton: Boolean,
+    showDeleteButton: Boolean,
+    onAddSouvenir: () -> Unit,
+    onDeleteSouvenir: () -> Unit,
+    onClose: () -> Unit
+) {
+    Column(modifier = Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        if (showAddButton) {
+            Button(onClick = onAddSouvenir, modifier = Modifier.fillMaxWidth()) {
+                Text("Ajouter un souvenir")
+            }
+        }
+        if (showDeleteButton) {
+            Button(onClick = onDeleteSouvenir, modifier = Modifier.fillMaxWidth()) {
+                Text("Supprimer")
+            }
+        }
+        Button(onClick = onClose, modifier = Modifier.fillMaxWidth()) { Text("Fermer") }
+    }
+}
+
+@Composable
 fun souvenirDetailCard(
     souvenirs: List<SouvenirItem>,
     currentIndex: Int,
@@ -101,185 +294,40 @@ fun souvenirDetailCard(
         modifier = modifier.fillMaxWidth().padding(20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        // Indicateurs de position (points)
-        if (souvenirs.size > 1) {
-            Row(
-                modifier = Modifier.fillMaxWidth().padding(bottom = 16.dp),
-                horizontalArrangement = Arrangement.Center
-            ) {
-                souvenirs.forEachIndexed { index, _ ->
-                    Box(
-                        modifier =
-                        Modifier.padding(horizontal = 4.dp)
-                            .size(8.dp)
-                            .background(
-                                color =
-                                if (index == currentIndex) {
-                                    Color.White
-                                } else {
-                                    Color.White.copy(alpha = 0.5f)
-                                },
-                                shape = CircleShape
-                            )
-                    )
-                }
-            }
-        }
+        souvenirPositionIndicators(souvenirs, currentIndex)
 
-        // Navigation et titre
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            if (souvenirs.size > 1) {
-                IconButton(
-                    onClick = {
-                        val newIndex =
-                            if (currentIndex > 0) currentIndex - 1 else souvenirs.size - 1
-                        onNavigateToSouvenir(newIndex)
-                    },
-                    enabled = true
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Précédent",
-                        tint = Color.White
-                    )
-                }
-            } else {
-                Spacer(modifier = Modifier.width(48.dp))
-            }
-
-            Text(
-                text = currentSouvenir.titre,
-                fontSize = 22.sp,
-                fontWeight = FontWeight.Bold,
-                modifier = Modifier.weight(1f),
-                color = Color.White
-            )
-
-            if (souvenirs.size > 1) {
-                IconButton(
-                    onClick = {
-                        val newIndex =
-                            if (currentIndex < souvenirs.size - 1) currentIndex + 1 else 0
-                        onNavigateToSouvenir(newIndex)
-                    },
-                    enabled = true
-                ) {
-                    Icon(
-                        imageVector = Icons.AutoMirrored.Filled.ArrowForward,
-                        contentDescription = "Suivant",
-                        tint = Color.White
-                    )
-                }
-            } else {
-                Spacer(modifier = Modifier.width(48.dp))
-            }
-        }
+        souvenirNavigationHeader(
+            souvenirs = souvenirs,
+            currentIndex = currentIndex,
+            currentSouvenir = currentSouvenir,
+            onNavigateToSouvenir = onNavigateToSouvenir
+        )
 
         Spacer(modifier = Modifier.height(12.dp))
 
-        // Photo du souvenir (cliquable)
-        if (currentSouvenir.photo.isNotEmpty()) {
-            Box(modifier = Modifier.fillMaxWidth().height(200.dp).padding(bottom = 12.dp)) {
-                AsyncImage(
-                    model = currentSouvenir.photo,
-                    contentDescription = "Photo du souvenir",
-                    modifier =
-                    Modifier.fillMaxSize()
-                        .background(
-                            Color.White.copy(alpha = 0.1f),
-                            RoundedCornerShape(8.dp)
-                        ),
-                    contentScale = androidx.compose.ui.layout.ContentScale.Crop
-                )
-
-                // Overlay avec icône de zoom
-                Box(
-                    modifier =
-                    Modifier.fillMaxSize()
-                        .background(
-                            Color.Black.copy(alpha = 0.3f),
-                            RoundedCornerShape(8.dp)
-                        )
-                ) {
-                    IconButton(
-                        onClick = { showFullScreenPhoto = true },
-                        modifier = Modifier.align(Alignment.Center)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.Search,
-                            contentDescription = "Voir en grand",
-                            tint = Color.White,
-                            modifier = Modifier.size(32.dp)
-                        )
-                    }
-                }
-            }
-        }
-
-        // Description
-        Text(
-            text = currentSouvenir.description,
-            fontSize = 16.sp,
-            modifier = Modifier.padding(bottom = 8.dp),
-            color = Color.White
+        souvenirPhotoSection(
+            photoUrl = currentSouvenir.photo,
+            onShowFullScreen = { showFullScreenPhoto = true }
         )
 
-        // Audio du souvenir (si disponible)
-        if (currentSouvenir.audio.isNotEmpty()) {
-            Spacer(modifier = Modifier.height(12.dp))
-            audioPlayerComponent(
-                audioUrl = currentSouvenir.audio,
-                modifier = Modifier.fillMaxWidth()
-            )
-        }
+        souvenirContentSection(
+            currentSouvenir = currentSouvenir,
+            currentIndex = currentIndex,
+            souvenirs = souvenirs
+        )
 
-        // Date
-        currentSouvenir.date.let { date ->
-            val formatted = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(date)
-            Text(
-                text = "Ajouté le $formatted",
-                fontSize = 12.sp,
-                modifier = Modifier.padding(bottom = 16.dp),
-                color = Color.White.copy(alpha = 0.8f)
-            )
-        }
-
-        // Indicateur de position (texte)
-        if (souvenirs.size > 1) {
-            Text(
-                text = "${currentIndex + 1} / ${souvenirs.size}",
-                fontSize = 14.sp,
-                modifier = Modifier.padding(bottom = 16.dp),
-                color = Color.White.copy(alpha = 0.8f)
-            )
-        }
-
-        // Boutons d'action
-        Column(
-            modifier = Modifier.fillMaxWidth(),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            if (showAddButton) {
-                Button(onClick = onAddSouvenir, modifier = Modifier.fillMaxWidth()) {
-                    Text("Ajouter un souvenir")
-                }
-            }
-            if (showDeleteButton) {
-                Button(onClick = onDeleteSouvenir, modifier = Modifier.fillMaxWidth()) {
-                    Text("Supprimer")
-                }
-            }
-            Button(onClick = onClose, modifier = Modifier.fillMaxWidth()) { Text("Fermer") }
-        }
+        souvenirActionButtons(
+            showAddButton = showAddButton,
+            showDeleteButton = showDeleteButton,
+            onAddSouvenir = onAddSouvenir,
+            onDeleteSouvenir = onDeleteSouvenir,
+            onClose = onClose
+        )
     }
 
     // Dialog pour la photo en plein écran
     if (showFullScreenPhoto) {
-        PhotoFullScreenDialog(
+        photoFullScreenDialog(
             photoUrl = currentSouvenir.photo,
             onDismiss = { showFullScreenPhoto = false }
         )

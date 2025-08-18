@@ -21,7 +21,7 @@ import com.google.android.gms.maps.model.LatLng
 import kotlinx.coroutines.launch
 
 @Composable
-fun MainNavigation(paddingValues: PaddingValues) {
+fun mainNavigation(paddingValues: PaddingValues) {
     var currentRoute by remember { mutableStateOf(BottomNavItem.MAP) }
     var isMapLoaded by remember { mutableStateOf(false) }
     var currentLatLng by remember { mutableStateOf<LatLng?>(null) }
