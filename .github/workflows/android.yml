@@ -36,6 +36,21 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Create local.defaults.properties
+        run: |
+          cat > local.defaults.properties << 'EOF'
+          # Fichier de propriétés par défaut pour les secrets
+          # Utilisé en CI/CD et en développement local
+
+          # Google Maps API Key (valeur factice pour le build)
+          MAPS_API_KEY=your_maps_api_key_here
+
+          # Firebase config (valeurs factices pour le build)
+          GOOGLE_APPLICATION_CREDENTIALS=path_to_service_account.json
+
+          # Autres secrets nécessaires au build
+          EOF
+
       - name: Run ktlint check
         run: ./gradlew ktlintCheck
 
@@ -67,6 +82,21 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
+      - name: Create local.defaults.properties
+        run: |
+          cat > local.defaults.properties << 'EOF'
+          # Fichier de propriétés par défaut pour les secrets
+          # Utilisé en CI/CD et en développement local
+
+          # Google Maps API Key (valeur factice pour le build)
+          MAPS_API_KEY=your_maps_api_key_here
+
+          # Firebase config (valeurs factices pour le build)
+          GOOGLE_APPLICATION_CREDENTIALS=path_to_service_account.json
+
+          # Autres secrets nécessaires au build
+          EOF
 
       - name: Run unit tests
         run: ./gradlew test
@@ -102,6 +132,21 @@ jobs:
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
+
+      - name: Create local.defaults.properties
+        run: |
+          cat > local.defaults.properties << 'EOF'
+          # Fichier de propriétés par défaut pour les secrets
+          # Utilisé en CI/CD et en développement local
+
+          # Google Maps API Key (valeur factice pour le build)
+          MAPS_API_KEY=your_maps_api_key_here
+
+          # Firebase config (valeurs factices pour le build)
+          GOOGLE_APPLICATION_CREDENTIALS=path_to_service_account.json
+
+          # Autres secrets nécessaires au build
+          EOF
 
       - name: Build debug APK
         run: ./gradlew assembleDebug
