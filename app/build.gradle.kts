@@ -75,7 +75,7 @@ dependencies {
 
     implementation("com.github.skydoves:colorpicker-compose:1.1.2")
 
-    implementation("io.coil-kt:coil-compose:2.4.0")
+    implementation("io.coil-kt:coil-compose:2.7.0")
 
     // Firebase
     implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
