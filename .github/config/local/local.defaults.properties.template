@@ -1,0 +1,16 @@
+# Template pour local.defaults.properties
+# COPIEZ ce fichier vers la racine du projet et renommez-le en local.defaults.properties
+# Puis remplacez les valeurs par vos vraies clés
+
+# Google Maps API Key (remplacez par votre vraie clé)
+MAPS_API_KEY=your_real_maps_api_key_here
+
+# Firebase config (remplacez par vos vraies valeurs)
+GOOGLE_APPLICATION_CREDENTIALS=path_to_your_service_account.json
+
+# Autres secrets nécessaires au build
+# Ajoutez ici les clés manquantes selon vos besoins
+
+# Exemple pour d'autres services :
+# STRIPE_API_KEY=your_stripe_key_here
+# SENTRY_DSN=your_sentry_dsn_here

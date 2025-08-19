@@ -1,0 +1,41 @@
+name: 'Setup Android Environment'
+description: 'Setup JDK 17, copy CI config files, and prepare build environment'
+inputs:
+  java-version:
+    description: 'Java version to use'
+    required: false
+    default: '17'
+  distribution:
+    description: 'Java distribution'
+    required: false
+    default: 'temurin'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Set up JDK
+      uses: actions/setup-java@v4
+      with:
+        java-version: ${{ inputs.java-version }}
+        distribution: ${{ inputs.distribution }}
+
+    - name: Copy CI configuration files
+      shell: bash
+      run: |
+        # Copier les fichiers de configuration CI vers les emplacements attendus
+        cp .github/config/ci/local.defaults.properties.ci local.defaults.properties
+        cp .github/config/ci/google-services.json.ci app/google-services.json
+
+    - name: Cache Gradle packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.gradle/caches
+          ~/.gradle/wrapper
+        key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+        restore-keys: |
+          ${{ runner.os }}-gradle-
+
+    - name: Grant execute permission for gradlew
+      shell: bash
+      run: chmod +x gradlew

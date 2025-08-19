@@ -15,6 +15,16 @@ local.properties
 # Kotlin
 .kotlin/
 
-# Local configuration files
+# Local configuration files (SENSIBLES - NE PAS COMMITTER)
 secrets.properties
 local.defaults.properties
+app/google-services.json
+
+# CI/CD configuration files (peuvent être commités)
+!.github/config/ci/
+!.github/config/local/
+
+# Generated files
+*.log
+*.tmp
+*.bak

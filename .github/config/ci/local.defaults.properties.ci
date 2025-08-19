@@ -1,0 +1,11 @@
+# Configuration CI/CD - Valeurs factices pour le build
+# Ce fichier est utilisé uniquement en CI, pas en développement
+
+# Google Maps API Key (valeur factice pour le build)
+MAPS_API_KEY=CI_FAKE_MAPS_API_KEY_FOR_BUILD_ONLY
+
+# Firebase config (valeurs factices pour le build)
+GOOGLE_APPLICATION_CREDENTIALS=ci_fake_service_account.json
+
+# Autres secrets nécessaires au build (valeurs factices)
+# Ces valeurs ne permettent pas d'accéder aux vrais services
