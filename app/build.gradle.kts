@@ -65,7 +65,7 @@ dependencies {
     debugImplementation(libs.androidx.ui.test.manifest)
 
     // Google Maps Compose library
-    val mapsComposeVersion = "4.4.1"
+    val mapsComposeVersion = "6.7.1"
     implementation("com.google.maps.android:maps-compose:$mapsComposeVersion")
     // Google Maps Compose utility library
     implementation("com.google.maps.android:maps-compose-utils:$mapsComposeVersion")
