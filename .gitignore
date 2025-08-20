@@ -20,6 +20,11 @@ secrets.properties
 local.defaults.properties
 app/google-services.json
 
+# Keystore files (SENSIBLES - NE PAS COMMITTER)
+keystore/
+*.keystore
+*.jks
+
 # CI/CD configuration files (peuvent être commités)
 !.github/config/ci/
 !.github/config/local/

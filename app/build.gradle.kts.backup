@@ -27,6 +27,15 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    signingConfigs {
+        release {
+            storeFile = file("../keystore/release.keystore")
+            storePassword = project.findProperty("KEYSTORE_PASSWORD") ?: "synestesia2024"
+            keyAlias = project.findProperty("KEY_ALIAS") ?: "release"
+            keyPassword = project.findProperty("KEY_PASSWORD") ?: "synestesia2024"
+        }
+    }
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -34,6 +43,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.release
         }
     }
     compileOptions {
@@ -98,7 +108,11 @@ ktlint {
 }
 
 // Configuration detekt
-tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom(files("$projectDir/../config/detekt/detekt.yml"))
+
     reports {
         html.required.set(true)
         xml.required.set(false)
@@ -107,4 +121,16 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     }
 }
 
-// Remove extra duplicate lines
+// Configuration detekt
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom(files("$projectDir/../config/detekt/detekt.yml"))
+
+    reports {
+        html.required.set(true)
+        xml.required.set(false)
+        txt.required.set(false)
+        sarif.required.set(false)
+    }
+}

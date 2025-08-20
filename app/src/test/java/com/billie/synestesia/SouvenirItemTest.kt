@@ -9,7 +9,7 @@ import org.junit.Test
 class SouvenirItemTest {
 
     @Test
-    fun `test SouvenirItem creation with valid data`() {
+    fun testSouvenirItemCreationWithValidData() {
         val souvenir =
             SouvenirItem(
                 id = "test-id",
@@ -37,7 +37,7 @@ class SouvenirItemTest {
     }
 
     @Test
-    fun `test SouvenirItem with default values`() {
+    fun testSouvenirItemWithDefaultValues() {
         val souvenir = SouvenirItem()
 
         assertNull(souvenir.id)
@@ -53,7 +53,7 @@ class SouvenirItemTest {
     }
 
     @Test
-    fun `test SouvenirItem toLatLng conversion`() {
+    fun testSouvenirItemToLatLngConversion() {
         val souvenirWithCoords = SouvenirItem(latitude = 48.8566, longitude = 2.3522)
 
         val souvenirWithoutCoords = SouvenirItem()

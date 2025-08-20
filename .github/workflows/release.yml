@@ -22,10 +22,17 @@ jobs:
       - name: Build release APK
         run: ./gradlew assembleRelease
 
+      - name: Sign APK (optionnel)
+        run: |
+          echo "APK non signé généré: app-release-unsigned.apk"
+          echo "Pour signer automatiquement, configurez un keystore et décommentez la config dans build.gradle.kts"
+          echo "Ou utilisez l'APK non signé pour les tests et le développement"
+        continue-on-error: true
+
       - name: Create Release
         uses: softprops/action-gh-release@v1
         with:
-          files: app/build/outputs/apk/release/app-release.apk
+          files: app/build/outputs/apk/release/app-release-unsigned.apk
           draft: false
           prerelease: false
           generate_release_notes: true
