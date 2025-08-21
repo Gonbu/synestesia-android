@@ -6,6 +6,7 @@ plugins {
     id("com.google.gms.google-services")
     id("org.jlleitschuh.gradle.ktlint")
     id("io.gitlab.arturbosch.detekt")
+    id("jacoco")
 }
 
 secrets {
@@ -98,6 +99,13 @@ ktlint {
 }
 
 // Configuration detekt
+detekt {
+    buildUponDefaultConfig = true
+    allRules = false
+    config.setFrom(files("$projectDir/../config/detekt/detekt.yml"))
+}
+
+// Configure detekt reports on tasks
 tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
     reports {
         html.required.set(true)
@@ -106,5 +114,7 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
         sarif.required.set(false)
     }
 }
-
-// Remove extra duplicate lines
+// Configuration JaCoCo
+jacoco {
+    toolVersion = "0.8.11"
+}

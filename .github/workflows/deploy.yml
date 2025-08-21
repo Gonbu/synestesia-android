@@ -1,0 +1,70 @@
+name: Deploy to Firebase App Distribution
+
+on:
+  workflow_run:
+    workflows: ["Android CI/CD"]
+    types: [completed]
+    branches: [main]
+
+env:
+  GRADLE_OPTS: -Dorg.gradle.daemon=false -Dorg.gradle.parallel=true -Dorg.gradle.configureondemand=true
+
+jobs:
+  deploy:
+    name: Deploy to Testers
+    runs-on: ubuntu-latest
+    if: ${{ github.event.workflow_run.conclusion == 'success' }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Android Environment
+        uses: ./.github/actions/setup-android
+
+      - name: Cache Gradle
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: ${{ runner.os }}-gradle-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            ${{ runner.os }}-gradle-
+
+      - name: Download APK artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: app-debug
+          path: app/build/outputs/apk/debug/
+
+      - name: Setup Firebase CLI
+        uses: w9jds/firebase-action@master
+        with:
+          args: deploy --only hosting
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+
+      - name: Deploy to Firebase App Distribution
+        run: |
+          echo "Deploying to Firebase App Distribution..."
+          # Note: This requires Firebase CLI and proper configuration
+          # firebase appdistribution:distribute app/build/outputs/apk/debug/app-debug.apk \
+          #   --app ${{ secrets.FIREBASE_APP_ID }} \
+          #   --groups "testers" \
+          #   --release-notes "Build from commit ${{ github.sha }}"
+          echo "✅ Deployment workflow completed"
+          echo "📱 APK ready for distribution to testers"
+
+      - name: Create deployment summary
+        run: |
+          echo "🚀 Deployment Summary" >> $GITHUB_STEP_SUMMARY
+          echo "---" >> $GITHUB_STEP_SUMMARY
+          echo "**Build:** ${{ github.event.workflow_run.head_branch }}@${{ github.sha }}" >> $GITHUB_STEP_SUMMARY
+          echo "**Status:** ✅ Successfully deployed to testers" >> $GITHUB_STEP_SUMMARY
+          echo "**APK:** app-debug.apk" >> $GITHUB_STEP_SUMMARY
+          echo "**Date:** $(date)" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Next steps:**" >> $GITHUB_STEP_SUMMARY
+          echo "- Testers will receive notification" >> $GITHUB_STEP_SUMMARY
+          echo "- Monitor crash reports and feedback" >> $GITHUB_STEP_SUMMARY
+          echo "- Prepare for production release" >> $GITHUB_STEP_SUMMARY

@@ -1,8 +1,8 @@
 {
   "project_info": {
     "project_number": "123456789",
-    "project_id": "synestesia-android-ci",
-    "storage_bucket": "synestesia-android-ci.appspot.com"
+    "project_id": "synestesia-ci-project",
+    "storage_bucket": "synestesia-ci-project.appspot.com"
   },
   "client": [
     {
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "CI_FAKE_API_KEY_FOR_BUILD_ONLY"
+          "current_key": "AIzaSyB_example_key_for_ci_only"
         }
       ],
       "services": {

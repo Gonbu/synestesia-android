@@ -1,11 +1,12 @@
-# Configuration CI/CD - Valeurs factices pour le build
-# Ce fichier est utilisé uniquement en CI, pas en développement
+# Configuration CI pour Synestesia
+# Ces valeurs sont utilisées uniquement pour les tests CI/CD
 
-# Google Maps API Key (valeur factice pour le build)
-MAPS_API_KEY=CI_FAKE_MAPS_API_KEY_FOR_BUILD_ONLY
+# Google Maps API Key (valeur d'exemple pour CI)
+GOOGLE_MAPS_API_KEY=AIzaSyB_example_key_for_ci_only
 
-# Firebase config (valeurs factices pour le build)
-GOOGLE_APPLICATION_CREDENTIALS=ci_fake_service_account.json
+# Firebase Project ID (valeur d'exemple pour CI)
+FIREBASE_PROJECT_ID=synestesia-ci-project
 
-# Autres secrets nécessaires au build (valeurs factices)
-# Ces valeurs ne permettent pas d'accéder aux vrais services
+# Autres configurations CI
+CI_ENVIRONMENT=true
+BUILD_TYPE=debug
