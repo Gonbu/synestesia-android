@@ -1,0 +1,133 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AudioRecordingService.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.billie.synestesia</a> &gt; <span class="el_source">AudioRecordingService.kt</span></div><h1>AudioRecordingService.kt</h1><pre class="source lang-java linenums">package com.billie.synestesia
+
+import android.content.Context
+import android.media.MediaRecorder
+import android.os.Build
+import android.os.Environment
+import com.billie.synestesia.utils.LogUtils
+import java.io.File
+import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+
+object AudioRecordingService {
+    private var mediaRecorder: MediaRecorder? = null
+    private var isRecording = false
+    private var outputFile: String? = null
+
+    /**
+     * Démarre l'enregistrement audio
+     * @param context Le contexte de l'application
+     * @return Le chemin du fichier audio créé, ou null en cas d'erreur
+     */
+    fun startRecording(context: Context): String? {
+<span class="nc bnc" id="L24" title="All 2 branches missed.">        if (isRecording) {</span>
+<span class="nc" id="L25">            LogUtils.e(&quot;L'enregistrement est déjà en cours&quot;)</span>
+<span class="nc" id="L26">            return null</span>
+        }
+
+<span class="nc" id="L29">        try {</span>
+            // Créer le fichier de sortie
+<span class="nc" id="L31">            val timeStamp = SimpleDateFormat(&quot;yyyyMMdd_HHmmss&quot;, Locale.getDefault()).format(Date())</span>
+<span class="nc" id="L32">            val fileName = &quot;AUDIO_$timeStamp.mp3&quot;</span>
+<span class="nc" id="L33">            val storageDir = context.getExternalFilesDir(Environment.DIRECTORY_MUSIC)</span>
+<span class="nc" id="L34">            val audioFile = File(storageDir, fileName)</span>
+<span class="nc" id="L35">            outputFile = audioFile.absolutePath</span>
+
+            // Initialiser le MediaRecorder
+<span class="nc bnc" id="L38" title="All 2 branches missed.">            mediaRecorder = if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.S) {</span>
+<span class="nc" id="L39">                MediaRecorder(context)</span>
+            } else {
+                @Suppress(&quot;DEPRECATION&quot;)
+<span class="nc" id="L42">                MediaRecorder()</span>
+            }
+
+<span class="nc bnc" id="L45" title="All 2 branches missed.">            mediaRecorder?.apply {</span>
+<span class="nc" id="L46">                setAudioSource(MediaRecorder.AudioSource.MIC)</span>
+<span class="nc" id="L47">                setOutputFormat(MediaRecorder.OutputFormat.MPEG_4)</span>
+<span class="nc" id="L48">                setAudioEncoder(MediaRecorder.AudioEncoder.AAC)</span>
+<span class="nc" id="L49">                setOutputFile(outputFile)</span>
+<span class="nc" id="L50">                setAudioEncodingBitRate(128000)</span>
+<span class="nc" id="L51">                setAudioSamplingRate(44100)</span>
+
+<span class="nc" id="L53">                try {</span>
+<span class="nc" id="L54">                    prepare()</span>
+<span class="nc" id="L55">                    start()</span>
+<span class="nc" id="L56">                    isRecording = true</span>
+<span class="nc" id="L57">                    LogUtils.d(&quot;Enregistrement audio démarré: $outputFile&quot;)</span>
+<span class="nc" id="L58">                    return outputFile</span>
+<span class="nc" id="L59">                } catch (e: IOException) {</span>
+<span class="nc" id="L60">                    LogUtils.e(&quot;Erreur lors de la préparation de l'enregistrement: &quot;, e)</span>
+<span class="nc" id="L61">                    release()</span>
+<span class="nc" id="L62">                    return null</span>
+                }
+            }
+<span class="nc" id="L65">        } catch (e: Exception) {</span>
+<span class="nc" id="L66">            LogUtils.e(&quot;Erreur lors du démarrage de l'enregistrement: &quot;, e)</span>
+<span class="nc" id="L67">            release()</span>
+        }
+<span class="nc" id="L69">        return null</span>
+    }
+
+    /**
+     * Arrête l'enregistrement audio
+     * @return Le chemin du fichier audio enregistré, ou null en cas d'erreur
+     */
+    fun stopRecording(): String? {
+<span class="nc bnc" id="L77" title="All 2 branches missed.">        if (!isRecording) {</span>
+<span class="nc" id="L78">            LogUtils.e(&quot;Aucun enregistrement en cours&quot;)</span>
+<span class="nc" id="L79">            return null</span>
+        }
+
+<span class="nc" id="L82">        return try {</span>
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            mediaRecorder?.apply {</span>
+<span class="nc" id="L84">                stop()</span>
+<span class="nc" id="L85">                release()</span>
+<span class="nc" id="L86">            }</span>
+<span class="nc" id="L87">            mediaRecorder = null</span>
+<span class="nc" id="L88">            isRecording = false</span>
+
+<span class="nc" id="L90">            val filePath = outputFile</span>
+<span class="nc" id="L91">            outputFile = null</span>
+
+<span class="nc" id="L93">            LogUtils.d(&quot;Enregistrement audio arrêté: $filePath&quot;)</span>
+<span class="nc" id="L94">            filePath</span>
+<span class="nc" id="L95">        } catch (e: Exception) {</span>
+<span class="nc" id="L96">            LogUtils.e(&quot;Erreur lors de l'arrêt de l'enregistrement: &quot;, e)</span>
+<span class="nc" id="L97">            release()</span>
+<span class="nc" id="L98">            null</span>
+        }
+    }
+
+    /**
+     * Vérifie si un enregistrement est en cours
+     */
+<span class="nc" id="L105">    fun isRecording(): Boolean = isRecording</span>
+
+    /**
+     * Libère les ressources du MediaRecorder
+     */
+    private fun release() {
+<span class="nc" id="L111">        try {</span>
+<span class="nc bnc" id="L112" title="All 2 branches missed.">            mediaRecorder?.apply {</span>
+<span class="nc bnc" id="L113" title="All 2 branches missed.">                if (isRecording) {</span>
+<span class="nc" id="L114">                    stop()</span>
+                }
+<span class="nc" id="L116">                release()</span>
+<span class="nc" id="L117">            }</span>
+<span class="nc" id="L118">        } catch (e: Exception) {</span>
+<span class="nc" id="L119">            LogUtils.e(&quot;Erreur lors de la libération des ressources: &quot;, e)</span>
+        } finally {
+<span class="nc" id="L121">            mediaRecorder = null</span>
+<span class="nc" id="L122">            isRecording = false</span>
+        }
+<span class="nc" id="L124">    }</span>
+
+    /**
+     * Nettoie les ressources lors de la destruction
+     */
+    fun cleanup() {
+<span class="nc" id="L130">        release()</span>
+<span class="nc" id="L131">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

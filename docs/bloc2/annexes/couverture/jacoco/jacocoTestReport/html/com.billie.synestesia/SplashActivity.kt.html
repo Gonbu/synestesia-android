@@ -1,0 +1,175 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SplashActivity.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.billie.synestesia</a> &gt; <span class="el_source">SplashActivity.kt</span></div><h1>SplashActivity.kt</h1><pre class="source lang-java linenums">package com.billie.synestesia
+
+import android.content.Intent
+import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.scale
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.billie.synestesia.ui.theme.SynestesiaTheme
+
+// Constantes pour le splash screen
+private const val SPLASH_DELAY_MS = 2500L
+private const val GRADIENT_SIZE_DP = 400
+private const val GRADIENT_CENTER_OFFSET = 200f
+private const val GRADIENT_RADIUS = 200f
+private const val GLOW_BOX_SIZE_DP = 300
+private const val GLOW_CENTER_OFFSET = 150f
+private const val GLOW_RADIUS = 150f
+private const val LOGO_SIZE_DP = 280
+private const val LOGO_SCALE = 0.9f
+private const val SUBTITLE_FONT_SIZE = 18
+private const val SUBTITLE_ALPHA = 0.9f
+private const val SPACER_HEIGHT_DP = 24
+private const val BACKGROUND_COLOR = 0xFF331B72
+private const val GRADIENT_ALPHA = 0.3f
+private const val GLOW_ALPHA = 0.1f
+
+<span class="nc" id="L49">class SplashActivity : ComponentActivity() {</span>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+<span class="nc" id="L52">        super.onCreate(savedInstanceState)</span>
+
+<span class="nc" id="L54">        setContent {</span>
+<span class="nc bnc" id="L55" title="All 8 branches missed.">            SynestesiaTheme {</span>
+<span class="nc bnc" id="L56" title="All 8 branches missed.">                Surface(</span>
+<span class="nc" id="L57">                    modifier = Modifier.fillMaxSize(),</span>
+<span class="nc" id="L58">                    color = MaterialTheme.colorScheme.background</span>
+<span class="nc bnc" id="L59" title="All 8 branches missed.">                ) { splashScreen() }</span>
+<span class="nc" id="L60">            }</span>
+<span class="nc" id="L61">        }</span>
+
+        // Délai de 2.5 secondes avant de lancer MainActivity
+<span class="nc" id="L64">        Handler(Looper.getMainLooper())</span>
+<span class="nc" id="L65">            .postDelayed(</span>
+                {
+<span class="nc" id="L67">                    val intent = Intent(this, MainActivity::class.java)</span>
+<span class="nc" id="L68">                    startActivity(intent)</span>
+<span class="nc" id="L69">                    finish()</span>
+<span class="nc" id="L70">                },</span>
+<span class="nc" id="L71">                SPLASH_DELAY_MS</span>
+            )
+<span class="nc" id="L73">    }</span>
+}
+
+@Composable
+<span class="nc bnc" id="L77" title="All 6 branches missed.">fun splashScreen() {</span>
+<span class="nc" id="L78">    Box(</span>
+<span class="nc" id="L79">        modifier = Modifier.fillMaxSize().background(Color(BACKGROUND_COLOR)),</span>
+<span class="nc" id="L80">        contentAlignment = Alignment.Center</span>
+    ) {
+        // Dégradé radial subtil autour du centre
+<span class="nc" id="L83">        radialGradientBackground()</span>
+
+<span class="nc" id="L85">        Column(</span>
+<span class="nc" id="L86">            horizontalAlignment = Alignment.CenterHorizontally,</span>
+<span class="nc" id="L87">            verticalArrangement = Arrangement.Center</span>
+        ) {
+            // Logo avec effet de glow
+<span class="nc" id="L90">            logoWithGlow()</span>
+
+<span class="nc" id="L92">            Spacer(modifier = Modifier.height(SPACER_HEIGHT_DP.dp))</span>
+
+            // Sous-titre élégant
+<span class="nc" id="L95">            subtitleText()</span>
+<span class="nc" id="L96">        }</span>
+<span class="nc" id="L97">    }</span>
+<span class="nc bnc" id="L98" title="All 2 branches missed.">}</span>
+
+@Composable
+<span class="nc bnc" id="L101" title="All 6 branches missed.">private fun radialGradientBackground() {</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">    Box(</span>
+        modifier =
+<span class="nc" id="L104">        Modifier.size(GRADIENT_SIZE_DP.dp)</span>
+<span class="nc" id="L105">            .background(</span>
+                brush =
+<span class="nc" id="L107">                androidx.compose.ui.graphics.Brush.radialGradient(</span>
+                    colors =
+<span class="nc" id="L109">                    listOf(</span>
+<span class="nc" id="L110">                        Color(BACKGROUND_COLOR)</span>
+<span class="nc" id="L111">                            .copy(</span>
+                                alpha =
+<span class="nc" id="L113">                                GRADIENT_ALPHA</span>
+                            ),
+<span class="nc" id="L115">                        Color(BACKGROUND_COLOR)</span>
+<span class="nc" id="L116">                            .copy(alpha = 0.0f)</span>
+                    ),
+                    center =
+<span class="nc" id="L119">                    androidx.compose.ui.geometry.Offset(</span>
+<span class="nc" id="L120">                        GRADIENT_CENTER_OFFSET,</span>
+<span class="nc" id="L121">                        GRADIENT_CENTER_OFFSET</span>
+                    ),
+<span class="nc" id="L123">                    radius = GRADIENT_RADIUS</span>
+                )
+            )
+    )
+<span class="nc bnc" id="L127" title="All 2 branches missed.">}</span>
+
+@Composable
+<span class="nc bnc" id="L130" title="All 6 branches missed.">private fun logoWithGlow() {</span>
+<span class="nc" id="L131">    Box(</span>
+        modifier =
+<span class="nc" id="L133">        Modifier.size(GLOW_BOX_SIZE_DP.dp)</span>
+<span class="nc" id="L134">            .background(</span>
+                brush =
+<span class="nc" id="L136">                androidx.compose.ui.graphics.Brush.radialGradient(</span>
+                    colors =
+<span class="nc" id="L138">                    listOf(</span>
+<span class="nc" id="L139">                        Color.White.copy(</span>
+<span class="nc" id="L140">                            alpha = GLOW_ALPHA</span>
+                        ),
+<span class="nc" id="L142">                        Color.Transparent</span>
+                    ),
+                    center =
+<span class="nc" id="L145">                    androidx.compose.ui.geometry.Offset(</span>
+<span class="nc" id="L146">                        GLOW_CENTER_OFFSET,</span>
+<span class="nc" id="L147">                        GLOW_CENTER_OFFSET</span>
+                    ),
+<span class="nc" id="L149">                    radius = GLOW_RADIUS</span>
+                ),
+<span class="nc" id="L151">                shape = androidx.compose.foundation.shape.CircleShape</span>
+            ),
+<span class="nc" id="L153">        contentAlignment = Alignment.Center</span>
+    ) {
+<span class="nc" id="L155">        Image(</span>
+<span class="nc" id="L156">            painter = painterResource(id = R.drawable.splash_logo),</span>
+<span class="nc" id="L157">            contentDescription = &quot;Synestesia Logo&quot;,</span>
+<span class="nc" id="L158">            modifier = Modifier.size(LOGO_SIZE_DP.dp).scale(LOGO_SCALE)</span>
+        )
+<span class="nc" id="L160">    }</span>
+<span class="nc bnc" id="L161" title="All 2 branches missed.">}</span>
+
+@Composable
+<span class="nc bnc" id="L164" title="All 6 branches missed.">private fun subtitleText() {</span>
+<span class="nc bnc" id="L165" title="All 2 branches missed.">    Text(</span>
+<span class="nc" id="L166">        text = &quot;Vos souvenirs, votre histoire&quot;,</span>
+        style =
+<span class="nc" id="L168">        MaterialTheme.typography.bodyLarge.copy(</span>
+<span class="nc" id="L169">            fontSize = SUBTITLE_FONT_SIZE.sp,</span>
+<span class="nc" id="L170">            fontWeight = FontWeight.Light</span>
+        ),
+<span class="nc" id="L172">        color = Color.White.copy(alpha = SUBTITLE_ALPHA)</span>
+    )
+<span class="nc bnc" id="L174" title="All 2 branches missed.">}</span>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

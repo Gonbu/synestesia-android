@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CameraManager.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.billie.synestesia.camera</a> &gt; <span class="el_source">CameraManager.kt</span></div><h1>CameraManager.kt</h1><pre class="source lang-java linenums">package com.billie.synestesia.camera
+
+import android.content.Context
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.runtime.Composable
+import androidx.core.content.FileProvider
+import java.io.File
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
+
+fun createImageFile(context: Context): Pair&lt;File, Uri&gt; {
+<span class="nc" id="L15">    val timeStamp = SimpleDateFormat(&quot;yyyyMMdd_HHmmss&quot;, Locale.getDefault()).format(Date())</span>
+<span class="nc" id="L16">    val imageFileName = &quot;JPEG_&quot; + timeStamp + &quot;_&quot;</span>
+<span class="nc" id="L17">    val storageDir = context.getExternalFilesDir(&quot;Photos&quot;)</span>
+<span class="nc" id="L18">    val image = File.createTempFile(</span>
+<span class="nc" id="L19">        imageFileName,</span>
+<span class="nc" id="L20">        &quot;.jpg&quot;,</span>
+<span class="nc" id="L21">        storageDir</span>
+    )
+<span class="nc" id="L23">    val uri = FileProvider.getUriForFile(</span>
+<span class="nc" id="L24">        context,</span>
+<span class="nc" id="L25">        &quot;${context.packageName}.provider&quot;,</span>
+<span class="nc" id="L26">        image</span>
+    )
+<span class="nc" id="L28">    return Pair(image, uri)</span>
+}
+
+@Composable
+fun rememberTakePictureLauncher(
+    onImageSaved: (Uri, String) -&gt; Unit,
+<span class="nc bnc" id="L34" title="All 2 branches missed.">    currentPhotoUri: Uri? = null,</span>
+<span class="nc bnc" id="L35" title="All 2 branches missed.">    currentPath: String = &quot;&quot;</span>
+<span class="nc bnc" id="L36" title="All 14 branches missed.">) = rememberLauncherForActivityResult(ActivityResultContracts.TakePicture()) { success -&gt;</span>
+<span class="nc bnc" id="L37" title="All 4 branches missed.">    if (success &amp;&amp; currentPhotoUri != null) {</span>
+<span class="nc" id="L38">        onImageSaved(currentPhotoUri, currentPath)</span>
+    }
+<span class="nc" id="L40">}</span>
+
+// Variable temporaire pour stocker le chemin actuel
+<span class="nc" id="L43">private var currentPhotoPath: String = &quot;&quot;</span>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

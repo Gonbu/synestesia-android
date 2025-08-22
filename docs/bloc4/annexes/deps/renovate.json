@@ -1,0 +1,72 @@
+{
+    "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+    "extends": [
+        "config:base",
+        ":semanticCommits",
+        ":enablePreCommit"
+    ],
+    "packageRules": [
+        {
+            "matchUpdateTypes": [
+                "major"
+            ],
+            "enabled": false
+        },
+        {
+            "matchPackagePatterns": [
+                "^androidx\\."
+            ],
+            "groupName": "AndroidX dependencies",
+            "schedule": [
+                "before 4am on monday"
+            ]
+        },
+        {
+            "matchPackagePatterns": [
+                "^com\\.google\\.firebase"
+            ],
+            "groupName": "Firebase dependencies",
+            "schedule": [
+                "before 4am on monday"
+            ]
+        },
+        {
+            "matchPackagePatterns": [
+                "^org\\.jetbrains\\.kotlin"
+            ],
+            "groupName": "Kotlin dependencies",
+            "schedule": [
+                "before 4am on monday"
+            ]
+        },
+        {
+            "matchPackagePatterns": [
+                "^com\\.android\\."
+            ],
+            "groupName": "Android Gradle Plugin",
+            "schedule": [
+                "before 4am on monday"
+            ]
+        }
+    ],
+    "schedule": [
+        "before 4am on monday"
+    ],
+    "timezone": "Europe/Paris",
+    "assignees": [
+        "@billie"
+    ],
+    "reviewers": [
+        "@billie"
+    ],
+    "labels": [
+        "dependencies",
+        "automated"
+    ],
+    "commitMessagePrefix": "chore(deps):",
+    "commitMessageAction": "update",
+    "commitMessageTopic": "{{depName}}",
+    "commitMessageExtra": "to {{newVersion}}",
+    "prTitle": "{{commitMessagePrefix}} {{commitMessageAction}} {{commitMessageTopic}} {{commitMessageExtra}}",
+    "prBodyTemplate": "## What does this MR do?\n\nThis MR updates {{depName}} from {{currentVersion}} to {{newVersion}}.\n\n## Changes made\n\n- Updated {{depName}} to {{newVersion}}\n\n## Testing\n\n- [ ] Build passes\n- [ ] Tests pass\n- [ ] App runs without issues\n\n## Breaking changes\n\n{{#if hasReleaseNotes}}\n{{#each releases as |release|}}\n### {{release.version}}\n{{#each release.releaseNotes as |note|}}\n- {{note}}\n{{/each}}\n{{/each}}\n{{/if}}\n\n## Additional notes\n\n{{#if hasReleaseNotes}}\nPlease review the [release notes]({{releaseNotesUrl}}) for any breaking changes.\n{{/if}}"
+}

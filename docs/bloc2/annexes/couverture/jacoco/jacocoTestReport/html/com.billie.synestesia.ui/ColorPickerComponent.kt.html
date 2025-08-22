@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ColorPickerComponent.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.billie.synestesia.ui</a> &gt; <span class="el_source">ColorPickerComponent.kt</span></div><h1>ColorPickerComponent.kt</h1><pre class="source lang-java linenums">package com.billie.synestesia.ui
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+
+@Composable
+fun colorPicker(
+    selectedColor: String,
+    onColorSelected: (String) -&gt; Unit,
+<span class="nc bnc" id="L27" title="All 2 branches missed.">    modifier: Modifier = Modifier</span>
+<span class="nc bnc" id="L28" title="All 24 branches missed.">) {</span>
+<span class="nc" id="L29">    val colors =</span>
+<span class="nc" id="L30">        listOf(</span>
+<span class="nc" id="L31">            &quot;#FF0000&quot;, // Rouge</span>
+<span class="nc" id="L32">            &quot;#00FF00&quot;, // Vert</span>
+<span class="nc" id="L33">            &quot;#0000FF&quot;, // Bleu</span>
+<span class="nc" id="L34">            &quot;#FFFF00&quot;, // Jaune</span>
+<span class="nc" id="L35">            &quot;#FF00FF&quot;, // Magenta</span>
+<span class="nc" id="L36">            &quot;#00FFFF&quot;, // Cyan</span>
+<span class="nc" id="L37">            &quot;#FFA500&quot;, // Orange</span>
+<span class="nc" id="L38">            &quot;#800080&quot;, // Violet</span>
+<span class="nc" id="L39">            &quot;#FFC0CB&quot;, // Rose</span>
+<span class="nc" id="L40">            &quot;#A52A2A&quot;, // Marron</span>
+<span class="nc" id="L41">            &quot;#808080&quot;, // Gris</span>
+<span class="nc" id="L42">            &quot;#000000&quot; // Noir</span>
+        )
+
+<span class="nc" id="L45">    Column(modifier = modifier) {</span>
+<span class="nc" id="L46">        Text(</span>
+<span class="nc" id="L47">            text = &quot;Couleur du souvenir&quot;,</span>
+<span class="nc" id="L48">            style = MaterialTheme.typography.titleSmall,</span>
+<span class="nc" id="L49">            modifier = Modifier.padding(bottom = 12.dp)</span>
+        )
+
+<span class="nc" id="L52">        Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceEvenly) {</span>
+<span class="nc" id="L53">            colors.forEach { color -&gt;</span>
+<span class="nc" id="L54">                colorCircle(</span>
+<span class="nc" id="L55">                    color = color,</span>
+<span class="nc bnc" id="L56" title="All 2 branches missed.">                    isSelected = selectedColor == color,</span>
+<span class="nc" id="L57">                    onClick = { onColorSelected(color) }</span>
+                )
+<span class="nc" id="L59">            }</span>
+<span class="nc" id="L60">        }</span>
+<span class="nc" id="L61">    }</span>
+<span class="nc bnc" id="L62" title="All 2 branches missed.">}</span>
+
+@Composable
+<span class="nc bnc" id="L65" title="All 18 branches missed.">private fun colorCircle(color: String, isSelected: Boolean, onClick: () -&gt; Unit) {</span>
+<span class="nc" id="L66">    val backgroundColor = Color(android.graphics.Color.parseColor(color))</span>
+
+<span class="nc" id="L68">    Box(</span>
+        modifier =
+<span class="nc" id="L70">        Modifier.size(32.dp)</span>
+<span class="nc" id="L71">            .clip(CircleShape)</span>
+<span class="nc" id="L72">            .background(backgroundColor)</span>
+<span class="nc" id="L73">            .border(</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                width = if (isSelected) 3.dp else 1.dp,</span>
+                color =
+<span class="nc bnc" id="L76" title="All 2 branches missed.">                if (isSelected) {</span>
+<span class="nc" id="L77">                    MaterialTheme.colorScheme.primary</span>
+                } else {
+<span class="nc" id="L79">                    Color.Gray</span>
+                },
+<span class="nc" id="L81">                shape = CircleShape</span>
+            )
+<span class="nc bnc" id="L83" title="All 2 branches missed.">            .clickable { onClick() },</span>
+<span class="nc" id="L84">        contentAlignment = Alignment.Center</span>
+    ) {
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        if (isSelected) {</span>
+            // Indicateur de sélection
+<span class="nc" id="L88">            Box(</span>
+                modifier =
+<span class="nc" id="L90">                Modifier.size(16.dp)</span>
+<span class="nc" id="L91">                    .clip(CircleShape)</span>
+<span class="nc" id="L92">                    .background(MaterialTheme.colorScheme.onPrimary)</span>
+            )
+        }
+<span class="nc" id="L95">    }</span>
+<span class="nc bnc" id="L96" title="All 2 branches missed.">}</span>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

@@ -4,10 +4,10 @@ plugins {
     alias(libs.plugins.kotlin.compose)
     id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
     id("com.google.gms.google-services")
-    id("com.google.firebase.appdistribution")
     id("org.jlleitschuh.gradle.ktlint")
     id("io.gitlab.arturbosch.detekt")
     id("jacoco")
+    id("com.google.firebase.appdistribution")
 }
 
 secrets {
@@ -118,6 +118,40 @@ tasks.withType<io.gitlab.arturbosch.detekt.Detekt>().configureEach {
 // Configuration JaCoCo
 jacoco {
     toolVersion = "0.8.11"
+}
+
+// Configuration des tâches JaCoCo pour Android
+tasks.withType<Test> {
+    finalizedBy("jacocoTestReport")
+}
+
+tasks.register<JacocoReport>("jacocoTestReport") {
+    dependsOn("testDebugUnitTest")
+    reports {
+        xml.required.set(true)
+        html.required.set(true)
+    }
+    val fileFilter = listOf(
+        "**/R.class",
+        "**/R$*.class",
+        "**/BuildConfig.*",
+        "**/Manifest*.*",
+        "**/*Test*.*",
+        "android/**/*.*"
+    )
+
+    val debugTree = fileTree("${project.layout.buildDirectory}/tmp/kotlin-classes/debug") {
+        exclude(fileFilter)
+    }
+    val mainSrc = "${project.projectDir}/src/main/java"
+
+    sourceDirectories.setFrom(files(mainSrc))
+    classDirectories.setFrom(files(debugTree))
+    executionData.setFrom(
+        fileTree("${project.layout.buildDirectory}") {
+            include("/jacoco/testDebugUnitTest.exec")
+        }
+    )
 }
 
 // Configuration Firebase App Distribution

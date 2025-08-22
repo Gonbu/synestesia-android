@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AudioPlaybackService.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.billie.synestesia</a> &gt; <span class="el_source">AudioPlaybackService.kt</span></div><h1>AudioPlaybackService.kt</h1><pre class="source lang-java linenums">package com.billie.synestesia
+
+import android.content.Context
+import android.media.MediaPlayer
+import com.billie.synestesia.utils.LogUtils
+import java.io.File
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+object AudioPlaybackService {
+    private var mediaPlayer: MediaPlayer? = null
+    private var currentAudioUrl: String? = null
+    private var progressJob: Job? = null
+
+    // Callbacks pour la mise à jour de l'UI
+    private var onProgressUpdate: ((Long) -&gt; Unit)? = null
+    private var onPlaybackComplete: (() -&gt; Unit)? = null
+    private var onError: ((String) -&gt; Unit)? = null
+
+    fun playAudio(
+        context: Context,
+        audioUrl: String,
+        onProgress: (Long) -&gt; Unit,
+        onComplete: () -&gt; Unit,
+        onError: (String) -&gt; Unit
+    ) {
+<span class="nc" id="L30">        try {</span>
+            // Arrêter la lecture en cours
+<span class="nc" id="L32">            stopAudio()</span>
+
+            // Mettre à jour les callbacks
+<span class="nc" id="L35">            this.onProgressUpdate = onProgress</span>
+<span class="nc" id="L36">            this.onPlaybackComplete = onComplete</span>
+<span class="nc" id="L37">            this.onError = onError</span>
+<span class="nc" id="L38">            currentAudioUrl = audioUrl</span>
+
+            // Créer le MediaPlayer
+<span class="nc" id="L41">            mediaPlayer = MediaPlayer().apply {</span>
+<span class="nc" id="L42">                setOnPreparedListener {</span>
+<span class="nc" id="L43">                    LogUtils.d(&quot;Audio prêt à être lu: $audioUrl&quot;)</span>
+<span class="nc" id="L44">                    start()</span>
+
+                    // Démarrer le suivi de la progression
+<span class="nc" id="L47">                    startProgressTracking()</span>
+<span class="nc" id="L48">                }</span>
+
+<span class="nc" id="L50">                setOnCompletionListener {</span>
+<span class="nc" id="L51">                    LogUtils.d(&quot;Lecture audio terminée&quot;)</span>
+<span class="nc bnc" id="L52" title="All 2 branches missed.">                    onPlaybackComplete?.invoke()</span>
+<span class="nc" id="L53">                    stopProgressTracking()</span>
+<span class="nc" id="L54">                }</span>
+
+<span class="nc" id="L56">                setOnErrorListener { _, what, extra -&gt;</span>
+<span class="nc" id="L57">                    val errorMsg = &quot;Erreur de lecture audio: what=$what, extra=$extra&quot;</span>
+<span class="nc" id="L58">                    LogUtils.e(errorMsg)</span>
+<span class="nc bnc" id="L59" title="All 2 branches missed.">                    onError?.invoke(errorMsg)</span>
+<span class="nc" id="L60">                    stopProgressTracking()</span>
+<span class="nc" id="L61">                    true</span>
+                }
+<span class="nc" id="L63">            }</span>
+
+            // Préparer l'audio
+<span class="nc bnc" id="L66" title="All 2 branches missed.">            if (audioUrl.startsWith(&quot;http&quot;)) {</span>
+                // URL distante
+<span class="nc bnc" id="L68" title="All 2 branches missed.">                mediaPlayer?.setDataSource(audioUrl)</span>
+            } else {
+                // Fichier local
+<span class="nc" id="L71">                val file = File(audioUrl)</span>
+<span class="nc bnc" id="L72" title="All 2 branches missed.">                if (file.exists()) {</span>
+<span class="nc bnc" id="L73" title="All 2 branches missed.">                    mediaPlayer?.setDataSource(file.absolutePath)</span>
+                } else {
+<span class="nc" id="L75">                    throw Exception(&quot;Fichier audio introuvable: $audioUrl&quot;)</span>
+                }
+            }
+
+<span class="nc bnc" id="L79" title="All 2 branches missed.">            mediaPlayer?.prepareAsync()</span>
+<span class="nc" id="L80">        } catch (e: Exception) {</span>
+<span class="nc" id="L81">            val errorMsg = &quot;Erreur lors de la préparation de l'audio: ${e.message}&quot;</span>
+<span class="nc" id="L82">            LogUtils.e(errorMsg, e)</span>
+<span class="nc" id="L83">            onError?.invoke(errorMsg)</span>
+        }
+<span class="nc" id="L85">    }</span>
+
+    fun pauseAudio() {
+<span class="nc bnc" id="L88" title="All 2 branches missed.">        mediaPlayer?.let { player -&gt;</span>
+<span class="nc bnc" id="L89" title="All 2 branches missed.">            if (player.isPlaying) {</span>
+<span class="nc" id="L90">                player.pause()</span>
+<span class="nc" id="L91">                stopProgressTracking()</span>
+<span class="nc" id="L92">                LogUtils.d(&quot;Audio mis en pause&quot;)</span>
+            }
+<span class="nc" id="L94">        }</span>
+<span class="nc" id="L95">    }</span>
+
+    fun resumeAudio() {
+<span class="nc bnc" id="L98" title="All 2 branches missed.">        mediaPlayer?.let { player -&gt;</span>
+<span class="nc bnc" id="L99" title="All 2 branches missed.">            if (!player.isPlaying) {</span>
+<span class="nc" id="L100">                player.start()</span>
+<span class="nc" id="L101">                startProgressTracking()</span>
+<span class="nc" id="L102">                LogUtils.d(&quot;Audio repris&quot;)</span>
+            }
+<span class="nc" id="L104">        }</span>
+<span class="nc" id="L105">    }</span>
+
+    fun stopAudio() {
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        mediaPlayer?.let { player -&gt;</span>
+<span class="nc bnc" id="L109" title="All 2 branches missed.">            if (player.isPlaying) {</span>
+<span class="nc" id="L110">                player.stop()</span>
+            }
+<span class="nc" id="L112">            player.release()</span>
+<span class="nc" id="L113">        }</span>
+<span class="nc" id="L114">        mediaPlayer = null</span>
+<span class="nc" id="L115">        stopProgressTracking()</span>
+<span class="nc" id="L116">        currentAudioUrl = null</span>
+<span class="nc" id="L117">        LogUtils.d(&quot;Lecture audio arrêtée&quot;)</span>
+<span class="nc" id="L118">    }</span>
+
+    fun seekTo(positionMs: Long) {
+<span class="nc bnc" id="L121" title="All 2 branches missed.">        mediaPlayer?.let { player -&gt;</span>
+<span class="nc" id="L122">            try {</span>
+<span class="nc" id="L123">                player.seekTo(positionMs.toInt())</span>
+<span class="nc bnc" id="L124" title="All 2 branches missed.">                onProgressUpdate?.invoke(positionMs)</span>
+<span class="nc" id="L125">                LogUtils.d(&quot;Position audio changée: ${positionMs}ms&quot;)</span>
+<span class="nc" id="L126">            } catch (e: Exception) {</span>
+<span class="nc" id="L127">                LogUtils.e(&quot;Erreur lors du changement de position: &quot;, e)</span>
+            }
+<span class="nc" id="L129">        }</span>
+<span class="nc" id="L130">    }</span>
+
+    fun getCurrentPosition(): Long {
+<span class="nc bnc" id="L133" title="All 2 branches missed.">        return mediaPlayer?.currentPosition?.toLong() ?: 0L</span>
+    }
+
+    fun getDuration(): Long {
+<span class="nc bnc" id="L137" title="All 2 branches missed.">        return mediaPlayer?.duration?.toLong() ?: 0L</span>
+    }
+
+    fun isPlaying(): Boolean {
+<span class="nc bnc" id="L141" title="All 2 branches missed.">        return mediaPlayer?.isPlaying ?: false</span>
+    }
+
+    private fun startProgressTracking() {
+<span class="nc bnc" id="L145" title="All 2 branches missed.">        progressJob?.cancel()</span>
+<span class="nc" id="L146">        progressJob = CoroutineScope(Dispatchers.Main).launch {</span>
+<span class="nc bnc" id="L147" title="All 6 branches missed.">            while (mediaPlayer?.isPlaying == true) {</span>
+<span class="nc" id="L148">                delay(100) // Mise à jour toutes les 100ms</span>
+<span class="nc bnc" id="L149" title="All 2 branches missed.">                mediaPlayer?.let { player -&gt;</span>
+<span class="nc" id="L150">                    val currentPos = player.currentPosition.toLong()</span>
+<span class="nc bnc" id="L151" title="All 2 branches missed.">                    onProgressUpdate?.invoke(currentPos)</span>
+                }
+            }
+<span class="nc" id="L154">        }</span>
+<span class="nc" id="L155">    }</span>
+
+    private fun stopProgressTracking() {
+<span class="nc bnc" id="L158" title="All 2 branches missed.">        progressJob?.cancel()</span>
+<span class="nc" id="L159">        progressJob = null</span>
+<span class="nc" id="L160">    }</span>
+
+    fun cleanup() {
+<span class="nc" id="L163">        stopAudio()</span>
+<span class="nc" id="L164">        onProgressUpdate = null</span>
+<span class="nc" id="L165">        onPlaybackComplete = null</span>
+<span class="nc" id="L166">        onError = null</span>
+<span class="nc" id="L167">    }</span>
+
+    // Méthodes publiques pour configurer les callbacks
+    fun setProgressCallback(callback: (Long) -&gt; Unit) {
+<span class="nc" id="L171">        onProgressUpdate = callback</span>
+<span class="nc" id="L172">    }</span>
+
+    fun setCompletionCallback(callback: () -&gt; Unit) {
+<span class="nc" id="L175">        onPlaybackComplete = callback</span>
+<span class="nc" id="L176">    }</span>
+
+    fun setErrorCallback(callback: (String) -&gt; Unit) {
+<span class="nc" id="L179">        onError = callback</span>
+<span class="nc" id="L180">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

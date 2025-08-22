@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FirebaseStorageService.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.billie.synestesia</a> &gt; <span class="el_source">FirebaseStorageService.kt</span></div><h1>FirebaseStorageService.kt</h1><pre class="source lang-java linenums">package com.billie.synestesia
+
+import android.net.Uri
+import com.billie.synestesia.utils.LogUtils
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ktx.storage
+import java.io.File
+import kotlinx.coroutines.tasks.await
+
+object FirebaseStorageService {
+<span class="nc" id="L13">    private val storage: FirebaseStorage = Firebase.storage</span>
+
+    /**
+     * Upload une image sur Firebase Storage et retourne l'URL de téléchargement.
+     * @param imageUri Uri locale de l'image à uploader
+     * @param souvenirId Identifiant du souvenir pour organiser le stockage
+     * @return L'URL de téléchargement de l'image
+     */
+    suspend fun uploadSouvenirImage(imageUri: Uri, souvenirId: String): String? {
+<span class="nc bnc" id="L22" title="All 2 branches missed.">        val userId = FirebaseAuth.getInstance().currentUser?.uid</span>
+<span class="nc bnc" id="L23" title="All 2 branches missed.">        if (userId == null) {</span>
+<span class="nc" id="L24">            LogUtils.e(&quot;Utilisateur non connecté pour l'upload de photo&quot;)</span>
+<span class="nc" id="L25">            return null</span>
+        }
+
+<span class="nc" id="L28">        val ref = storage.reference.child(</span>
+<span class="nc" id="L29">            &quot;souvenirs/$userId/$souvenirId/${imageUri.lastPathSegment}&quot;</span>
+        )
+<span class="nc" id="L31">        return try {</span>
+<span class="nc" id="L32">            ref.putFile(imageUri).await()</span>
+<span class="nc" id="L33">            ref.downloadUrl.await().toString()</span>
+<span class="nc" id="L34">        } catch (e: Exception) {</span>
+<span class="nc" id="L35">            LogUtils.e(&quot;Erreur lors de l'upload de la photo: &quot;, e)</span>
+<span class="nc" id="L36">            null</span>
+        }
+    }
+
+    /**
+     * Upload un fichier audio sur Firebase Storage et retourne l'URL de téléchargement.
+     * @param audioFilePath Chemin local du fichier audio à uploader
+     * @param souvenirId Identifiant du souvenir pour organiser le stockage
+     * @return L'URL de téléchargement du fichier audio
+     */
+    suspend fun uploadSouvenirAudio(audioFilePath: String, souvenirId: String): String? {
+<span class="nc bnc" id="L47" title="All 2 branches missed.">        val userId = FirebaseAuth.getInstance().currentUser?.uid</span>
+<span class="nc bnc" id="L48" title="All 2 branches missed.">        if (userId == null) {</span>
+<span class="nc" id="L49">            LogUtils.e(&quot;Utilisateur non connecté pour l'upload audio&quot;)</span>
+<span class="nc" id="L50">            return null</span>
+        }
+
+<span class="nc" id="L53">        val audioFile = File(audioFilePath)</span>
+<span class="nc bnc" id="L54" title="All 2 branches missed.">        if (!audioFile.exists()) {</span>
+<span class="nc" id="L55">            LogUtils.e(&quot;Fichier audio introuvable: $audioFilePath&quot;)</span>
+<span class="nc" id="L56">            return null</span>
+        }
+
+<span class="nc" id="L59">        val fileName = audioFile.name</span>
+<span class="nc" id="L60">        val ref = storage.reference.child(&quot;souvenirs/$userId/$souvenirId/$fileName&quot;)</span>
+
+<span class="nc" id="L62">        return try {</span>
+<span class="nc" id="L63">            ref.putFile(Uri.fromFile(audioFile)).await()</span>
+<span class="nc" id="L64">            ref.downloadUrl.await().toString()</span>
+<span class="nc" id="L65">        } catch (e: Exception) {</span>
+<span class="nc" id="L66">            LogUtils.e(&quot;Erreur lors de l'upload du fichier audio: &quot;, e)</span>
+<span class="nc" id="L67">            null</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>

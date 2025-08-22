@@ -1,0 +1,84 @@
+# Configuration Dependabot pour le projet Synestesia
+# Alternative à Renovate pour la mise à jour automatique des dépendances
+
+version: 2
+updates:
+  # Mise à jour des dépendances Gradle
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 10
+    reviewers:
+      - "billie"
+    assignees:
+      - "billie"
+    labels:
+      - "dependencies"
+      - "automated"
+    commit-message:
+      prefix: "chore(deps)"
+      prefix-development: "chore(deps-dev)"
+      include: "scope"
+    ignore:
+      # Ignorer les mises à jour majeures pour éviter les breaking changes
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+
+  # Mise à jour des dépendances GitHub Actions
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "billie"
+    assignees:
+      - "billie"
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "automated"
+
+  # Mise à jour des dépendances Docker (si applicable)
+  - package-ecosystem: "docker"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    open-pull-requests-limit: 5
+    reviewers:
+      - "billie"
+    assignees:
+      - "billie"
+    labels:
+      - "dependencies"
+      - "docker"
+      - "automated"
+
+  # Configuration spécifique pour les dépendances critiques
+  - package-ecosystem: "gradle"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "04:00"
+    target-branch: "develop"
+    reviewers:
+      - "billie"
+    assignees:
+      - "billie"
+    labels:
+      - "dependencies"
+      - "critical"
+      - "automated"
+    # Mise à jour immédiate pour les dépendances de sécurité
+    open-pull-requests-limit: 20
+    ignore:
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]

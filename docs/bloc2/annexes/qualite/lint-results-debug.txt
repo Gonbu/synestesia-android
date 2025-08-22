@@ -1,0 +1,619 @@
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:85: Warning: Implicitly using the default locale is a common source of bugs: Use String.format(Locale, ...) instead [DefaultLocale]
+        String.format("%02d:%02d", minutes, remainingSeconds)
+        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioRecorderComponent.kt:133: Warning: Implicitly using the default locale is a common source of bugs: Use String.format(Locale, ...) instead [DefaultLocale]
+            String.format("%02d:%02d", minutes, seconds)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "DefaultLocale":
+   Calling String#toLowerCase() or #toUpperCase() without specifying an
+   explicit locale is a common source of bugs. The reason for that is that
+   those methods will use the current locale on the user's device, and even
+   though the code appears to work correctly when you are developing the app,
+   it will fail in some locales. For example, in the Turkish locale, the
+   uppercase replacement for i is not I.
+
+   If you want the methods to just perform ASCII replacement, for example to
+   convert an enum name, call String#toUpperCase(Locale.ROOT) instead. If you
+   really want to use the current locale, call
+   String#toUpperCase(Locale.getDefault()) instead.
+
+   https://developer.android.com/reference/java/util/Locale.html#default_locale
+
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:27: Warning: Not targeting the latest versions of Android; compatibility modes apply. Consider testing and updating this version. Consult the android.os.Build.VERSION_CODES javadoc for details. [OldTargetApi]
+        targetSdk = 35
+        ~~~~~~~~~~~~~~
+
+   Explanation for issues of type "OldTargetApi":
+   When your application or sdk runs on a version of Android that is more
+   recent than your targetSdkVersion specifies that it has been tested with,
+   various compatibility modes kick in. This ensures that your application
+   continues to work, but it may look out of place. For example, if the
+   targetSdkVersion is less than 14, your app may get an option button in the
+   UI.
+
+   To fix this issue, set the targetSdkVersion to the highest available value.
+   Then test your app to make sure everything works correctly. You may want to
+   consult the compatibility notes to see what changes apply to each version
+   you are adding support for:
+   https://developer.android.com/reference/android/os/Build.VERSION_CODES.html
+   as well as follow this guide:
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.
+   html
+
+   https://developer.android.com/distribute/best-practices/develop/target-sdk.html
+
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/SplashActivity.kt:49: Warning: The application should not provide its own launch screen [CustomSplashScreen]
+class SplashActivity : ComponentActivity() {
+      ~~~~~~~~~~~~~~
+
+   Explanation for issues of type "CustomSplashScreen":
+   Starting in Android 12 (API 31+), the application's Launch Screen is
+   provided by the system and the application should not create its own,
+   otherwise the user will see two splashscreens. Please check the
+   SplashScreen class to check how the Splash Screen can be controlled and
+   customized.
+
+   https://developer.android.com/guide/topics/ui/splash-screen
+
+/Users/billie/Ynov/synestesia/app/src/main/AndroidManifest.xml:44: Warning: Redundant label can be removed [RedundantLabel]
+            android:label="@string/app_name"
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "RedundantLabel":
+   When an activity does not have a label attribute, it will use the one from
+   the application tag. Since the application has already specified the same
+   label, the label on this activity can be omitted.
+
+/Users/billie/Ynov/synestesia/gradle/wrapper/gradle-wrapper.properties:3: Warning: A newer version of Gradle than 8.13 is available: 8.14.3 [AndroidGradlePluginVersion]
+distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip
+                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:2: Warning: A newer version of com.android.application than 8.12.0 is available: 8.12.1 [AndroidGradlePluginVersion]
+agp = "8.12.0"
+      ~~~~~~~~
+
+   Explanation for issues of type "AndroidGradlePluginVersion":
+   This detector looks for usage of the Android Gradle Plugin where the
+   version you are using is not the current stable release. Using older
+   versions is fine, and there are cases where you deliberately want to stick
+   with an older version. However, you may simply not be aware that a more
+   recent version is available, and that is what this lint check helps find.
+
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:22: Warning: A newer version of compileSdkVersion than 35 is available: 36 [GradleDependency]
+    compileSdk = 35
+    ~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:96: Warning: A newer version of com.google.firebase:firebase-bom than 33.16.0 is available: 34.1.0 [GradleDependency]
+    implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:4: Warning: A newer version of androidx.core:core-ktx than 1.15.0 is available: 1.17.0 [GradleDependency]
+coreKtx = "1.15.0"
+          ~~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:6: Warning: A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0 [GradleDependency]
+junitVersion = "1.2.1"
+               ~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:7: Warning: A newer version of androidx.test.espresso:espresso-core than 3.6.1 is available: 3.7.0 [GradleDependency]
+espressoCore = "3.6.1"
+               ~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:8: Warning: A newer version of androidx.lifecycle:lifecycle-runtime-ktx than 2.8.7 is available: 2.9.2 [GradleDependency]
+lifecycleRuntimeKtx = "2.8.7"
+                      ~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:10: Warning: A newer version of androidx.compose:compose-bom than 2024.09.00 is available: 2025.08.00 [GradleDependency]
+composeBom = "2024.09.00"
+             ~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:16: Warning: A newer version of com.google.firebase.appdistribution than 4.2.0 is available: 5.1.1 [GradleDependency]
+firebaseAppDistribution = "4.2.0"
+                          ~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:38: Warning: A newer version of androidx.test:core than 1.5.0 is available: 1.7.0 [GradleDependency]
+androidx-test-core = { group = "androidx.test", name = "core", version = "1.5.0" }
+                                                                         ~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:39: Warning: A newer version of androidx.test.ext:junit than 1.1.5 is available: 1.3.0 [GradleDependency]
+androidx-test-ext = { group = "androidx.test.ext", name = "junit", version = "1.1.5" }
+                                                                             ~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:40: Warning: A newer version of androidx.test:runner than 1.5.2 is available: 1.7.0 [GradleDependency]
+androidx-test-runner = { group = "androidx.test", name = "runner", version = "1.5.2" }
+                                                                             ~~~~~~~
+
+   Explanation for issues of type "GradleDependency":
+   This detector looks for usages of libraries where the version you are using
+   is not the current stable release. Using older versions is fine, and there
+   are cases where you deliberately want to stick with an older version.
+   However, you may simply not be aware that a more recent version is
+   available, and that is what this lint check helps find.
+
+/Users/billie/Ynov/synestesia/app/src/main/AndroidManifest.xml:34: Warning: Expecting android:screenOrientation="unspecified" or "fullSensor" for this activity so the user can use the application in any orientation and provide a great experience on Chrome OS devices [LockedOrientationActivity]
+            android:screenOrientation="portrait">
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "LockedOrientationActivity":
+   The <activity> element should not be locked to any orientation so that
+   users can take advantage of the multi-window environments and larger
+   screens available on Android. To fix the issue, consider declaring the
+   corresponding activity element with `screenOrientation="unspecified"`or
+   fullSensor attribute.
+
+   https://developer.android.com/topic/arc/window-management
+
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:84: Warning: A newer version of com.google.maps.android:maps-compose than 4.4.1 is available: 6.7.2 [NewerVersionAvailable]
+    implementation("com.google.maps.android:maps-compose:$mapsComposeVersion")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:86: Warning: A newer version of com.google.maps.android:maps-compose-utils than 4.4.1 is available: 6.7.2 [NewerVersionAvailable]
+    implementation("com.google.maps.android:maps-compose-utils:$mapsComposeVersion")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:88: Warning: A newer version of com.google.maps.android:maps-compose-widgets than 4.4.1 is available: 6.7.2 [NewerVersionAvailable]
+    implementation("com.google.maps.android:maps-compose-widgets:$mapsComposeVersion")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:93: Warning: A newer version of io.coil-kt:coil-compose than 2.4.0 is available: 2.7.0 [NewerVersionAvailable]
+    implementation("io.coil-kt:coil-compose:2.4.0")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:3: Warning: A newer version of org.jetbrains.kotlin.android than 2.0.21 is available: 2.2.10 [NewerVersionAvailable]
+kotlin = "2.0.21"
+         ~~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:3: Warning: A newer version of org.jetbrains.kotlin.plugin.compose than 2.0.21 is available: 2.2.10 [NewerVersionAvailable]
+kotlin = "2.0.21"
+         ~~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:11: Warning: A newer version of org.jlleitschuh.gradle.ktlint than 1.2.1 is available: 13.1.0 [NewerVersionAvailable]
+ktlint = "1.2.1"
+         ~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:13: Warning: A newer version of io.mockk:mockk than 1.13.9 is available: 1.14.5 [NewerVersionAvailable]
+mockk = "1.13.9"
+        ~~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:14: Warning: A newer version of org.jetbrains.kotlinx:kotlinx-coroutines-test than 1.8.1 is available: 1.10.2 [NewerVersionAvailable]
+coroutines = "1.8.1"
+             ~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:15: Warning: A newer version of app.cash.turbine:turbine than 1.0.0 is available: 1.2.1 [NewerVersionAvailable]
+turbine = "1.0.0"
+          ~~~~~~~
+
+   Explanation for issues of type "NewerVersionAvailable":
+   This detector checks with a central repository to see if there are newer
+   versions available for the dependencies used by this project. This is
+   similar to the GradleDependency check, which checks for newer versions
+   available in the Android SDK tools and libraries, but this works with any
+   MavenCentral dependency, and connects to the library every time, which
+   makes it more flexible but also much slower.
+
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:21: Hint: There are multiple dependencies androidx.test.ext:junit but with different version [SimilarGradleDependency]
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/gradle/libs.versions.toml:39: Hint: There are multiple dependencies androidx.test.ext:junit but with different version [SimilarGradleDependency]
+androidx-test-ext = { group = "androidx.test.ext", name = "junit", version = "1.1.5" }
+                     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "SimilarGradleDependency":
+   This detector looks for usages of libraries when name and group are the
+   same but versions are different. Using multiple versions in big project is
+   fine, and there are cases where you deliberately want to stick with such
+   approach. However, you may simply not be aware that this situation happens,
+   and that is what this lint check helps find.
+
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:47: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioPlayerHeader() {
+            ~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:66: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioPlayerProgress(currentPosition: Long, duration: Long) {
+            ~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:80: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioPlayerTimeDisplay(currentPosition: Long, duration: Long) {
+            ~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:96: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioPlayerButton(iconId: Int, contentDescription: String, onClick: () -> Unit) {
+            ~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:108: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioPlayerControls(state: AudioPlayerState, callbacks: AudioPlayerCallbacks) {
+            ~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:138: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioPlayerState(
+            ~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:178: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioPlayerPlaybackLogic(
+            ~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:223: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+fun audioPlayerComponent(audioUrl: String, modifier: Modifier = Modifier) {
+    ~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioRecorderComponent.kt:46: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+fun audioRecorderComponent(onAudioRecorded: (String) -> Unit, modifier: Modifier = Modifier) {
+    ~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioRecorderComponent.kt:92: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioRecorderHeader() {
+            ~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioRecorderComponent.kt:101: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioInstructions() {
+            ~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioRecorderComponent.kt:165: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioRecordButton(isRecording: Boolean, onRecordClick: () -> Unit) {
+            ~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioRecorderComponent.kt:199: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun recordingTimeDisplay(formattedTime: String) {
+            ~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioRecorderComponent.kt:210: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioPreviewCard(
+            ~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioRecorderComponent.kt:255: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun audioPlayButton(
+            ~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/ColorPickerComponent.kt:24: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+fun colorPicker(
+    ~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/ColorPickerComponent.kt:65: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun colorCircle(color: String, isSelected: Boolean, onClick: () -> Unit) {
+            ~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/MainNavigation.kt:22: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+fun mainNavigation(paddingValues: PaddingValues) {
+    ~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirDetailCard.kt:45: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+fun photoFullScreenDialog(photoUrl: String, onDismiss: () -> Unit) {
+    ~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirDetailCard.kt:83: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirPositionIndicators(souvenirs: List<SouvenirItem>, currentIndex: Int) {
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirDetailCard.kt:110: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirNavigationHeader(
+            ~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirDetailCard.kt:170: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirPhotoSection(photoUrl: String, onShowFullScreen: () -> Unit) {
+            ~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirDetailCard.kt:211: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirContentSection(
+            ~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirDetailCard.kt:253: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirActionButtons(
+            ~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirDetailCard.kt:276: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+fun souvenirDetailCard(
+    ~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirForm.kt:79: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirFormHeader() {
+            ~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirForm.kt:84: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirFormFields(data: SouvenirFormData, callbacks: SouvenirFormCallbacks) {
+            ~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirForm.kt:112: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirPhotoSection(photoUri: Uri?, onTakePhoto: () -> Unit) {
+            ~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirForm.kt:133: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirAudioSection(onAudioRecorded: (String) -> Unit) {
+            ~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirForm.kt:218: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirFormLogic(data: SouvenirFormLogicData, onSaveComplete: (SouvenirItem) -> Unit) {
+            ~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirForm.kt:287: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirFormContent(
+            ~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirForm.kt:338: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun souvenirFormActions(
+            ~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/SouvenirForm.kt:358: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+fun souvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
+    ~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/SouvenirMap.kt:23: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+fun souvenirMap(paddingValues: PaddingValues) {
+    ~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/SplashActivity.kt:77: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+fun splashScreen() {
+    ~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/SplashActivity.kt:101: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun radialGradientBackground() {
+            ~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/SplashActivity.kt:130: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun logoWithGlow() {
+            ~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/SplashActivity.kt:164: Warning: Composable functions that return Unit should start with an uppercase letter [ComposableNaming from androidx.compose.runtime]
+private fun subtitleText() {
+            ~~~~~~~~~~~~
+
+   Explanation for issues of type "ComposableNaming":
+   @Composable functions without a return type should use similar naming to
+   classes, starting with an uppercase letter and ending with a noun.
+   @Composable functions with a return type should be treated as normal Kotlin
+   functions, starting with a lowercase letter.
+
+   Vendor: Jetpack Compose
+   Identifier: androidx.compose.runtime
+   Feedback: https://issuetracker.google.com/issues/new?component=612128
+
+/Users/billie/Ynov/synestesia/app/src/main/AndroidManifest.xml:34: Warning: Fixed screen orientations will be ignored in most cases, starting from Android 16. Android is moving toward a model where apps are expected to adapt to various orientations, display sizes, and aspect ratios. [DiscouragedApi]
+            android:screenOrientation="portrait">
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "DiscouragedApi":
+   Discouraged APIs are allowed and are not deprecated, but they may be unfit
+   for common use (e.g. due to slow performance or subtle behavior).
+
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:170: Error: This does not resolve to the right method; you need to explicitly add import com.google.firebase.appdistribution.gradle.firebaseAppDistribution to this file! [WrongGradleMethod]
+firebaseAppDistribution {
+~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "WrongGradleMethod":
+   This lint check looks for suspicious Gradle DSL calls.
+
+   One common example is attempting to create product flavor or build type
+   specific dependencies by placing the dependencies block inside a product
+   flavor or build type.
+
+   Another one is KTS specific. When migrating from Groovy to KTS, be extra
+   careful with some calls into plugin DSL methods; in some cases, you might
+   have to insert an explicit import statement, even if the code compiles
+   without it; instead you are silently calling a generated method.
+
+   For example, with the Firebase App Distribution plugin, you cannot just
+   convert this build.gradle snippet:
+   buildTypes {
+       release {
+           firebaseAppDistribution {
+               artifactType="APK"
+               releaseNotesFile="/path/to/releasenotes.txt"
+               testers="ali@example.com, bri@example.com, cal@example.com"
+           }
+       }
+   }
+   to this KTS:
+   buildTypes {
+       getByName("release") {
+           firebaseAppDistribution {
+               artifactType = "APK"
+               releaseNotesFile = "/path/to/releasenotes.txt"
+               testers = "ali@example.com, bri@example.com, cal@example.com"
+           }
+       }
+   }
+   You have to also add this import at the top of the file:
+   import com.google.firebase.appdistribution.gradle.firebaseAppDistribution
+
+   If you get this error on other DSL constructs inside build types or product
+   flavors, check the plugin documentation.
+
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/FirestoreService.kt:12: Warning: Do not place Android context classes in static fields (static reference to FirebaseFirestore which has field context pointing to Context); this is a memory leak [StaticFieldLeak]
+    private val db = FirebaseFirestore.getInstance()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "StaticFieldLeak":
+   A static field will leak contexts.
+
+   Non-static inner classes have an implicit reference to their outer class.
+   If that outer class is for example a Fragment or Activity, then this
+   reference means that the long-running handler/loader/task will hold a
+   reference to the activity which prevents it from getting garbage
+   collected.
+
+   Similarly, direct field references to activities and fragments from these
+   longer running instances can cause leaks.
+
+   ViewModel classes should never point to Views or non-application Contexts.
+
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:226: Hint: Prefer mutableLongStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
+    var currentPosition by remember { mutableStateOf(0L) }
+                                      ~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioPlayerComponent.kt:227: Hint: Prefer mutableLongStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
+    var duration by remember { mutableStateOf(0L) }
+                               ~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/AudioRecorderComponent.kt:114: Hint: Prefer mutableLongStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
+    var recordingTime by remember { mutableStateOf(0L) }
+                                    ~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/MapComponents.kt:62: Hint: Prefer mutableIntStateOf instead of mutableStateOf [AutoboxingStateCreation from androidx.compose.runtime]
+    var currentSouvenirIndex by remember { mutableStateOf(0) }
+                                           ~~~~~~~~~~~~~~
+
+   Explanation for issues of type "AutoboxingStateCreation":
+   Calling mutableStateOf<T>() when T is either backed by a primitive type on
+   the JVM or is a value class results in a state implementation that requires
+   all state values to be boxed. This usually causes an additional allocation
+   for each state write, and adds some additional work to auto-unbox values
+   when reading the value of the state. Instead, prefer to use a specialized
+   primitive state implementation for Int, Long, Float, and Double when the
+   state does not need to track null values and does not override the default
+   SnapshotMutationPolicy. See mutableIntStateOf(), mutableLongStateOf(),
+   mutableFloatStateOf(), and mutableDoubleStateOf() for more information.
+
+   Vendor: Jetpack Compose
+   Identifier: androidx.compose.runtime
+   Feedback: https://issuetracker.google.com/issues/new?component=612128
+
+/Users/billie/Ynov/synestesia/app/src/main/res/drawable/app_icon.png: Warning: The resource R.drawable.app_icon appears to be unused [UnusedResources]
+/Users/billie/Ynov/synestesia/app/src/main/res/values/colors.xml:3: Warning: The resource R.color.purple_200 appears to be unused [UnusedResources]
+    <color name="purple_200">#FFBB86FC</color>
+           ~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/res/values/colors.xml:4: Warning: The resource R.color.purple_500 appears to be unused [UnusedResources]
+    <color name="purple_500">#FF6200EE</color>
+           ~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/res/values/colors.xml:5: Warning: The resource R.color.purple_700 appears to be unused [UnusedResources]
+    <color name="purple_700">#FF3700B3</color>
+           ~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/res/values/colors.xml:6: Warning: The resource R.color.teal_200 appears to be unused [UnusedResources]
+    <color name="teal_200">#FF03DAC5</color>
+           ~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/res/values/colors.xml:7: Warning: The resource R.color.teal_700 appears to be unused [UnusedResources]
+    <color name="teal_700">#FF018786</color>
+           ~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/res/values/colors.xml:8: Warning: The resource R.color.black appears to be unused [UnusedResources]
+    <color name="black">#FF000000</color>
+           ~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/res/values/colors.xml:9: Warning: The resource R.color.white appears to be unused [UnusedResources]
+    <color name="white">#FFFFFFFF</color>
+           ~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/res/drawable/ic_launcher_foreground.xml:1: Warning: The resource R.drawable.ic_launcher_foreground appears to be unused [UnusedResources]
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+^
+
+   Explanation for issues of type "UnusedResources":
+   Unused resources make applications larger and slow down builds.
+
+
+   The unused resource check can ignore tests. If you want to include
+   resources that are only referenced from tests, consider packaging them in a
+   test source set instead.
+
+   You can include test sources in the unused resource check by setting the
+   system property lint.unused-resources.include-tests =true, and to exclude
+   them (usually for performance reasons), use
+   lint.unused-resources.exclude-tests =true.
+   ,
+
+   Available options:
+
+   **skip-libraries** (default is true):
+   Whether the unused resource check should skip reporting unused resources in libraries.
+
+   Many libraries will declare resources that are part of the library surface; other modules depending on the library will also reference the resources. To avoid reporting all these resources as unused (in the context of a library), the unused resource check normally skips reporting unused resources in libraries. Instead, run the unused resource check on the consuming app module (along with `checkDependencies=true`).
+
+   However, there are cases where you want to check that all the resources declared in a library are used; in that case, you can disable the skip option.
+
+   To configure this option, use a `lint.xml` file with an <option> like this:
+
+   ```xml
+   <lint>
+       <issue id="UnusedResources">
+           <option name="skip-libraries" value="true" />
+       </issue>
+   </lint>
+   ```
+
+/Users/billie/Ynov/synestesia/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml:2: Warning: The application adaptive icon is missing a monochrome tag [MonochromeLauncherIcon]
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+^
+/Users/billie/Ynov/synestesia/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml:2: Warning: The application adaptive roundIcon is missing a monochrome tag [MonochromeLauncherIcon]
+<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
+^
+
+   Explanation for issues of type "MonochromeLauncherIcon":
+   If android:roundIcon and android:icon are both in your manifest, you must
+   either remove the reference to android:roundIcon if it is not needed; or,
+   supply the monochrome icon in the drawable defined by the android:roundIcon
+   and android:icon attribute.
+
+   For example, if android:roundIcon and android:icon are both in the
+   manifest, a launcher might choose to use android:roundIcon over
+   android:icon to display the adaptive app icon. Therefore, your themed
+   application iconwill not show if your monochrome attribute is not also
+   specified in android:roundIcon.
+
+/Users/billie/Ynov/synestesia/app/src/main/res/drawable/app_icon.png: Warning: Found bitmap drawable res/drawable/app_icon.png in densityless folder [IconLocation]
+/Users/billie/Ynov/synestesia/app/src/main/res/drawable/splash_logo.png: Warning: Found bitmap drawable res/drawable/splash_logo.png in densityless folder [IconLocation]
+
+   Explanation for issues of type "IconLocation":
+   The res/drawable folder is intended for density-independent graphics such
+   as shapes defined in XML. For bitmaps, move it to drawable-mdpi and
+   consider providing higher and lower resolution versions in drawable-ldpi,
+   drawable-hdpi and drawable-xhdpi. If the icon really is density independent
+   (for example a solid color) you can place it in drawable-nodpi.
+
+   https://developer.android.com/guide/practices/screens_support.html
+
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/ColorPickerComponent.kt:66: Warning: Use the KTX extension function String.toColorInt instead? [UseKtx]
+    val backgroundColor = Color(android.graphics.Color.parseColor(color))
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/theme/ColorUtils.kt:12: Warning: Use the KTX extension function String.toColorInt instead? [UseKtx]
+            Color(AndroidColor.parseColor(hexColor))
+                  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/theme/ColorUtils.kt:23: Warning: Use the KTX extension function String.toColorInt instead? [UseKtx]
+            AndroidColor.parseColor(hexColor)
+            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/MapComponents.kt:372: Warning: Use the KTX function createBitmap instead? [UseKtx]
+    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/src/main/java/com/billie/synestesia/ui/MapComponents.kt:395: Warning: Use the KTX function createBitmap instead? [UseKtx]
+    val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UseKtx":
+   The Android KTX libraries decorates the Android platform SDK as well as
+   various libraries with more convenient extension functions available from
+   Kotlin, allowing you to use default parameters, named parameters, and
+   more.
+
+   Available options:
+
+   **remove-defaults** (default is true):
+   Whether to skip arguments that match the defaults provided by the extension.
+
+   Extensions often provide default values for some of the parameters. For example:
+   ```kotlin
+   fun Path.readLines(charset: Charset = Charsets.UTF_8): List<String> { return Files.readAllLines(this, charset) }
+   ```
+   This lint check will by default automatically omit parameters that match the default, so if your code was calling
+
+   ```kotlin
+   Files.readAllLines(file, Charset.UTF_8)
+   ```
+   lint would replace this with
+   ```kotlin
+   file.readLines()
+   ```
+   rather than
+
+   ```kotlin
+   file.readLines(Charset.UTF_8
+   ```
+   You can turn this behavior off using this option.
+
+   To configure this option, use a `lint.xml` file with an <option> like this:
+
+   ```xml
+   <lint>
+       <issue id="UseKtx">
+           <option name="remove-defaults" value="true" />
+       </issue>
+   </lint>
+   ```
+
+   **require-present** (default is true):
+   Whether to only offer extensions already available.
+
+   This option lets you only have lint suggest extension replacements if those extensions are already available on the class path (in other words, you're already depending on the library containing the extension method.)
+
+   To configure this option, use a `lint.xml` file with an <option> like this:
+
+   ```xml
+   <lint>
+       <issue id="UseKtx">
+           <option name="require-present" value="true" />
+       </issue>
+   </lint>
+   ```
+
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:84: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.google.maps.android:maps-compose:$mapsComposeVersion")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:86: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.google.maps.android:maps-compose-utils:$mapsComposeVersion")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:88: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.google.maps.android:maps-compose-widgets:$mapsComposeVersion")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:89: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.google.android.gms:play-services-location:21.3.0")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:91: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.github.skydoves:colorpicker-compose:1.1.2")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:93: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("io.coil-kt:coil-compose:2.4.0")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:96: Warning: Use version catalog instead [UseTomlInstead]
+    implementation(platform("com.google.firebase:firebase-bom:33.16.0"))
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:97: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.google.firebase:firebase-analytics-ktx")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:98: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.google.firebase:firebase-firestore-ktx")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:99: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.google.firebase:firebase-storage-ktx")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:100: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.google.firebase:firebase-auth-ktx")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:101: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.google.firebase:firebase-database-ktx")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+/Users/billie/Ynov/synestesia/app/build.gradle.kts:102: Warning: Use version catalog instead [UseTomlInstead]
+    implementation("com.google.firebase:firebase-messaging-ktx")
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+   Explanation for issues of type "UseTomlInstead":
+   If your project is using a libs.versions.toml file, you should place all
+   Gradle dependencies in the TOML file. This lint check looks for version
+   declarations outside of the TOML file and suggests moving them (and in the
+   IDE, provides a quickfix to performing the operation automatically).
+
+1 error, 100 warnings, 6 hints

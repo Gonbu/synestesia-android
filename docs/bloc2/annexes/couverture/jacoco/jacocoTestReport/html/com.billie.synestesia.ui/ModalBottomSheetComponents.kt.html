@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ModalBottomSheetComponents.kt</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">app</a> &gt; <a href="index.source.html" class="el_package">com.billie.synestesia.ui</a> &gt; <span class="el_source">ModalBottomSheetComponents.kt</span></div><h1>ModalBottomSheetComponents.kt</h1><pre class="source lang-java linenums">package com.billie.synestesia.ui
+
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ModalBottomSheetComponent(
+    showSheet: Boolean,
+    onDismissRequest: () -&gt; Unit,
+<span class="nc bnc" id="L20" title="All 2 branches missed.">    backgroundColor: androidx.compose.ui.graphics.Color = androidx.compose.ui.graphics.Color.Transparent,</span>
+    content: @Composable () -&gt; Unit
+<span class="nc bnc" id="L22" title="All 30 branches missed.">) {</span>
+<span class="nc" id="L23">    val sheetState = rememberModalBottomSheetState()</span>
+<span class="nc" id="L24">    val scope = rememberCoroutineScope()</span>
+
+<span class="nc bnc" id="L26" title="All 2 branches missed.">    if (showSheet) {</span>
+<span class="nc bnc" id="L27" title="All 2 branches missed.">        ModalBottomSheet(</span>
+<span class="nc" id="L28">            onDismissRequest = onDismissRequest,</span>
+<span class="nc" id="L29">            sheetState = sheetState,</span>
+<span class="nc" id="L30">            containerColor = backgroundColor,</span>
+<span class="nc" id="L31">            dragHandle = null</span>
+<span class="nc" id="L32">        ) {</span>
+<span class="nc bnc" id="L33" title="All 6 branches missed.">            Column(</span>
+<span class="nc" id="L34">                modifier = Modifier</span>
+<span class="nc" id="L35">                    .fillMaxWidth()</span>
+<span class="nc" id="L36">                    .padding(horizontal = 16.dp, vertical = 8.dp),</span>
+<span class="nc" id="L37">                horizontalAlignment = Alignment.CenterHorizontally</span>
+            ) {
+<span class="nc" id="L39">                content()</span>
+<span class="nc" id="L40">            }</span>
+<span class="nc" id="L41">        }</span>
+    }
+<span class="nc bnc" id="L43" title="All 2 branches missed.">}</span>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.11.202310140853</span></div></body></html>
