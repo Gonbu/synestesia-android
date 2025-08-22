@@ -93,7 +93,7 @@ Synestesia est une application Android qui permet aux utilisateurs de créer et 
 
 - **Firebase App Distribution** : `docs/FIREBASE_APP_DISTRIBUTION.md`
 - **Workflows CI/CD** : `docs/CI_CD_WORKFLOWS.md`
-- **Configuration CI/CD** : `CI_CD_SETUP.md`
+- **Documentation complète** : `docs/README.md`
 
 ## 🧪 Tests
 
