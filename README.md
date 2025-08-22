@@ -2,303 +2,209 @@
 
 ## 📱 Description
 
-Synestesia est une application Android qui permet aux utilisateurs de créer et gérer des souvenirs géolocalisés. L'application utilise Google Maps pour afficher les souvenirs sur une carte interactive et Firebase pour le stockage des données. **Version simplifiée** - Focus sur la carte et les souvenirs.
+Synestesia est une application Android qui permet aux utilisateurs de créer et partager des souvenirs géolocalisés. L'application utilise Google Maps pour la géolocalisation et Firebase pour le stockage et la distribution des builds.
 
-## ✨ Fonctionnalités Principales
+## 🚀 Fonctionnalités
 
-### 🗺️ Carte Interactive
+- **Géolocalisation** : Intégration complète avec Google Maps
+- **Gestion des souvenirs** : Création, édition et partage de souvenirs
+- **Interface moderne** : UI construite avec Jetpack Compose
+- **Distribution automatisée** : Firebase App Distribution pour les tests
+- **CI/CD intégré** : Workflows automatisés pour le déploiement
 
-- **Affichage des souvenirs** sur Google Maps avec marqueurs colorés
-- **Géolocalisation en temps réel** avec bouton de retour à la position
-- **Création de souvenirs** en cliquant sur la carte
-- **Visualisation des souvenirs existants** avec navigation entre eux
-- **Interface épurée** sans navigation complexe
+## 🏗️ Architecture
 
-### 🎵 Fonctionnalités Audio
+- **Frontend** : Jetpack Compose + Material 3
+- **Backend** : Firebase (Firestore, Storage, Auth, Database)
+- **Maps** : Google Maps Platform
+- **Build** : Gradle + Android Gradle Plugin
+- **Distribution** : Firebase App Distribution
+- **CI/CD** : GitHub Actions + GitLab CI
 
-- **Enregistrement audio** : Capture d'audio directement dans l'application
-- **Lecture audio** : Lecteur intégré avec contrôles (play/pause/stop)
-- **Stockage cloud** : Sauvegarde automatique des fichiers audio sur Firebase
-- **Gestion des permissions** : Demande automatique des permissions audio
-- **Prévisualisation** : Écoute des enregistrements avant sauvegarde
-
-### 📸 Capture Photo
-
-- **Prise de photo intégrée** à l'application
-- **Gestion des permissions caméra** automatique
-- **Stockage cloud automatique** sur Firebase Storage
-- **Aperçu des photos** prises dans le formulaire
-
-### 🎨 Gestion des Souvenirs
-
-- **Création simplifiée** : Titre, description, couleur, photo, audio
-- **Palette de couleurs** : 30 couleurs prédéfinies pour personnaliser les souvenirs
-- **Stockage sécurisé** : Authentification Firebase anonyme
-- **Gestion des médias** : Upload automatique des photos et audios
-- **Suppression sécurisée** : Vérification des droits utilisateur
-
-### 🔐 Authentification
-
-- **Connexion anonyme Firebase** automatique au démarrage
-- **Sécurité des données** : Chaque utilisateur voit uniquement ses souvenirs
-- **Gestion des permissions** : Caméra, audio et localisation
-
-## 🏗️ Architecture Technique
-
-### Composants UI
-
-- `MainNavigation` : Composant principal affichant directement la carte
-- `MapContent` : Affichage de la carte et gestion des souvenirs
-- `SouvenirForm` : Formulaire de création de souvenirs
-- `AudioRecorderComponent` : Composant d'enregistrement audio
-- `AudioPlayerComponent` : Composant de lecture audio
-- `SouvenirDetailCard` : Affichage des détails des souvenirs
-
-### Services
-
-- `FirestoreService` : Gestion des données Firebase
-- `LocationManager` : Gestion de la géolocalisation
-- `CameraManager` : Gestion de l'appareil photo
-- `FirebaseStorageService` : Stockage des fichiers
-- `AudioRecordingService` : Service d'enregistrement audio
-- `AudioPlaybackService` : Service de lecture audio
-- `AudioMetadataService` : Gestion des métadonnées audio
-
-### Modèles
-
-- `SouvenirItem` : Structure des données des souvenirs
-
-### Gestion des Permissions
-
-- `AudioPermission` : Gestion des permissions audio
-- `CameraPermission` : Gestion des permissions caméra
-- `LocationPermission` : Gestion des permissions de localisation
-
-## 🎯 Qualité du Code
-
-### Outils de Qualité Intégrés
-
-#### KtLint
-
-- **Formatage automatique** du code Kotlin
-- **Règles de style** cohérentes
-- **Intégration Git** avec hook pre-commit
-- **Configuration** : `.editorconfig` et règles Android
-
-#### Detekt
-
-- **Analyse statique** du code Kotlin
-- **Détection de bugs** et problèmes potentiels
-- **Configuration personnalisée** : `config/detekt/detekt.yml`
-- **Baseline** pour ignorer les violations existantes
-
-#### JaCoCo
-
-- **Couverture de code** avec objectif > 80%
-- **Rapports détaillés** de couverture
-- **Intégration CI/CD** pour validation automatique
-- **Métriques** de qualité du code
-
-### Commandes Disponibles
-
-```bash
-# Vérification du style de code
-./gradlew ktlintCheck
-
-# Formatage automatique
-./gradlew ktlintFormat
-
-# Analyse statique avec detekt
-./gradlew detekt
-
-# Génération du rapport de couverture
-./gradlew jacocoTestReport
-
-# Nettoyage et rafraîchissement
-./gradlew clean --refresh-dependencies
-```
-
-## 🚀 Installation et Configuration
+## 🔧 Configuration Firebase App Distribution
 
 ### Prérequis
 
-- Android Studio
-- JDK 11 ou supérieur
-- Compte Google Cloud Platform avec Maps API activée
 - Projet Firebase configuré
+- Google Services JSON configuré
+- Groupes de testeurs créés dans Firebase Console
 
-### Configuration
+### Installation
 
-1. **Clonez le repository**
+1. **Cloner le repository**
 
    ```bash
-   git clone https://github.com/billie/synestesia.git
+   git clone https://github.com/yourusername/synestesia.git
    cd synestesia
    ```
 
-2. **Configurez Firebase**
-   - Créez un projet Firebase
-   - Téléchargez `google-services.json` dans le dossier `app/`
-   - Activez Firestore et Firebase Storage
-
-3. **Configurez Google Maps**
-   - Générez une clé API Google Maps
-   - Créez le fichier `secrets.properties` :
-
-     ```properties
-     MAPS_API_KEY=votre_clé_api_ici
-     ```
-
-4. **Synchronisez le projet**
+2. **Vérifier la configuration**
 
    ```bash
-   ./gradlew build
+   ./scripts/test-ci-cd.sh
    ```
 
-### Compilation
+3. **Tester le déploiement local**
+
+   ```bash
+   ./scripts/deploy-local.sh debug --dry-run
+   ```
+
+## 📦 Déploiement
+
+### Déploiement Local
 
 ```bash
-# Build debug
-./gradlew assembleDebug
+# Déploiement debug
+./scripts/deploy-local.sh debug
 
-# Build release
-./gradlew assembleRelease
+# Déploiement release
+./scripts/deploy-local.sh release
 
-# Build avec tests
-./gradlew build
+# Mode simulation
+./scripts/deploy-local.sh debug --dry-run
 
-# Tests uniquement
-./gradlew test
+# Utiliser un APK existant
+./scripts/deploy-local.sh debug --skip-build
 ```
 
-## 📁 Structure des Fichiers
+### Déploiement Automatique
 
+- **Push sur `develop`** → Déploiement debug automatique
+- **Pull Request sur `main`** → Déploiement debug automatique
+- **Tag de version** → Déploiement release automatique
+- **Déclenchement manuel** → Choix du type de build
+
+## 🔄 Workflows CI/CD
+
+### GitHub Actions
+
+- **Fichier** : `.github/workflows/firebase-app-distribution.yml`
+- **Déclencheurs** : Push, PR, Tags, Manuel
+- **Environnements** : Debug, Release
+
+### GitLab CI
+
+- **Fichier** : `.gitlab-ci.yml`
+- **Pipeline** : Build → Deploy
+- **Environnements** : Development, Production
+
+## 📚 Documentation
+
+- **Firebase App Distribution** : `docs/FIREBASE_APP_DISTRIBUTION.md`
+- **Workflows CI/CD** : `docs/CI_CD_WORKFLOWS.md`
+- **Configuration CI/CD** : `CI_CD_SETUP.md`
+
+## 🧪 Tests
+
+### Tests Locaux
+
+```bash
+# Vérifier la configuration
+./scripts/test-ci-cd.sh
+
+# Tester la compilation
+./gradlew :app:assembleDebug --dry-run
+
+# Tester le déploiement
+./gradlew :app:appDistributionUploadDebug --dry-run
 ```
-synestesia/
-├── app/                           # Application principale
-│   ├── src/
-│   │   ├── main/                 # Code source principal
-│   │   │   ├── java/com/billie/synestesia/
-│   │   │   │   ├── ui/           # Composants UI Compose
-│   │   │   │   ├── models/       # Modèles de données
-│   │   │   │   ├── location/     # Gestion de la localisation
-│   │   │   │   ├── permission/   # Gestion des permissions
-│   │   │   │   └── camera/       # Gestion de la caméra
-│   │   │   ├── res/              # Ressources (drawables, values)
-│   │   │   └── AndroidManifest.xml
-│   │   ├── test/                 # Tests unitaires
-│   │   └── androidTest/          # Tests d'instrumentation
-│   ├── build.gradle.kts          # Configuration de l'app
-│   └── proguard-rules.pro        # Règles ProGuard
-├── config/                        # Configuration des outils
-│   └── detekt/                   # Configuration Detekt
-├── gradle/                        # Configuration Gradle
-├── build.gradle.kts              # Configuration du projet
-└── README.md                     # Ce fichier
-```
 
-## 🛠️ Technologies Utilisées
+### Tests CI/CD
 
-- **Kotlin** : Langage de programmation principal
-- **Jetpack Compose** : Framework UI moderne
-- **Google Maps** : Affichage de la carte
-- **Firebase** : Backend et authentification
-- **Material Design 3** : Design system
-- **Coroutines** : Programmation asynchrone
-- **MediaRecorder** : Enregistrement audio natif
-- **MediaPlayer** : Lecture audio native
+1. **Créer une branche de test**
 
-## 🔒 Sécurité et Permissions
+   ```bash
+   git checkout -b test-ci-cd
+   echo "# Test CI/CD" >> README.md
+   git add README.md
+   git commit -m "test: Test CI/CD workflow"
+   git push origin test-ci-cd
+   ```
 
-### Permissions Requises
+2. **Créer une Pull Request**
+   - Le workflow se déclenche automatiquement
+   - Vérifier les logs dans l'onglet Actions
 
-- **CAMERA** : Prise de photos
-- **RECORD_AUDIO** : Enregistrement audio
-- **ACCESS_FINE_LOCATION** : Géolocalisation précise
-- **ACCESS_COARSE_LOCATION** : Géolocalisation approximative
-- **WRITE_EXTERNAL_STORAGE** : Sauvegarde temporaire (API ≤ 28)
-- **READ_EXTERNAL_STORAGE** : Lecture des fichiers (API ≤ 32)
+## 🔐 Configuration des Secrets
 
-### Mesures de Sécurité
+### GitHub Actions
 
-- **Authentification anonyme** Firebase
-- **Isolation des données** par utilisateur
-- **Vérification des droits** avant suppression
-- **Stockage sécurisé** des fichiers sur Firebase
+1. **Settings** → **Secrets and variables** → **Actions**
+2. **New repository secret** : `GOOGLE_SERVICES_JSON`
+3. **Valeur** : Contenu base64 de `app/google-services.json`
 
-## 📋 Fonctionnalités à Implémenter
+### GitLab CI
 
-### Court terme
+1. **Settings** → **CI/CD** → **Variables**
+2. **Add variable** : `GOOGLE_SERVICES_JSON`
+3. **Cocher** : Protected, Masked
 
-- [ ] Sauvegarde locale des paramètres
-- [ ] Gestion des erreurs réseau robuste
-- [ ] Cache local des données
-- [ ] Pagination des souvenirs
+## 📱 Groupes de Testeurs
 
-### Moyen terme
+L'application est configurée pour distribuer aux groupes suivants :
 
-- [ ] Système de favoris
-- [ ] Recherche et filtres
-- [ ] Synchronisation hors ligne
-- [ ] Export/Import des données
+- **`testers`** : Testeurs généraux
+- **`developers`** : Équipe de développement
+- **`qa`** : Équipe de test qualité
 
-### Long terme
+## 🚨 Résolution des Problèmes
 
-- [ ] Support multi-utilisateurs
-- [ ] Système de commentaires
-- [ ] Intégration avec les réseaux sociaux
-- [ ] Version web
+### Erreurs Communes
 
-## 🧪 Tests et Qualité
+1. **APK non trouvé** : Vérifier la configuration de build
+2. **Authentification Firebase** : Vérifier les credentials
+3. **Groupes inexistants** : Créer les groupes dans Firebase Console
+4. **APK non signé** : Configurer la signature pour les releases
 
-### Tests Disponibles
+### Support
 
-- **Tests unitaires** : Validation de la logique métier
-- **Tests d'intégration** : Validation des services Firebase
-- **Tests de qualité** : KtLint, Detekt, JaCoCo
+- **Logs CI/CD** : Vérifier dans GitHub Actions ou GitLab CI
+- **Tests locaux** : Utiliser `./scripts/deploy-local.sh`
+- **Documentation** : Consulter les fichiers dans `docs/`
 
-### Objectifs de Qualité
+## 📊 Monitoring
 
-- **Couverture de code** : > 80%
-- **Conformité KtLint** : 100%
-- **Violations Detekt** : < 5 critiques
-- **Performance** : Temps de réponse < 2s
+### Métriques
+
+- **Temps de build** : Objectif < 5 minutes
+- **Taux de succès** : Objectif > 95%
+- **Temps de déploiement** : Objectif < 2 minutes
+
+### Notifications
+
+- **Slack** : Webhook configurable
+- **Email** : SMTP configurable
+- **Discord/Teams** : Webhooks supportés
+
+## 🎯 Prochaines Étapes
+
+1. **Configurer les secrets** dans GitHub/GitLab
+2. **Tester les workflows** avec des branches de test
+3. **Configurer les notifications** (Slack, email)
+4. **Optimiser les performances** (cache, builds parallèles)
+5. **Configurer la signature** pour les APKs release de production
 
 ## 🤝 Contribution
 
-Les contributions sont les bienvenues ! N'hésitez pas à :
-
-1. Fork le projet
-2. Créer une branche pour votre fonctionnalité
-3. Commiter vos changements
-4. Pousser vers la branche
-5. Ouvrir une Pull Request
-
-### Standards de Code
-
-- Respecter les règles KtLint
-- Passer les vérifications Detekt
-- Suivre les conventions Kotlin
-- Ajouter des tests unitaires
-- Maintenir la couverture de code > 80%
+1. **Fork le repository**
+2. **Créer une branche feature** (`git checkout -b feature/amazing-feature`)
+3. **Commit les changements** (`git commit -m 'feat: Add amazing feature'`)
+4. **Push vers la branche** (`git push origin feature/amazing-feature`)
+5. **Créer une Pull Request**
 
 ## 📄 Licence
 
-Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
+Ce projet est sous licence [MIT](LICENSE).
 
-## 📞 Contact et Support
+## 🔗 Liens Utiles
 
-### Support Technique
-
-- **GitHub Issues** : [Signaler un problème](https://github.com/billie/synestesia/issues)
-- **Discussions** : [Forum de discussion](https://github.com/billie/synestesia/discussions)
-
-### Documentation
-
-- **Documentation complète** : [docs/README.md](docs/README.md)
-- **Manuel utilisateur** : [docs/MANUEL_UTILISATION.md](docs/MANUEL_UTILISATION.md)
-- **Guide développeur** : [docs/MANUEL_DEPLOIEMENT.md](docs/MANUEL_DEPLOIEMENT.md)
+- **Firebase Console** : [synestesia-a0ea7](https://console.firebase.google.com/project/synestesia-a0ea7)
+- **App Distribution** : [Releases](https://console.firebase.google.com/project/synestesia-a0ea7/appdistribution)
+- **Documentation Firebase** : [App Distribution](https://firebase.google.com/docs/app-distribution)
+- **GitHub Actions** : [Documentation](https://docs.github.com/en/actions)
+- **GitLab CI** : [Documentation](https://docs.gitlab.com/ee/ci/)
 
 ---
 
-**Note** : Cette version de Synestesia est simplifiée et se concentre sur les fonctionnalités essentielles : carte, création de souvenirs, et gestion des médias. L'interface a été épurée pour une expérience utilisateur plus directe et intuitive.
+**Développé avec ❤️ par l'équipe Synestesia**
