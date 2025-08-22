@@ -77,11 +77,14 @@ private fun audioPlayerProgress(currentPosition: Long, duration: Long) {
 }
 
 @Composable
-private fun audioPlayerTimeDisplay(
-    currentPosition: Long,
-    duration: Long,
-    formatTime: (Long) -> String
-) {
+private fun audioPlayerTimeDisplay(currentPosition: Long, duration: Long) {
+    val formatTime = { timeMs: Long ->
+        val seconds = (timeMs / 1000).toInt()
+        val minutes = seconds / 60
+        val remainingSeconds = seconds % 60
+        String.format("%02d:%02d", minutes, remainingSeconds)
+    }
+
     Text(
         text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
         style = MaterialTheme.typography.bodySmall,
@@ -99,22 +102,6 @@ private fun audioPlayerButton(iconId: Int, contentDescription: String, onClick: 
             modifier = Modifier.size(28.dp)
         )
     }
-}
-
-@Composable
-private fun audioPlayerTimeDisplay(currentPosition: Long, duration: Long) {
-    val formatTime = { timeMs: Long ->
-        val seconds = (timeMs / 1000).toInt()
-        val minutes = seconds / 60
-        val remainingSeconds = seconds % 60
-        String.format("%02d:%02d", minutes, remainingSeconds)
-    }
-
-    Text(
-        text = "${formatTime(currentPosition)} / ${formatTime(duration)}",
-        style = MaterialTheme.typography.bodySmall,
-        color = MaterialTheme.colorScheme.onSurfaceVariant
-    )
 }
 
 @Composable

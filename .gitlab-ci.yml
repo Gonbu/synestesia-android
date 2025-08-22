@@ -1,0 +1,73 @@
+stages:
+  - build
+  - deploy
+
+variables:
+  GRADLE_OPTS: "-Dorg.gradle.daemon=false"
+
+cache:
+  paths:
+    - .gradle/
+    - build/
+    - app/build/
+
+before_script:
+  - chmod +x gradlew
+
+build-debug:
+  stage: build
+  image: openjdk:21-jdk
+  script:
+    - ./gradlew clean assembleDebug
+  artifacts:
+    paths:
+      - app/build/outputs/apk/debug/
+    expire_in: 1 hour
+  only:
+    - develop
+    - merge_requests
+
+build-release:
+  stage: build
+  image: openjdk:21-jdk
+  script:
+    - ./gradlew clean assembleRelease
+  artifacts:
+    paths:
+      - app/build/outputs/apk/release/
+    expire_in: 1 hour
+  only:
+    - tags
+    - main
+
+deploy-debug:
+  stage: deploy
+  image: openjdk:21-jdk
+  script:
+    - echo "$GOOGLE_SERVICES_JSON" | base64 -d > app/google-services.json
+    - ./gradlew appDistributionUploadDebug
+    - echo "✅ Debug APK déployé avec succès vers Firebase App Distribution"
+  dependencies:
+    - build-debug
+  only:
+    - develop
+    - merge_requests
+  environment:
+    name: development
+    url: https://console.firebase.google.com/project/synestesia-a0ea7/appdistribution
+
+deploy-release:
+  stage: deploy
+  image: openjdk:21-jdk
+  script:
+    - echo "$GOOGLE_SERVICES_JSON" | base64 -d > app/google-services.json
+    - ./gradlew appDistributionUploadRelease
+    - echo "✅ Release APK déployé avec succès vers Firebase App Distribution"
+  dependencies:
+    - build-release
+  only:
+    - tags
+    - main
+  environment:
+    name: production
+    url: https://console.firebase.google.com/project/synestesia-a0ea7/appdistribution

@@ -9,9 +9,10 @@ plugins {
 buildscript {
     dependencies {
         classpath(
-            "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
+                "com.google.android.libraries.mapsplatform.secrets-gradle-plugin:secrets-gradle-plugin:2.0.1"
         )
         classpath("org.jlleitschuh.gradle:ktlint-gradle:11.6.1")
         classpath("io.gitlab.arturbosch.detekt:detekt-gradle-plugin:1.23.5")
+        classpath("com.google.firebase:firebase-appdistribution-gradle:4.2.0")
     }
 }

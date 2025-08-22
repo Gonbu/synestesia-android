@@ -46,7 +46,7 @@ import kotlinx.coroutines.delay
 fun audioRecorderComponent(onAudioRecorded: (String) -> Unit, modifier: Modifier = Modifier) {
     val audioState = rememberAudioState()
     val context = LocalContext.current
-    val audioPermissionLauncher = rememberAudioPermissionLauncher(context)
+    val audioPermissionLauncher = createAudioPermissionLauncher(context)
 
     Column(modifier = modifier.fillMaxWidth().padding(16.dp)) {
         audioRecorderHeader()
@@ -152,7 +152,7 @@ private fun rememberAudioState(): AudioRecorderState {
 }
 
 @Composable
-private fun rememberAudioPermissionLauncher(context: Context): ActivityResultLauncher<String> {
+private fun createAudioPermissionLauncher(context: Context): ActivityResultLauncher<String> {
     return rememberAudioPermissionLauncher(
         onPermissionGranted = { LogUtils.d("Permission audio accordée") },
         onPermissionDenied = {

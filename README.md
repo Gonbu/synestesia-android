@@ -2,67 +2,57 @@
 
 ## 📱 Description
 
-Synestesia est une application Android qui permet aux utilisateurs de créer, gérer et partager des souvenirs géolocalisés. L'application utilise Google Maps pour afficher les souvenirs sur une carte interactive et Firebase pour le stockage des données.
+Synestesia est une application Android qui permet aux utilisateurs de créer et gérer des souvenirs géolocalisés. L'application utilise Google Maps pour afficher les souvenirs sur une carte interactive et Firebase pour le stockage des données. **Version simplifiée** - Focus sur la carte et les souvenirs.
 
 ## ✨ Fonctionnalités Principales
 
 ### 🗺️ Carte Interactive
 
-- Affichage des souvenirs sur Google Maps
-- Géolocalisation en temps réel
-- Création de souvenirs en cliquant sur la carte
-- Navigation vers les souvenirs existants
-- Bouton de retour à la position actuelle
+- **Affichage des souvenirs** sur Google Maps avec marqueurs colorés
+- **Géolocalisation en temps réel** avec bouton de retour à la position
+- **Création de souvenirs** en cliquant sur la carte
+- **Visualisation des souvenirs existants** avec navigation entre eux
+- **Interface épurée** sans navigation complexe
 
 ### 🎵 Fonctionnalités Audio
 
 - **Enregistrement audio** : Capture d'audio directement dans l'application
-- **Lecture audio** : Lecteur intégré pour écouter les souvenirs audio
+- **Lecture audio** : Lecteur intégré avec contrôles (play/pause/stop)
 - **Stockage cloud** : Sauvegarde automatique des fichiers audio sur Firebase
 - **Gestion des permissions** : Demande automatique des permissions audio
+- **Prévisualisation** : Écoute des enregistrements avant sauvegarde
 
 ### 📸 Capture Photo
 
-- Prise de photo intégrée à l'application
-- Gestion des permissions caméra
-- Stockage cloud automatique
-- Aperçu des photos prises
+- **Prise de photo intégrée** à l'application
+- **Gestion des permissions caméra** automatique
+- **Stockage cloud automatique** sur Firebase Storage
+- **Aperçu des photos** prises dans le formulaire
 
-### ⚙️ Écran de Paramètres
+### 🎨 Gestion des Souvenirs
 
-- **Gestion des notifications** : Activer/désactiver les notifications
-- **Apparence** : Mode sombre (à implémenter)
-- **Confidentialité** : Gestion du partage de localisation
-- **À propos** : Informations sur la version
+- **Création simplifiée** : Titre, description, couleur, photo, audio
+- **Palette de couleurs** : 30 couleurs prédéfinies pour personnaliser les souvenirs
+- **Stockage sécurisé** : Authentification Firebase anonyme
+- **Gestion des médias** : Upload automatique des photos et audios
+- **Suppression sécurisée** : Vérification des droits utilisateur
 
-### 👤 Écran de Profil
+### 🔐 Authentification
 
-- **Informations utilisateur** : Nom d'utilisateur et email
-- **Édition du profil** : Modification du nom d'utilisateur
-- **Statistiques** : Nombre de souvenirs, favoris, partages
-- **Actions du compte** : Sécurité, données, aide et support
-- **Zone de danger** : Déconnexion et suppression de compte
-
-### 🧭 Navigation
-
-- **Barre de navigation en bas** avec 3 onglets :
-  - Carte (icône de localisation)
-  - Paramètres (icône d'engrenage)
-  - Profil (icône de personne)
-- Navigation fluide entre les écrans
+- **Connexion anonyme Firebase** automatique au démarrage
+- **Sécurité des données** : Chaque utilisateur voit uniquement ses souvenirs
+- **Gestion des permissions** : Caméra, audio et localisation
 
 ## 🏗️ Architecture Technique
 
 ### Composants UI
 
-- `MainNavigation` : Composant principal gérant la navigation
+- `MainNavigation` : Composant principal affichant directement la carte
 - `MapContent` : Affichage de la carte et gestion des souvenirs
-- `SettingsScreen` : Écran des paramètres
-- `ProfileScreen` : Écran de gestion du profil
-- `BottomNavigation` : Barre de navigation en bas
+- `SouvenirForm` : Formulaire de création de souvenirs
 - `AudioRecorderComponent` : Composant d'enregistrement audio
 - `AudioPlayerComponent` : Composant de lecture audio
-- `SouvenirForm` : Formulaire de création de souvenirs
+- `SouvenirDetailCard` : Affichage des détails des souvenirs
 
 ### Services
 
@@ -128,105 +118,6 @@ Synestesia est une application Android qui permet aux utilisateurs de créer, g�
 ./gradlew clean --refresh-dependencies
 ```
 
-### Configuration des Éditeurs
-
-#### Android Studio / IntelliJ IDEA
-
-- Plugin KtLint installé automatiquement
-- Formatage automatique à la sauvegarde
-- Intégration avec l'éditeur
-
-#### VS Code
-
-- Configuration dans `.vscode/settings.json`
-- Extensions recommandées pour Kotlin
-
-## 🚀 CI/CD et Déploiement
-
-### Pipeline GitHub Actions
-
-- **Build automatique** : Compilation continue
-- **Tests automatiques** : Validation de la qualité
-- **Analyse de sécurité** : Scan Trivy automatique
-- **Déploiement automatique** : Firebase App Distribution
-- **Cache Gradle** : Optimisation des performances
-
-### Environnements
-
-- **Développement** : Tests locaux et intégration
-- **Staging** : Tests de validation et tests utilisateur
-- **Production** : Déploiement final et monitoring
-
-### Métriques de Déploiement
-
-- **Temps de build** : < 10 minutes
-- **Taux de succès** : > 99%
-- **Temps de déploiement** : < 5 minutes
-- **Rollback** : < 10 minutes
-
-## 🧪 Tests et Qualité
-
-### Tests Unitaires
-
-- **JUnit 5** : Framework de tests moderne
-- **MockK** : Mocking des dépendances
-- **Coroutines Test** : Tests des opérations asynchrones
-- **Turbine** : Tests des flows et channels
-- **Couverture** : Objectif > 80%
-
-### Tests d'Intégration
-
-- **Tests Firebase** : Validation des services cloud
-- **Tests de composants** : Validation des interactions
-- **Tests de navigation** : Validation des parcours utilisateur
-
-### Tests de Qualité
-
-- **Tests de performance** : Validation des temps de réponse
-- **Tests d'accessibilité** : Validation WCAG 2.1 AA
-- **Tests de sécurité** : Validation des mesures de sécurité
-
-## 🔒 Sécurité et Accessibilité
-
-### Mesures de Sécurité
-
-- **OWASP Top 10 Mobile** : Conformité complète
-- **Authentification Firebase** : Gestion sécurisée des sessions
-- **Chiffrement TLS 1.3** : Communications sécurisées
-- **Permissions minimales** : Principe du moindre privilège
-- **Scan automatique** : Détection des vulnérabilités
-
-### Accessibilité
-
-- **WCAG 2.1 AA** : Conformité aux standards internationaux
-- **TalkBack** : Support complet du lecteur d'écran
-- **Navigation clavier** : Support complet des alternatives
-- **Contraste** : Ratio minimum 4.5:1
-- **Tailles cibles** : Minimum 48dp x 48dp
-
-## 📚 Documentation Complète
-
-### 📖 Documentation Technique
-
-- **[Manuel de Déploiement](docs/MANUEL_DEPLOIEMENT.md)** - Guide complet du processus de build et déploiement
-- **[Protocole de Déploiement](docs/PROTOCOLE_DEPLOIEMENT.md)** - Procédures et règles de déploiement
-- **[Critères de Qualité](docs/CRITERES_QUALITE.md)** - Métriques et objectifs de qualité
-
-### 🧪 Documentation de Test
-
-- **[Cahier de Recettes](docs/CAHIER_RECETTES.md)** - Scénarios de test et critères d'acceptation
-- **[Guide de Test](docs/README.md)** - Vue d'ensemble de la documentation
-
-### 🔒 Documentation de Sécurité
-
-- **[Guide de Sécurité](docs/SECURITY.md)** - Mesures de sécurité OWASP Top 10 Mobile
-- **[Guide d'Accessibilité](docs/ACCESSIBILITY.md)** - Conformité WCAG 2.1 AA
-
-### 👥 Documentation Utilisateur
-
-- **[Manuel d'Utilisation](docs/MANUEL_UTILISATION.md)** - Guide complet pour les utilisateurs finaux
-- **[Changelog](CHANGELOG.md)** - Historique des versions et changements
-
 ## 🚀 Installation et Configuration
 
 ### Prérequis
@@ -238,11 +129,31 @@ Synestesia est une application Android qui permet aux utilisateurs de créer, g�
 
 ### Configuration
 
-1. Clonez le repository
-2. Ouvrez le projet dans Android Studio
-3. Configurez votre fichier `google-services.json` Firebase
-4. Ajoutez votre clé API Google Maps dans `local.properties`
-5. Synchronisez le projet Gradle
+1. **Clonez le repository**
+
+   ```bash
+   git clone https://github.com/billie/synestesia.git
+   cd synestesia
+   ```
+
+2. **Configurez Firebase**
+   - Créez un projet Firebase
+   - Téléchargez `google-services.json` dans le dossier `app/`
+   - Activez Firestore et Firebase Storage
+
+3. **Configurez Google Maps**
+   - Générez une clé API Google Maps
+   - Créez le fichier `secrets.properties` :
+
+     ```properties
+     MAPS_API_KEY=votre_clé_api_ici
+     ```
+
+4. **Synchronisez le projet**
+
+   ```bash
+   ./gradlew build
+   ```
 
 ### Compilation
 
@@ -260,16 +171,6 @@ Synestesia est une application Android qui permet aux utilisateurs de créer, g�
 ./gradlew test
 ```
 
-### Installation
-
-```bash
-# Installer debug
-./gradlew installDebug
-
-# Installer release
-./gradlew installRelease
-```
-
 ## 📁 Structure des Fichiers
 
 ```
@@ -277,111 +178,24 @@ synestesia/
 ├── app/                           # Application principale
 │   ├── src/
 │   │   ├── main/                 # Code source principal
+│   │   │   ├── java/com/billie/synestesia/
+│   │   │   │   ├── ui/           # Composants UI Compose
+│   │   │   │   ├── models/       # Modèles de données
+│   │   │   │   ├── location/     # Gestion de la localisation
+│   │   │   │   ├── permission/   # Gestion des permissions
+│   │   │   │   └── camera/       # Gestion de la caméra
+│   │   │   ├── res/              # Ressources (drawables, values)
+│   │   │   └── AndroidManifest.xml
 │   │   ├── test/                 # Tests unitaires
 │   │   └── androidTest/          # Tests d'instrumentation
 │   ├── build.gradle.kts          # Configuration de l'app
 │   └── proguard-rules.pro        # Règles ProGuard
-├── docs/                          # Documentation complète
-│   ├── README.md                 # Index de documentation
-│   ├── MANUEL_DEPLOIEMENT.md     # Guide de déploiement
-│   ├── PROTOCOLE_DEPLOIEMENT.md  # Protocole de déploiement
-│   ├── CRITERES_QUALITE.md       # Critères de qualité
-│   ├── CAHIER_RECETTES.md        # Scénarios de test
-│   ├── SECURITY.md               # Guide de sécurité
-│   ├── ACCESSIBILITY.md          # Guide d'accessibilité
-│   └── MANUEL_UTILISATION.md     # Manuel utilisateur
-├── .github/                       # Configuration GitHub
-│   └── workflows/                # Pipelines CI/CD
 ├── config/                        # Configuration des outils
 │   └── detekt/                   # Configuration Detekt
 ├── gradle/                        # Configuration Gradle
 ├── build.gradle.kts              # Configuration du projet
-├── CHANGELOG.md                  # Historique des versions
 └── README.md                     # Ce fichier
 ```
-
-## 🎵 Fonctionnalités Audio Détaillées
-
-### Enregistrement Audio
-
-- **Format** : MP3 avec qualité optimisée
-- **Durée** : Illimitée (selon l'espace disponible)
-- **Permissions** : Demande automatique des permissions
-- **Interface** : Boutons d'enregistrement, pause et arrêt
-- **Feedback visuel** : Indicateurs d'état et niveau sonore
-
-### Lecture Audio
-
-- **Contrôles** : Lecture, pause, arrêt
-- **Navigation** : Barre de progression
-- **Interface** : Design Material 3 cohérent
-- **Gestion des erreurs** : Messages d'erreur informatifs
-
-### Stockage et Synchronisation
-
-- **Stockage local** : Fichiers temporaires pendant l'enregistrement
-- **Upload automatique** : Vers Firebase Storage lors de la sauvegarde
-- **Métadonnées** : Informations sur la durée, la date, etc.
-- **Gestion des erreurs** : Retry automatique en cas d'échec
-
-## 🔧 Configuration de la Qualité du Code
-
-### Fichiers de Configuration
-
-#### `.editorconfig`
-
-```ini
-root = true
-
-[*.{kt,kts}]
-indent_style = space
-indent_size = 4
-max_line_length = 120
-```
-
-#### `config/detekt/detekt.yml`
-
-- Règles personnalisées pour l'analyse statique
-- Seuils configurables pour les violations
-- Baseline pour ignorer les problèmes existants
-
-#### `.githooks/pre-commit`
-
-- Vérification automatique avant chaque commit
-- Blocage du commit si des violations sont détectées
-- Messages d'aide pour corriger les problèmes
-
-### Intégration Continue
-
-- **Git hooks** : Vérification automatique à chaque commit
-- **Gradle tasks** : Intégration dans le processus de build
-- **Rapports** : Génération automatique de rapports de qualité
-
-## 📋 Fonctionnalités à Implémenter
-
-### Court terme
-
-- [ ] Sauvegarde des paramètres utilisateur
-- [ ] Mode sombre fonctionnel
-- [ ] Gestion des notifications push
-- [ ] Sauvegarde des modifications du profil
-- [ ] Amélioration de la qualité audio
-
-### Moyen terme
-
-- [ ] Système de favoris
-- [ ] Partage de souvenirs
-- [ ] Recherche et filtres
-- [ ] Synchronisation hors ligne
-- [ ] Édition audio (coupe, effets)
-
-### Long terme
-
-- [ ] Support multi-utilisateurs
-- [ ] Système de commentaires
-- [ ] Intégration avec les réseaux sociaux
-- [ ] Version web
-- [ ] Reconnaissance vocale
 
 ## 🛠️ Technologies Utilisées
 
@@ -393,29 +207,62 @@ max_line_length = 120
 - **Coroutines** : Programmation asynchrone
 - **MediaRecorder** : Enregistrement audio natif
 - **MediaPlayer** : Lecture audio native
-- **ExoPlayer** : Lecteur audio avancé (optionnel)
 
-## 📚 Ressources et Documentation
+## 🔒 Sécurité et Permissions
 
-### Documentation Officielle
+### Permissions Requises
 
-- [Kotlin Documentation](https://kotlinlang.org/docs/)
-- [Jetpack Compose](https://developer.android.com/jetpack/compose)
-- [Google Maps Platform](https://developers.google.com/maps)
-- [Firebase Documentation](https://firebase.google.com/docs)
+- **CAMERA** : Prise de photos
+- **RECORD_AUDIO** : Enregistrement audio
+- **ACCESS_FINE_LOCATION** : Géolocalisation précise
+- **ACCESS_COARSE_LOCATION** : Géolocalisation approximative
+- **WRITE_EXTERNAL_STORAGE** : Sauvegarde temporaire (API ≤ 28)
+- **READ_EXTERNAL_STORAGE** : Lecture des fichiers (API ≤ 32)
 
-### Outils de Qualité
+### Mesures de Sécurité
 
-- [KtLint](https://ktlint.github.io/)
-- [Detekt](https://detekt.dev/)
-- [JaCoCo](https://www.jacoco.org/jacoco/)
-- [EditorConfig](https://editorconfig.org/)
+- **Authentification anonyme** Firebase
+- **Isolation des données** par utilisateur
+- **Vérification des droits** avant suppression
+- **Stockage sécurisé** des fichiers sur Firebase
 
-### Standards et Références
+## 📋 Fonctionnalités à Implémenter
 
-- [OWASP Mobile Top 10](https://owasp.org/www-project-mobile-top-10/)
-- [WCAG 2.1 Guidelines](https://www.w3.org/WAI/WCAG21/quickref/)
-- [Android Accessibility](https://developer.android.com/guide/topics/ui/accessibility)
+### Court terme
+
+- [ ] Sauvegarde locale des paramètres
+- [ ] Gestion des erreurs réseau robuste
+- [ ] Cache local des données
+- [ ] Pagination des souvenirs
+
+### Moyen terme
+
+- [ ] Système de favoris
+- [ ] Recherche et filtres
+- [ ] Synchronisation hors ligne
+- [ ] Export/Import des données
+
+### Long terme
+
+- [ ] Support multi-utilisateurs
+- [ ] Système de commentaires
+- [ ] Intégration avec les réseaux sociaux
+- [ ] Version web
+
+## 🧪 Tests et Qualité
+
+### Tests Disponibles
+
+- **Tests unitaires** : Validation de la logique métier
+- **Tests d'intégration** : Validation des services Firebase
+- **Tests de qualité** : KtLint, Detekt, JaCoCo
+
+### Objectifs de Qualité
+
+- **Couverture de code** : > 80%
+- **Conformité KtLint** : 100%
+- **Violations Detekt** : < 5 critiques
+- **Performance** : Temps de réponse < 2s
 
 ## 🤝 Contribution
 
@@ -435,14 +282,6 @@ Les contributions sont les bienvenues ! N'hésitez pas à :
 - Ajouter des tests unitaires
 - Maintenir la couverture de code > 80%
 
-### Processus de Contribution
-
-- **Issues** : Signaler les bugs et proposer des améliorations
-- **Pull Requests** : Soumettre des contributions
-- **Code Review** : Validation par l'équipe
-- **Tests** : Validation automatique et manuelle
-- **Documentation** : Mise à jour de la documentation
-
 ## 📄 Licence
 
 Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
@@ -453,7 +292,6 @@ Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
 
 - **GitHub Issues** : [Signaler un problème](https://github.com/billie/synestesia/issues)
 - **Discussions** : [Forum de discussion](https://github.com/billie/synestesia/discussions)
-- **Email** : <support@synestesia.app>
 
 ### Documentation
 
@@ -461,12 +299,6 @@ Ce projet est sous licence MIT. Voir le fichier LICENSE pour plus de détails.
 - **Manuel utilisateur** : [docs/MANUEL_UTILISATION.md](docs/MANUEL_UTILISATION.md)
 - **Guide développeur** : [docs/MANUEL_DEPLOIEMENT.md](docs/MANUEL_DEPLOIEMENT.md)
 
-### Communauté
-
-- **Discord** : [Rejoindre la communauté](https://discord.gg/synestesia)
-- **Twitter** : [@synestesia_app](https://twitter.com/synestesia_app)
-- **Blog** : [blog.synestesia.app](https://blog.synestesia.app)
-
 ---
 
-**Note** : Ce README combine toutes les informations des différents fichiers de documentation du projet pour une meilleure lisibilité et maintenance. Pour une documentation complète et détaillée, consultez le dossier [docs/](docs/README.md).
+**Note** : Cette version de Synestesia est simplifiée et se concentre sur les fonctionnalités essentielles : carte, création de souvenirs, et gestion des médias. L'interface a été épurée pour une expérience utilisateur plus directe et intuitive.

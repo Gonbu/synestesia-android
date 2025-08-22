@@ -3,7 +3,6 @@ package com.billie.synestesia.ui
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -18,11 +17,9 @@ import com.billie.synestesia.permission.checkLocationPermissions
 import com.billie.synestesia.permission.rememberLocationPermissionLauncher
 import com.billie.synestesia.utils.PermissionConstants
 import com.google.android.gms.maps.model.LatLng
-import kotlinx.coroutines.launch
 
 @Composable
 fun mainNavigation(paddingValues: PaddingValues) {
-    var currentRoute by remember { mutableStateOf(BottomNavItem.MAP) }
     var isMapLoaded by remember { mutableStateOf(false) }
     var currentLatLng by remember { mutableStateOf<LatLng?>(null) }
 
@@ -47,30 +44,11 @@ fun mainNavigation(paddingValues: PaddingValues) {
         }
     }
 
-    Scaffold(
-        modifier = Modifier.fillMaxSize(),
-        bottomBar = {
-            BottomNavigation(
-                currentRoute = currentRoute,
-                onNavigate = { route -> currentRoute = route }
-            )
-        }
-    ) { innerPadding ->
-        when (currentRoute) {
-            BottomNavItem.MAP -> {
-                MapContent(
-                    currentLatLng = currentLatLng,
-                    onMapLoaded = { isMapLoaded = true },
-                    coroutineScope = coroutineScope,
-                    modifier = Modifier.fillMaxSize().padding(innerPadding)
-                )
-            }
-            BottomNavItem.SETTINGS -> {
-                settingsScreen(onNavigateBack = { currentRoute = BottomNavItem.MAP })
-            }
-            BottomNavItem.PROFILE -> {
-                profileScreen(onNavigateBack = { currentRoute = BottomNavItem.SETTINGS })
-            }
-        }
-    }
+    // Affichage direct de la carte sans navigation
+    MapContent(
+        currentLatLng = currentLatLng,
+        onMapLoaded = { isMapLoaded = true },
+        coroutineScope = coroutineScope,
+        modifier = Modifier.fillMaxSize().padding(paddingValues)
+    )
 }

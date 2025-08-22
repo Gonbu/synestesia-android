@@ -1,0 +1,12 @@
+Nouvelle version de l'application Synestesia
+
+Fonctionnalités ajoutées :
+- Intégration de Firebase App Distribution
+- Amélioration des performances
+- Correction de bugs
+
+Notes pour les testeurs :
+- Testez toutes les fonctionnalités principales
+- Vérifiez la navigation entre les écrans
+- Testez l'intégration avec Google Maps
+- Vérifiez la gestion des souvenirs

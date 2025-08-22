@@ -56,7 +56,6 @@ fun MapContent(
 
     var clickedLatLng by remember { mutableStateOf<LatLng?>(null) }
     var showBottomSheet by remember { mutableStateOf(false) }
-    var selectedSouvenir by remember { mutableStateOf<SouvenirItem?>(null) }
 
     // Variables pour gérer plusieurs souvenirs par point
     var selectedSouvenirs by remember { mutableStateOf<List<SouvenirItem>>(emptyList()) }
@@ -173,7 +172,6 @@ fun MapContent(
             showSheet = showBottomSheet,
             onDismissRequest = {
                 showBottomSheet = false
-                selectedSouvenir = null
                 selectedSouvenirs = emptyList()
                 currentSouvenirIndex = 0
                 showAddOnExistingPoint = false

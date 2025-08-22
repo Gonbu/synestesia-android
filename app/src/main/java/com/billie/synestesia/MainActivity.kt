@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.ui.unit.dp
 import com.billie.synestesia.ui.mainNavigation
 import com.billie.synestesia.ui.theme.SynestesiaTheme
@@ -21,12 +22,6 @@ class MainActivity : ComponentActivity() {
             }
         }
         enableEdgeToEdge()
-        setContent {
-            SynestesiaTheme {
-                mainNavigation(
-                    paddingValues = androidx.compose.foundation.layout.PaddingValues(0.dp)
-                )
-            }
-        }
+        setContent { SynestesiaTheme { mainNavigation(paddingValues = PaddingValues(0.dp)) } }
     }
 }
