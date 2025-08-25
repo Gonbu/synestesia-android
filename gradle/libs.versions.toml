@@ -13,7 +13,7 @@ detekt = "1.24.0"
 mockk = "1.13.9"
 coroutines = "1.8.1"
 turbine = "1.0.0"
-firebaseAppDistribution = "4.2.0"
+firebaseAppDistribution = "5.1.1"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
