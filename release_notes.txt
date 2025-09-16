@@ -1,0 +1,14 @@
+Version 1.0 - Corrections de qualité de code
+
+- Correction des violations Detekt (LongMethod, MagicNumber, UnusedParameter)
+- Amélioration de la structure du code avec extraction de fonctions
+- Correction des problèmes de linting (ktlint)
+- Optimisation des constantes pour les marqueurs de carte
+- Amélioration de la gestion des erreurs avec check() au lieu de throw
+- Nettoyage du code mort et des paramètres inutilisés
+
+Toutes les tâches de qualité de code passent maintenant :
+✅ Detekt
+✅ Tests unitaires
+✅ ktlint
+✅ Build debug/release

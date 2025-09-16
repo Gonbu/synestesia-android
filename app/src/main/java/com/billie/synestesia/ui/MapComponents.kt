@@ -178,15 +178,15 @@ fun MapContent(
                             )
                         }
                         // Récupérer TOUS les souvenirs à cette position
-                        val souvenirsAtPosition =
+                        val allSouvenirsAtPosition =
                             souvenirs.filter { otherSouvenir ->
                                 otherSouvenir.toLatLng()?.latitude ==
                                     souvenir.toLatLng()?.latitude &&
                                     otherSouvenir.toLatLng()?.longitude ==
                                     souvenir.toLatLng()?.longitude
                             }
-                        selectedSouvenirs = souvenirsAtPosition
-                        currentSouvenirIndex = souvenirsAtPosition.indexOf(souvenir)
+                        selectedSouvenirs = allSouvenirsAtPosition
+                        currentSouvenirIndex = allSouvenirsAtPosition.indexOf(souvenir)
                         showBottomSheet = true
                         true
                     }
@@ -400,6 +400,20 @@ private fun LocationButton(
     }
 }
 
+// Constantes pour les marqueurs
+private const val MARKER_SIZE_HIGH_ZOOM = 60
+private const val MARKER_SIZE_MEDIUM_ZOOM = 70
+private const val MARKER_SIZE_LOW_ZOOM = 80
+private const val MARKER_SIZE_VERY_LOW_ZOOM = 90
+private const val ZOOM_LEVEL_HIGH = 15f
+private const val ZOOM_LEVEL_MEDIUM = 12f
+private const val ZOOM_LEVEL_LOW = 8f
+private const val CIRCLE_RADIUS_DIVISOR = 3f
+private const val STROKE_WIDTH_DIVISOR = 20f
+private const val INDICATOR_SIZE_DIVISOR = 6f
+private const val TEXT_SIZE_MULTIPLIER = 0.6f
+private const val TEXT_Y_OFFSET_DIVISOR = 3f
+
 // Fonctions simples de création de marqueurs (remplacement du clustering)
 private fun createUserLocationMarker(zoomLevel: Float): Bitmap {
     val size = calculateMarkerSize(zoomLevel, false)
@@ -413,13 +427,13 @@ private fun createUserLocationMarker(zoomLevel: Float): Bitmap {
         }
 
     // Cercle bleu pour la position utilisateur
-    canvas.drawCircle(size / 2f, size / 2f, size / 3f, paint)
+    canvas.drawCircle(size / 2f, size / 2f, size / CIRCLE_RADIUS_DIVISOR, paint)
 
     // Bordure blanche
     paint.color = Color.WHITE
     paint.style = Paint.Style.STROKE
-    paint.strokeWidth = size / 20f
-    canvas.drawCircle(size / 2f, size / 2f, size / 3f, paint)
+    paint.strokeWidth = size / STROKE_WIDTH_DIVISOR
+    canvas.drawCircle(size / 2f, size / 2f, size / CIRCLE_RADIUS_DIVISOR, paint)
 
     return bitmap
 }
@@ -440,20 +454,20 @@ private fun createIndividualMarker(
         }
 
     // Cercle coloré pour le souvenir
-    canvas.drawCircle(size / 2f, size / 2f, size / 3f, paint)
+    canvas.drawCircle(size / 2f, size / 2f, size / CIRCLE_RADIUS_DIVISOR, paint)
 
     // Bordure blanche
     paint.color = Color.WHITE
     paint.style = Paint.Style.STROKE
-    paint.strokeWidth = size / 20f
-    canvas.drawCircle(size / 2f, size / 2f, size / 3f, paint)
+    paint.strokeWidth = size / STROKE_WIDTH_DIVISOR
+    canvas.drawCircle(size / 2f, size / 2f, size / CIRCLE_RADIUS_DIVISOR, paint)
 
     // Indicateur pour les souvenirs multiples
     if (hasMultipleSouvenirs) {
         // Petit cercle blanc en haut à droite
-        val indicatorSize = size / 6f
-        val indicatorX = size - indicatorSize - size / 20f
-        val indicatorY = indicatorSize + size / 20f
+        val indicatorSize = size / INDICATOR_SIZE_DIVISOR
+        val indicatorX = size - indicatorSize - size / STROKE_WIDTH_DIVISOR
+        val indicatorY = indicatorSize + size / STROKE_WIDTH_DIVISOR
 
         paint.color = Color.WHITE
         paint.style = Paint.Style.FILL
@@ -462,26 +476,26 @@ private fun createIndividualMarker(
         // Bordure noire pour le contraste
         paint.color = Color.BLACK
         paint.style = Paint.Style.STROKE
-        paint.strokeWidth = size / 40f
+        paint.strokeWidth = size / (STROKE_WIDTH_DIVISOR * 2)
         canvas.drawCircle(indicatorX, indicatorY, indicatorSize / 2f, paint)
 
         // Texte "..." au centre de l'indicateur
         paint.color = Color.BLACK
         paint.style = Paint.Style.FILL
-        paint.textSize = indicatorSize * 0.6f
+        paint.textSize = indicatorSize * TEXT_SIZE_MULTIPLIER
         paint.textAlign = Paint.Align.CENTER
-        val textY = indicatorY + (paint.textSize / 3f)
+        val textY = indicatorY + (paint.textSize / TEXT_Y_OFFSET_DIVISOR)
         canvas.drawText("...", indicatorX, textY, paint)
     }
 
     return bitmap
 }
 
-private fun calculateMarkerSize(zoomLevel: Float, isCluster: Boolean): Int {
+private fun calculateMarkerSize(zoomLevel: Float, @Suppress("UNUSED_PARAMETER") isCluster: Boolean): Int {
     return when {
-        zoomLevel >= 15f -> 60 // Zoom élevé : marqueurs petits
-        zoomLevel >= 12f -> 70 // Zoom moyen : marqueurs moyens
-        zoomLevel >= 8f -> 80 // Zoom faible : marqueurs grands
-        else -> 90 // Zoom très faible : marqueurs très grands
+        zoomLevel >= ZOOM_LEVEL_HIGH -> MARKER_SIZE_HIGH_ZOOM // Zoom élevé : marqueurs petits
+        zoomLevel >= ZOOM_LEVEL_MEDIUM -> MARKER_SIZE_MEDIUM_ZOOM // Zoom moyen : marqueurs moyens
+        zoomLevel >= ZOOM_LEVEL_LOW -> MARKER_SIZE_LOW_ZOOM // Zoom faible : marqueurs grands
+        else -> MARKER_SIZE_VERY_LOW_ZOOM // Zoom très faible : marqueurs très grands
     }
 }

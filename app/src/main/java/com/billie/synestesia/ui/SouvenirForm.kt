@@ -242,79 +242,6 @@ private suspend fun uploadAudio(
 }
 
 @Composable
-private fun souvenirFormLogic(data: SouvenirFormLogicData, onSaveComplete: (SouvenirItem) -> Unit) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
-    var isUploading by remember { mutableStateOf(false) }
-
-    // LaunchedEffect désactivé pour éviter l'enregistrement automatique
-    // L'enregistrement se fait maintenant uniquement via le bouton
-    /*
-    LaunchedEffect(
-        data.titre,
-        data.description,
-        data.selectedColor,
-        data.latLng,
-        data.photoUri,
-        data.audioFilePath
-    ) {
-        if (data.titre.isNotBlank() && data.latLng != null && !isUploading) {
-            scope.launch {
-                isUploading = true
-                var photoUrl = ""
-                var audioUrl = ""
-
-                val souvenirSansMedia =
-                    SouvenirItem(
-                        titre = data.titre,
-                        description = data.description,
-                        latitude = data.latLng.latitude,
-                        longitude = data.latLng.longitude,
-                        date = System.currentTimeMillis(),
-                        couleur = data.selectedColor,
-                        photo = "",
-                        audio = ""
-                    )
-
-                // 1. Création du document Firestore
-                val souvenirId =
-                    try {
-                        FirestoreService.addSouvenirAndReturnId(souvenirSansMedia)
-                    } catch (e: Exception) {
-                        LogUtils.e("Erreur création Firestore: ", e)
-                        LogUtils.showErrorToast(
-                            context,
-                            MessageConstants.ERROR_CREATING_SOUVENIR
-                        )
-                        isUploading = false
-                        return@launch
-                    }
-
-                if (souvenirId == null) {
-                    LogUtils.showErrorToast(context, "Erreur: impossible de créer le souvenir")
-                    isUploading = false
-                    return@launch
-                }
-
-                // 2. Upload de la photo si disponible
-                photoUrl = uploadPhoto(data.photoUri, souvenirId, context)
-
-                // 3. Upload de l'audio si disponible
-                audioUrl = uploadAudio(data.audioFilePath, souvenirId, context)
-
-                isUploading = false
-
-                // Créer le souvenir final avec tous les médias
-                val souvenirFinal =
-                    souvenirSansMedia.copy(id = souvenirId, photo = photoUrl, audio = audioUrl)
-                onSaveComplete(souvenirFinal)
-            }
-        }
-    }
-    */
-}
-
-@Composable
 private fun souvenirFormContent(
     data: SouvenirFormContentData,
     callbacks: SouvenirFormContentCallbacks
@@ -346,7 +273,14 @@ private fun souvenirFormContent(
 
     Spacer(modifier = Modifier.height(20.dp))
 
-    // La logique d'enregistrement est maintenant dans le bouton
+    souvenirFormSaveSection(data, callbacks)
+}
+
+@Composable
+private fun souvenirFormSaveSection(
+    data: SouvenirFormContentData,
+    callbacks: SouvenirFormContentCallbacks
+) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     var isUploading by remember { mutableStateOf(false) }
@@ -356,65 +290,24 @@ private fun souvenirFormContent(
         latLng = data.latLng,
         isUploading = isUploading,
         onSave = {
-            // Logique d'enregistrement manuel complète
             if (data.titre.isNotBlank() && data.latLng != null) {
                 scope.launch {
                     isUploading = true
                     try {
-                        var photoUrl = ""
-                        var audioUrl = ""
+                        val souvenirSansMedia = createSouvenirWithoutMedia(data)
+                        val souvenirId = createSouvenirInFirestore(souvenirSansMedia, context)
 
-                        val souvenirSansMedia =
-                            SouvenirItem(
-                                titre = data.titre,
-                                description = data.description,
-                                latitude = data.latLng.latitude,
-                                longitude = data.latLng.longitude,
-                                date = System.currentTimeMillis(),
-                                couleur = data.selectedColor,
-                                photo = "",
-                                audio = ""
-                            )
+                        if (souvenirId != null) {
+                            val photoUrl = uploadPhoto(data.photoUri, souvenirId, context)
+                            val audioUrl = uploadAudio(data.audioFilePath, souvenirId, context)
 
-                        // 1. Création du document Firestore
-                        val souvenirId =
-                            try {
-                                FirestoreService.addSouvenirAndReturnId(souvenirSansMedia)
-                            } catch (e: Exception) {
-                                LogUtils.e("Erreur création Firestore: ", e)
-                                LogUtils.showErrorToast(
-                                    context,
-                                    MessageConstants.ERROR_CREATING_SOUVENIR
-                                )
-                                return@launch
-                            }
-
-                        if (souvenirId == null) {
-                            LogUtils.showErrorToast(
-                                context,
-                                "Erreur: impossible de créer le souvenir"
-                            )
-                            return@launch
-                        }
-
-                        // 2. Upload de la photo si disponible
-                        LogUtils.d("Tentative d'upload photo: ${data.photoUri}")
-                        photoUrl = uploadPhoto(data.photoUri, souvenirId, context)
-                        LogUtils.d("Photo uploadée: $photoUrl")
-
-                        // 3. Upload de l'audio si disponible
-                        LogUtils.d("Tentative d'upload audio: ${data.audioFilePath}")
-                        audioUrl = uploadAudio(data.audioFilePath, souvenirId, context)
-                        LogUtils.d("Audio uploadé: $audioUrl")
-
-                        // Créer le souvenir final avec tous les médias
-                        val souvenirFinal =
-                            souvenirSansMedia.copy(
+                            val souvenirFinal = souvenirSansMedia.copy(
                                 id = souvenirId,
                                 photo = photoUrl,
                                 audio = audioUrl
                             )
-                        callbacks.onSaveComplete(souvenirFinal)
+                            callbacks.onSaveComplete(souvenirFinal)
+                        }
                     } finally {
                         isUploading = false
                     }
@@ -422,6 +315,47 @@ private fun souvenirFormContent(
             }
         }
     )
+}
+
+private fun createSouvenirWithoutMedia(data: SouvenirFormContentData): SouvenirItem {
+    check(data.latLng != null) { "LatLng cannot be null" }
+    return SouvenirItem(
+        titre = data.titre,
+        description = data.description,
+        latitude = data.latLng.latitude,
+        longitude = data.latLng.longitude,
+        date = System.currentTimeMillis(),
+        couleur = data.selectedColor,
+        photo = "",
+        audio = ""
+    )
+}
+
+private suspend fun createSouvenirInFirestore(
+    souvenir: SouvenirItem,
+    context: android.content.Context
+): String? {
+    return try {
+        FirestoreService.addSouvenirAndReturnId(souvenir)
+    } catch (e: Exception) {
+        LogUtils.e("Erreur création Firestore: ", e)
+        LogUtils.showErrorToast(context, MessageConstants.ERROR_CREATING_SOUVENIR)
+        null
+    }
+}
+
+private fun handlePhotoTaken(
+    context: android.content.Context,
+    cameraPermissionLauncher: androidx.activity.result.ActivityResultLauncher<String>
+) {
+    LogUtils.d("Démarrage de la prise de photo")
+    if (!checkCameraPermission(context)) {
+        LogUtils.d("Demande de permission caméra")
+        cameraPermissionLauncher.launch(PermissionConstants.CAMERA)
+    } else {
+        LogUtils.d("Permission caméra accordée, lancement direct")
+        cameraPermissionLauncher.launch(PermissionConstants.CAMERA)
+    }
 }
 
 @Composable
@@ -466,12 +400,11 @@ fun souvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
     var audioFilePath by remember { mutableStateOf<String?>(null) }
 
     val context = LocalContext.current
-
-    val (takePictureLauncher, cameraPermissionLauncher, galleryLauncher) =
+    val (_, cameraPermissionLauncher, galleryLauncher) =
         souvenirFormState(
             onPhotoTaken = { uri, _ ->
                 LogUtils.d("Photo prise: $uri")
-                photoUri = uri // Mettre à jour l'état local quand la photo est prise
+                photoUri = uri
             },
             onPermissionDenied = {
                 LogUtils.showToast(context, MessageConstants.CAMERA_PERMISSION_DENIED)
@@ -500,14 +433,7 @@ fun souvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
                 onDescriptionChange = { description = it },
                 onColorSelected = { selectedColor = it },
                 onPhotoTaken = {
-                    LogUtils.d("Démarrage de la prise de photo")
-                    if (!checkCameraPermission(context)) {
-                        LogUtils.d("Demande de permission caméra")
-                        cameraPermissionLauncher.launch(PermissionConstants.CAMERA)
-                    } else {
-                        LogUtils.d("Permission caméra accordée, lancement direct")
-                        cameraPermissionLauncher.launch(PermissionConstants.CAMERA)
-                    }
+                    handlePhotoTaken(context, cameraPermissionLauncher)
                 },
                 onSelectFromGallery = {
                     LogUtils.d("Sélection depuis la galerie")
@@ -515,7 +441,7 @@ fun souvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
                 },
                 onAudioRecorded = { filePath ->
                     LogUtils.d("Audio enregistré: $filePath")
-                    audioFilePath = filePath // Mettre à jour l'état local
+                    audioFilePath = filePath
                 },
                 onSaveComplete = onSaveClick
             )

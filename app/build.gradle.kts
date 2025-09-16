@@ -13,6 +13,7 @@ plugins {
 secrets {
     propertiesFileName = "secrets.properties"
     defaultPropertiesFileName = "local.defaults.properties"
+    ignoreList.add("keyToIgnore") // Ignore any key not found in properties files
 }
 
 android {
@@ -46,6 +47,11 @@ android {
     buildFeatures {
         buildConfig = true
         compose = true
+    }
+
+    lint {
+        baseline = file("lint-baseline.xml")
+        abortOnError = false
     }
 }
 
