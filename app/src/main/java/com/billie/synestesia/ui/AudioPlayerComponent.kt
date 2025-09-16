@@ -183,21 +183,22 @@ private fun audioPlayerPlaybackLogic(
 ) {
     val handlePlayPause = {
         if (state.isPlaying && !state.isPaused) {
+            // En cours de lecture -> mettre en pause
             AudioPlaybackService.pauseAudio()
-            onStateChange(state.isPlaying, true, 0L)
+            onStateChange(true, true, 0L) // isPlaying=true, isPaused=true
             LogUtils.d("Audio mis en pause")
         } else if (state.isPlaying && state.isPaused) {
+            // En pause -> reprendre
             AudioPlaybackService.resumeAudio()
-            onStateChange(state.isPlaying, false, 0L)
+            onStateChange(true, false, 0L) // isPlaying=true, isPaused=false
             LogUtils.d("Audio repris")
         } else {
+            // Arrêté -> démarrer
             onStateChange(true, false, 0L)
             AudioPlaybackService.playAudio(
                 context = context,
                 audioUrl = audioUrl,
-                onProgress = { position ->
-                    onStateChange(state.isPlaying, state.isPaused, position)
-                },
+                onProgress = { position -> onStateChange(true, false, position) },
                 onComplete = { onStateChange(false, false, 0L) },
                 onError = { error ->
                     LogUtils.e("Erreur de lecture: $error")

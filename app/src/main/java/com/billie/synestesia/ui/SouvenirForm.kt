@@ -3,11 +3,15 @@ package com.billie.synestesia.ui
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
@@ -15,12 +19,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -71,13 +75,18 @@ data class SouvenirFormContentCallbacks(
     val onDescriptionChange: (String) -> Unit,
     val onColorSelected: (String) -> Unit,
     val onPhotoTaken: () -> Unit,
+    val onSelectFromGallery: () -> Unit,
     val onAudioRecorded: (String) -> Unit,
     val onSaveComplete: (SouvenirItem) -> Unit
 )
 
 @Composable
 private fun souvenirFormHeader() {
-    Text(text = "Créer un nouveau souvenir", style = MaterialTheme.typography.headlineSmall)
+    Text(
+        text = "Nouveau souvenir",
+        style = MaterialTheme.typography.headlineSmall,
+        modifier = Modifier.padding(bottom = 8.dp)
+    )
 }
 
 @Composable
@@ -109,34 +118,33 @@ private fun souvenirFormFields(data: SouvenirFormData, callbacks: SouvenirFormCa
 }
 
 @Composable
-private fun souvenirPhotoSection(photoUri: Uri?, onTakePhoto: () -> Unit) {
-    Text(
-        text = "Photo du souvenir",
-        style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(bottom = 8.dp)
-    )
-
+private fun souvenirPhotoSection(
+    photoUri: Uri?,
+    onTakePhoto: () -> Unit,
+    onSelectFromGallery: () -> Unit
+) {
     // Aperçu de l'image si disponible
     photoUri?.let { uri ->
+        LogUtils.d("Affichage de l'aperçu photo: $uri")
         androidx.compose.foundation.Image(
-            painter = rememberAsyncImagePainter(uri),
-            contentDescription = "Photo prise",
-            modifier = Modifier.fillMaxWidth().height(200.dp).padding(vertical = 8.dp),
+            painter = rememberAsyncImagePainter(model = uri),
+            contentDescription = "Photo sélectionnée",
+            modifier = Modifier.fillMaxWidth().height(180.dp).padding(bottom = 12.dp),
             contentScale = ContentScale.Crop
         )
     }
 
-    Button(onClick = onTakePhoto, modifier = Modifier.fillMaxWidth()) { Text("Prendre une photo") }
+    // Boutons pour prendre une photo ou sélectionner depuis la galerie
+    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+        Button(onClick = onTakePhoto, modifier = Modifier.weight(1f)) { Text("📷 Prendre") }
+        Button(onClick = onSelectFromGallery, modifier = Modifier.weight(1f)) {
+            Text("🖼️ Galerie")
+        }
+    }
 }
 
 @Composable
 private fun souvenirAudioSection(onAudioRecorded: (String) -> Unit) {
-    Text(
-        text = AudioConstants.LABEL_AUDIO_PLAYBACK,
-        style = MaterialTheme.typography.titleMedium,
-        modifier = Modifier.padding(bottom = 8.dp)
-    )
-
     audioRecorderComponent(onAudioRecorded = onAudioRecorded, modifier = Modifier.fillMaxWidth())
 }
 
@@ -144,8 +152,9 @@ private fun souvenirAudioSection(onAudioRecorded: (String) -> Unit) {
 private fun souvenirFormState(
     onPhotoTaken: (Uri, String) -> Unit,
     onPermissionDenied: () -> Unit
-): Pair<
+): Triple<
     androidx.activity.result.ActivityResultLauncher<Uri>,
+    androidx.activity.result.ActivityResultLauncher<String>,
     androidx.activity.result.ActivityResultLauncher<String>> {
     val context = LocalContext.current
     val tempPhotoUri = remember { mutableStateOf<Uri?>(null) }
@@ -154,23 +163,41 @@ private fun souvenirFormState(
     val takePictureLauncher =
         rememberLauncherForActivityResult(contract = ActivityResultContracts.TakePicture()) {
                 success ->
+            LogUtils.d("Photo prise avec succès: $success, URI: ${tempPhotoUri.value}")
             if (success && tempPhotoUri.value != null) {
                 onPhotoTaken(tempPhotoUri.value!!, tempPhotoPath.value)
+            }
+        }
+
+    val galleryLauncher =
+        rememberLauncherForActivityResult(contract = ActivityResultContracts.GetContent()) { uri
+            ->
+            LogUtils.d("Photo sélectionnée depuis la galerie: $uri")
+            if (uri != null) {
+                // Pour la galerie, on utilise l'URI directement et on génère un nom de fichier
+                val fileName = "gallery_${System.currentTimeMillis()}.jpg"
+                onPhotoTaken(uri, fileName)
             }
         }
 
     val cameraPermissionLauncher =
         rememberCameraPermissionLauncher(
             onPermissionGranted = {
+                LogUtils.d("Permission caméra accordée, création du fichier")
                 val (file, uri) = createImageFile(context)
+                LogUtils.d("Fichier créé: ${file.absolutePath}, URI: $uri")
                 tempPhotoUri.value = uri
                 tempPhotoPath.value = file.absolutePath
+                LogUtils.d("Lancement de la caméra avec URI: $uri")
                 takePictureLauncher.launch(uri)
             },
-            onPermissionDenied = onPermissionDenied
+            onPermissionDenied = {
+                LogUtils.e("Permission caméra refusée")
+                onPermissionDenied()
+            }
         )
 
-    return Pair(takePictureLauncher, cameraPermissionLauncher)
+    return Triple(takePictureLauncher, cameraPermissionLauncher, galleryLauncher)
 }
 
 private suspend fun uploadPhoto(
@@ -220,6 +247,9 @@ private fun souvenirFormLogic(data: SouvenirFormLogicData, onSaveComplete: (Souv
     val scope = rememberCoroutineScope()
     var isUploading by remember { mutableStateOf(false) }
 
+    // LaunchedEffect désactivé pour éviter l'enregistrement automatique
+    // L'enregistrement se fait maintenant uniquement via le bouton
+    /*
     LaunchedEffect(
         data.titre,
         data.description,
@@ -281,6 +311,7 @@ private fun souvenirFormLogic(data: SouvenirFormLogicData, onSaveComplete: (Souv
             }
         }
     }
+    */
 }
 
 @Composable
@@ -289,7 +320,7 @@ private fun souvenirFormContent(
     callbacks: SouvenirFormContentCallbacks
 ) {
     souvenirFormHeader()
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(12.dp))
 
     souvenirFormFields(
         data = SouvenirFormData(data.titre, data.description, data.selectedColor),
@@ -301,36 +332,95 @@ private fun souvenirFormContent(
         )
     )
 
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(20.dp))
 
-    souvenirPhotoSection(photoUri = data.photoUri, onTakePhoto = callbacks.onPhotoTaken)
+    souvenirPhotoSection(
+        photoUri = data.photoUri,
+        onTakePhoto = callbacks.onPhotoTaken,
+        onSelectFromGallery = callbacks.onSelectFromGallery
+    )
 
-    Spacer(modifier = Modifier.height(16.dp))
+    Spacer(modifier = Modifier.height(20.dp))
 
     souvenirAudioSection(onAudioRecorded = callbacks.onAudioRecorded)
 
-    Spacer(modifier = Modifier.height(24.dp))
+    Spacer(modifier = Modifier.height(20.dp))
 
-    if (data.latLng != null) {
-        souvenirFormLogic(
-            data =
-            SouvenirFormLogicData(
-                titre = data.titre,
-                description = data.description,
-                selectedColor = data.selectedColor,
-                latLng = data.latLng,
-                photoUri = data.photoUri,
-                audioFilePath = data.audioFilePath
-            ),
-            onSaveComplete = callbacks.onSaveComplete
-        )
-    }
+    // La logique d'enregistrement est maintenant dans le bouton
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var isUploading by remember { mutableStateOf(false) }
 
     souvenirFormActions(
         titre = data.titre,
         latLng = data.latLng,
-        isUploading = false,
-        onSave = { /* La logique est gérée par souvenirFormLogic */ }
+        isUploading = isUploading,
+        onSave = {
+            // Logique d'enregistrement manuel complète
+            if (data.titre.isNotBlank() && data.latLng != null) {
+                scope.launch {
+                    isUploading = true
+                    try {
+                        var photoUrl = ""
+                        var audioUrl = ""
+
+                        val souvenirSansMedia =
+                            SouvenirItem(
+                                titre = data.titre,
+                                description = data.description,
+                                latitude = data.latLng.latitude,
+                                longitude = data.latLng.longitude,
+                                date = System.currentTimeMillis(),
+                                couleur = data.selectedColor,
+                                photo = "",
+                                audio = ""
+                            )
+
+                        // 1. Création du document Firestore
+                        val souvenirId =
+                            try {
+                                FirestoreService.addSouvenirAndReturnId(souvenirSansMedia)
+                            } catch (e: Exception) {
+                                LogUtils.e("Erreur création Firestore: ", e)
+                                LogUtils.showErrorToast(
+                                    context,
+                                    MessageConstants.ERROR_CREATING_SOUVENIR
+                                )
+                                return@launch
+                            }
+
+                        if (souvenirId == null) {
+                            LogUtils.showErrorToast(
+                                context,
+                                "Erreur: impossible de créer le souvenir"
+                            )
+                            return@launch
+                        }
+
+                        // 2. Upload de la photo si disponible
+                        LogUtils.d("Tentative d'upload photo: ${data.photoUri}")
+                        photoUrl = uploadPhoto(data.photoUri, souvenirId, context)
+                        LogUtils.d("Photo uploadée: $photoUrl")
+
+                        // 3. Upload de l'audio si disponible
+                        LogUtils.d("Tentative d'upload audio: ${data.audioFilePath}")
+                        audioUrl = uploadAudio(data.audioFilePath, souvenirId, context)
+                        LogUtils.d("Audio uploadé: $audioUrl")
+
+                        // Créer le souvenir final avec tous les médias
+                        val souvenirFinal =
+                            souvenirSansMedia.copy(
+                                id = souvenirId,
+                                photo = photoUrl,
+                                audio = audioUrl
+                            )
+                        callbacks.onSaveComplete(souvenirFinal)
+                    } finally {
+                        isUploading = false
+                    }
+                }
+            }
+        }
     )
 }
 
@@ -343,12 +433,25 @@ private fun souvenirFormActions(
 ) {
     Button(
         onClick = onSave,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier.fillMaxWidth().height(56.dp),
         enabled = titre.isNotBlank() && latLng != null && !isUploading
-    ) { Text(if (isUploading) "Enregistrement..." else "Enregistrer ce souvenir") }
+    ) {
+        if (isUploading) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                androidx.compose.material3.CircularProgressIndicator(
+                    modifier = Modifier.size(20.dp),
+                    strokeWidth = 2.dp
+                )
+                Spacer(modifier = Modifier.width(12.dp))
+                Text("Enregistrement...", style = MaterialTheme.typography.titleMedium)
+            }
+        } else {
+            Text("💾 Enregistrer", style = MaterialTheme.typography.titleMedium)
+        }
+    }
 
     // Espace supplémentaire pour assurer la visibilité du bouton
-    Spacer(modifier = Modifier.height(32.dp))
+    Spacer(modifier = Modifier.height(24.dp))
 }
 
 // Palette de 30 couleurs prédéfinies
@@ -364,9 +467,12 @@ fun souvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
 
     val context = LocalContext.current
 
-    val (takePictureLauncher, cameraPermissionLauncher) =
+    val (takePictureLauncher, cameraPermissionLauncher, galleryLauncher) =
         souvenirFormState(
-            onPhotoTaken = { uri, _ -> photoUri = uri },
+            onPhotoTaken = { uri, _ ->
+                LogUtils.d("Photo prise: $uri")
+                photoUri = uri // Mettre à jour l'état local quand la photo est prise
+            },
             onPermissionDenied = {
                 LogUtils.showToast(context, MessageConstants.CAMERA_PERMISSION_DENIED)
             }
@@ -394,14 +500,23 @@ fun souvenirFormSheet(latLng: LatLng?, onSaveClick: (SouvenirItem) -> Unit) {
                 onDescriptionChange = { description = it },
                 onColorSelected = { selectedColor = it },
                 onPhotoTaken = {
+                    LogUtils.d("Démarrage de la prise de photo")
                     if (!checkCameraPermission(context)) {
+                        LogUtils.d("Demande de permission caméra")
                         cameraPermissionLauncher.launch(PermissionConstants.CAMERA)
                     } else {
-                        val (file, uri) = createImageFile(context)
-                        takePictureLauncher.launch(uri)
+                        LogUtils.d("Permission caméra accordée, lancement direct")
+                        cameraPermissionLauncher.launch(PermissionConstants.CAMERA)
                     }
                 },
-                onAudioRecorded = { filePath -> audioFilePath = filePath },
+                onSelectFromGallery = {
+                    LogUtils.d("Sélection depuis la galerie")
+                    galleryLauncher.launch("image/*")
+                },
+                onAudioRecorded = { filePath ->
+                    LogUtils.d("Audio enregistré: $filePath")
+                    audioFilePath = filePath // Mettre à jour l'état local
+                },
                 onSaveComplete = onSaveClick
             )
         )

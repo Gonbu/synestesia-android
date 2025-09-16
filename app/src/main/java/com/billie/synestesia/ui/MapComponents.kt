@@ -100,9 +100,21 @@ fun MapContent(
                     )
                 Marker(
                     state = MarkerState(position = latLng),
-                    title = "Votre position",
-                    snippet = "Vous êtes ici!",
-                    icon = userIcon
+                    title = "Créer un souvenir",
+                    snippet = "Appuyez pour créer un souvenir à votre position",
+                    icon = userIcon,
+                    onClick = {
+                        coroutineScope.launch {
+                            cameraPositionState.animate(
+                                CameraUpdateFactory.newLatLng(latLng),
+                                1000
+                            )
+                        }
+                        // Ouvrir directement le formulaire de création
+                        clickedLatLng = latLng
+                        showBottomSheet = true
+                        true // Indique que le clic a été géré
+                    }
                 )
             }
 
@@ -111,7 +123,8 @@ fun MapContent(
                     BitmapDescriptorFactory.fromBitmap(
                         createIndividualMarker(
                             SouvenirItem(couleur = AppColors.CLICKED_POINT),
-                            cameraPositionState.position.zoom
+                            cameraPositionState.position.zoom,
+                            false
                         )
                     )
                 Marker(
@@ -134,9 +147,22 @@ fun MapContent(
 
             // Affichage simple de tous les souvenirs
             souvenirs.forEach { souvenir ->
+                // Compter le nombre de souvenirs à cette position
+                val souvenirsAtPosition =
+                    souvenirs.filter { otherSouvenir ->
+                        otherSouvenir.toLatLng()?.latitude == souvenir.toLatLng()?.latitude &&
+                            otherSouvenir.toLatLng()?.longitude ==
+                            souvenir.toLatLng()?.longitude
+                    }
+                val hasMultipleSouvenirs = souvenirsAtPosition.size > 1
+
                 val markerIcon =
                     BitmapDescriptorFactory.fromBitmap(
-                        createIndividualMarker(souvenir, cameraPositionState.position.zoom)
+                        createIndividualMarker(
+                            souvenir,
+                            cameraPositionState.position.zoom,
+                            hasMultipleSouvenirs
+                        )
                     )
 
                 Marker(
@@ -151,8 +177,16 @@ fun MapContent(
                                 1000
                             )
                         }
-                        selectedSouvenirs = listOf(souvenir)
-                        currentSouvenirIndex = 0
+                        // Récupérer TOUS les souvenirs à cette position
+                        val souvenirsAtPosition =
+                            souvenirs.filter { otherSouvenir ->
+                                otherSouvenir.toLatLng()?.latitude ==
+                                    souvenir.toLatLng()?.latitude &&
+                                    otherSouvenir.toLatLng()?.longitude ==
+                                    souvenir.toLatLng()?.longitude
+                            }
+                        selectedSouvenirs = souvenirsAtPosition
+                        currentSouvenirIndex = souvenirsAtPosition.indexOf(souvenir)
                         showBottomSheet = true
                         true
                     }
@@ -390,7 +424,11 @@ private fun createUserLocationMarker(zoomLevel: Float): Bitmap {
     return bitmap
 }
 
-private fun createIndividualMarker(souvenir: SouvenirItem, zoomLevel: Float): Bitmap {
+private fun createIndividualMarker(
+    souvenir: SouvenirItem,
+    zoomLevel: Float,
+    hasMultipleSouvenirs: Boolean = false
+): Bitmap {
     val size = calculateMarkerSize(zoomLevel, false)
     val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
     val canvas = Canvas(bitmap)
@@ -409,6 +447,32 @@ private fun createIndividualMarker(souvenir: SouvenirItem, zoomLevel: Float): Bi
     paint.style = Paint.Style.STROKE
     paint.strokeWidth = size / 20f
     canvas.drawCircle(size / 2f, size / 2f, size / 3f, paint)
+
+    // Indicateur pour les souvenirs multiples
+    if (hasMultipleSouvenirs) {
+        // Petit cercle blanc en haut à droite
+        val indicatorSize = size / 6f
+        val indicatorX = size - indicatorSize - size / 20f
+        val indicatorY = indicatorSize + size / 20f
+
+        paint.color = Color.WHITE
+        paint.style = Paint.Style.FILL
+        canvas.drawCircle(indicatorX, indicatorY, indicatorSize / 2f, paint)
+
+        // Bordure noire pour le contraste
+        paint.color = Color.BLACK
+        paint.style = Paint.Style.STROKE
+        paint.strokeWidth = size / 40f
+        canvas.drawCircle(indicatorX, indicatorY, indicatorSize / 2f, paint)
+
+        // Texte "..." au centre de l'indicateur
+        paint.color = Color.BLACK
+        paint.style = Paint.Style.FILL
+        paint.textSize = indicatorSize * 0.6f
+        paint.textAlign = Paint.Align.CENTER
+        val textY = indicatorY + (paint.textSize / 3f)
+        canvas.drawText("...", indicatorX, textY, paint)
+    }
 
     return bitmap
 }

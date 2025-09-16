@@ -53,12 +53,17 @@ fun audioRecorderComponent(onAudioRecorded: (String) -> Unit, modifier: Modifier
         audioRecordButton(
             isRecording = audioState.isRecording,
             onRecordClick = {
+                LogUtils.d("Bouton audio cliqué, isRecording=${audioState.isRecording}")
                 if (!audioState.isRecording) {
+                    LogUtils.d("Démarrage de l'enregistrement audio")
                     handleStartRecording(context, audioPermissionLauncher) { filePath ->
+                        LogUtils.d("Enregistrement démarré avec succès: $filePath")
                         audioState.updateRecordingState(true, filePath)
                     }
                 } else {
+                    LogUtils.d("Arrêt de l'enregistrement audio")
                     handleStopRecording(context) { filePath ->
+                        LogUtils.d("Enregistrement arrêté avec succès: $filePath")
                         audioState.updateRecordingState(false, filePath)
                         onAudioRecorded(filePath)
                     }
@@ -79,7 +84,7 @@ fun audioRecorderComponent(onAudioRecorded: (String) -> Unit, modifier: Modifier
                 audioPath = path,
                 formattedTime = audioState.formattedTime,
                 isPlaying = audioState.isPlaying,
-                onPlayClick = { /* La gestion de l'état se fait dans le composant */ }
+                onPlayClick = { playing -> audioState.updatePlayingState(playing) }
             )
         }
 
@@ -133,22 +138,31 @@ private fun rememberAudioState(): AudioRecorderState {
             String.format("%02d:%02d", minutes, seconds)
         }
 
-    return remember {
-        AudioRecorderState(
-            isRecording = isRecording,
-            recordingTime = recordingTime,
-            audioFilePath = audioFilePath,
-            isPlaying = isPlaying,
-            formattedTime = formattedTime,
-            updateRecordingState = { recording, filePath ->
-                isRecording = recording
-                if (recording) {
-                    recordingTime = 0L
-                }
-                audioFilePath = filePath
-            }
-        )
+    // Fonction pour mettre à jour l'état d'enregistrement
+    val updateRecordingState = { recording: Boolean, filePath: String? ->
+        LogUtils.d("Mise à jour état audio: recording=$recording, filePath=$filePath")
+        isRecording = recording
+        if (recording) {
+            recordingTime = 0L
+        }
+        audioFilePath = filePath
     }
+
+    // Fonction pour mettre à jour l'état de lecture
+    val updatePlayingState = { playing: Boolean ->
+        LogUtils.d("Mise à jour état lecture: playing=$playing")
+        isPlaying = playing
+    }
+
+    return AudioRecorderState(
+        isRecording = isRecording,
+        recordingTime = recordingTime,
+        audioFilePath = audioFilePath,
+        isPlaying = isPlaying,
+        formattedTime = formattedTime,
+        updateRecordingState = updateRecordingState,
+        updatePlayingState = updatePlayingState
+    )
 }
 
 @Composable

@@ -7,5 +7,6 @@ data class AudioRecorderState(
     val audioFilePath: String?,
     val isPlaying: Boolean,
     val formattedTime: String,
-    val updateRecordingState: (Boolean, String) -> Unit
+    val updateRecordingState: (Boolean, String) -> Unit,
+    val updatePlayingState: (Boolean) -> Unit
 )
