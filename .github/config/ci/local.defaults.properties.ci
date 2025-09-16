@@ -1,12 +1,12 @@
-# Configuration CI pour Synestesia
-# Ces valeurs sont utilisées uniquement pour les tests CI/CD
+# Fichier de propriétés par défaut pour CI/CD
+# Ce fichier contient les valeurs par défaut pour les builds CI
 
-# Google Maps API Key (valeur d'exemple pour CI)
-GOOGLE_MAPS_API_KEY=AIzaSyB_example_key_for_ci_only
+# Configuration Google Maps (clé de test pour CI)
+MAPS_API_KEY=AIzaSyBvOkBw3cFyZ5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q5Q
 
-# Firebase Project ID (valeur d'exemple pour CI)
-FIREBASE_PROJECT_ID=synestesia-ci-project
+# Configuration Firebase (valeurs par défaut)
+FIREBASE_PROJECT_ID=synestesia-a0ea7
+FIREBASE_APP_ID=1:389269434145:android:0e49ae880ed25c8c6ed860
 
-# Autres configurations CI
-CI_ENVIRONMENT=true
-BUILD_TYPE=debug
+# Note: Ces valeurs sont des placeholders pour les builds CI
+# Les vraies valeurs sont dans secrets.properties pour les builds locaux
